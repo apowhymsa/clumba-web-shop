@@ -1,0 +1,57 @@
+.page-top {
+  @apply relative text-center px-8 py-16 bg-flower bg-cover bg-no-repeat bg-center;
+  &:after {
+    @apply content-[''] absolute top-0 left-0 w-full h-full bg-black opacity-50;
+  }
+}
+
+.page-filters {
+  @apply flex justify-between items-center py-4 px-10 border border-gray-200;
+
+  & > :first-child {
+    @apply flex items-center gap-6;
+  }
+}
+
+.filter-divider {
+  @apply h-5 w-[1px] bg-gray-300;
+}
+
+// Wide
+@media (max-width: 1200px) {
+  .page-filters {
+    @apply flex-col gap-3;
+  }
+}
+
+// Laptop
+@media (max-width: 992px) {
+}
+
+// Tablet
+@media (max-width: 900px) {
+}
+
+// Tablet
+@media (max-width: 768px) {
+  .filters-left {
+    & > span {
+    }
+  }
+}
+
+// Mobile
+@media (max-width: 576px) {
+  .page-filters {
+    @apply flex-col gap-3;
+  }
+}
+
+// Small Mobile
+@media (max-width: 320px) {
+  .page-filters {
+    & > :first-child {
+      @apply gap-4;
+    }
+  }
+}

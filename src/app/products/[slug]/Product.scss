@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Coming+Soon&family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+.product-item-wrapper{
+  font-family: 'Comfortaa', cursive;
+}
+
+
+.product-additional-info {
+}
+
+.product-additional-info-mobile {
+  @apply hidden px-10;
+}
+
+// Wide
+@media (max-width: 1200px) {
+}
+
+// Laptop
+@media (max-width: 992px) {
+}
+
+// Tablet
+@media (max-width: 900px) {
+  .product-additional-info {
+    @apply hidden;
+  }
+
+  .product-item-wrapper,
+  .products-recommendation {
+    @apply px-5 pb-1.5;
+  }
+
+  .products-recommendation > h3 {
+    @apply text-xl;
+  }
+
+  .product-additional-info-mobile {
+    @apply block px-5;
+  }
+
+  .product-top-info {
+    @apply justify-center;
+  }
+}
+
+// Tablet
+@media (max-width: 768px) {
+  .product-item-name {
+    @apply text-2xl;
+  }
+
+  .product-price {
+    @apply text-lg;
+  }
+
+  .product-quantity-container {
+    @apply w-full max-w-full min-w-full;
+  }
+}
+
+// Mobile
+@media (max-width: 576px) {
+  .product-item-wrapper {
+    @apply flex-col gap-y-3;
+
+    & > div {
+      width: 100%;
+    }
+  }
+
+  .product-overview-text-mobile {
+    @apply text-[15px];
+  }
+}
+
+// Small Mobile
+@media (max-width: 425px) {
+  .product-item-name {
+    @apply text-xl;
+  }
+
+  .product-price {
+    @apply text-[16px];
+  }
+
+  .product-price-score-container {
+    @apply justify-between;
+  }
+
+  .price-score-divider {
+    @apply hidden;
+  }
+}
+
+// Small Mobile
+@media (max-width: 345px) {
+  .product-score-count {
+    @apply hidden;
+  }
+}
+
+// Small Mobile
+@media (max-width: 320px) {
+}

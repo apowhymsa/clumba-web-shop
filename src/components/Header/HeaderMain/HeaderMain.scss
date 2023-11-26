@@ -1,0 +1,61 @@
+//@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+ 
+.header-main {
+  //font-family: 'Comfortaa', cursive;
+  @apply flex justify-between items-center px-10 border-b border-gray-200 h-16;
+}
+
+.header-main-divider {
+  @apply h-6 w-[1px] bg-gray-300;
+}
+
+.header-buttons {
+  @apply flex gap-x-8 flex-1 justify-end;
+
+  & > svg {
+    @apply transition-colors cursor-pointer hover:text-rose-400;
+  }
+}
+
+.header-main-mobile-left {
+  @apply hidden gap-x-8;
+}
+
+.header-main-logo {
+  @apply block;
+}
+
+// Wide
+@media (max-width: 1200px) {
+}
+
+// Laptop
+@media (max-width: 992px) {
+}
+
+// Tablet
+@media (max-width: 768px) {
+  .header-buttons {
+    & > :first-child {
+      @apply hidden;
+    }
+  }
+
+  .header-main-mobile-left {
+    @apply flex flex-1;
+  }
+}
+
+// Mobile
+@media (max-width: 576px) {
+  .header-main-logo {
+    @apply hidden;
+  }
+}
+
+// Small Mobile
+@media (max-width: 320px) {
+  .header-main-logo {
+    @apply hidden;
+  }
+}

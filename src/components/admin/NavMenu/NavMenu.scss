@@ -1,0 +1,15 @@
+.submenu {
+  @apply hidden pb-2;
+}
+
+.active-nav-item > .submenu {
+  @apply flex;
+}
+
+.nav-menu-state-icon {
+  @apply rotate-0;
+}
+
+.active-nav-item .nav-menu-state-icon {
+  @apply rotate-180;
+}

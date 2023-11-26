@@ -1,0 +1,41 @@
+body {
+  @apply relative;
+}
+
+.burger-content {
+  @apply hidden bg-gray-900 animate-widthShrink absolute h-screen w-full top-0 -left-full z-50;
+
+  & > .burger-content-close {
+    @apply absolute right-10 top-10;
+  }
+
+  &.burger-content-visible {
+    @apply flex justify-center items-center animate-widthGrow;
+  }
+}
+
+.burger-content-nav > ul {
+  @apply flex flex-col gap-y-8 items-center;
+
+  & > li {
+    @apply text-white text-2xl font-medium;
+  }
+}
+
+@keyframes widthGrow {
+  from {
+    @apply -left-full;
+  }
+  to {
+    @apply left-0;
+  }
+}
+
+@keyframes widthShrink {
+  from {
+    @apply flex justify-center items-center left-0;
+  }
+  to {
+    @apply hidden -left-full;
+  }
+}

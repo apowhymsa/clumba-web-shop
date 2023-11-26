@@ -1,0 +1,38 @@
+.header-nav {
+  @apply ml-8;
+  & > ul {
+    @apply flex gap-x-8;
+
+    & > li {
+      @apply cursor-pointer text-[15px] text-gray-700 transition-colors hover:text-rose-400;
+    }
+  }
+}
+
+.link-active,
+.link-active > a {
+  @apply transition-colors text-rose-400;
+}
+
+// Small Mobile
+@media (max-width: 320px) {
+}
+
+// Mobile
+@media (max-width: 576px) {
+}
+
+// Tablet
+@media (max-width: 768px) {
+  .header-nav {
+    @apply hidden;
+  }
+}
+
+// Laptop
+@media (max-width: 992px) {
+}
+
+// Wide
+@media (max-width: 1200px) {
+}
