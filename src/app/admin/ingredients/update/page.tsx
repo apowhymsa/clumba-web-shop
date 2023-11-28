@@ -44,7 +44,7 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             }
-            const response = await axios.get(`http://localhost:3001/ingredient/${searchParams.get('id')}`, requestConfig);
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${searchParams.get('id')}`, requestConfig);
             setIngredient(response.data);
             setIngImage(response.data.image.data);
             console.log(response.data);
@@ -57,7 +57,7 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             }
-            const response = await axios.get('http://localhost:3001/ingredientCategories', requestConfig);
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategories`, requestConfig);
             response.data.forEach((category: any) => {
                 setIc((currentState) => [...currentState, {
                     value: category._id, label: category.title

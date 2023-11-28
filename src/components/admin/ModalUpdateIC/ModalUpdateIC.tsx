@@ -25,7 +25,7 @@ const ModalUpdateIC = (props: Props) => {
         const getIngredientCategory = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:3001/ingredientCategory/${id}`);
+                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`);
                 setIngredientCategory({_id: response.data._id, title: response.data.title});
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;

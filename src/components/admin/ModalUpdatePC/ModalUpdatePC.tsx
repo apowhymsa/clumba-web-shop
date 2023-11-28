@@ -27,7 +27,7 @@ const ModalUpdatePC = (props: Props) => {
         const getProductCategory = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:3001/productCategory/${id}`);
+                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`);
                 setProductCategory({_id: response.data._id, title: response.data.title, image: response.data.image});
                 setProdImage(response.data.image.data);
             } catch (err: unknown) {
