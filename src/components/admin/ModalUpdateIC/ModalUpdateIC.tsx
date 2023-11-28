@@ -64,7 +64,7 @@ const ModalUpdateIC = (props: Props) => {
                 withCredentials: true
             }
 
-            await axios.put(`http://localhost:3001/ingredientCategory/${id}`, requestBody, requestConfig);
+            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestBody, requestConfig);
             await queryClient.invalidateQueries({queryKey: ['ingredientCategories']});
             info('Категорія інгредієнтів була оновлена');
             onClose();
@@ -86,7 +86,7 @@ const ModalUpdateIC = (props: Props) => {
     }
 
     return (<ModalContainer onClose={onClose}>
-        <h3 className="text-center font-semibold text-xl">Редагування категорії інгредієнтів</h3>
+        <h3 className="text-center font-semibold text-[16px]">Редагування категорії інгредієнтів</h3>
         <div className="modal-container flex flex-col gap-y-5 mt-4">
             <form
                 className="default-section flex flex-col gap-y-5 my-3"
@@ -105,13 +105,11 @@ const ModalUpdateIC = (props: Props) => {
                          </label>
                          <div className="relative">
                              <input
-                                 className={`block w-full rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                 className={`block w-full h-8 rounded-md text-[14px] shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                  {...register("categoryName", {
                                      required: {
                                          value: true, message: "Поле обов'язкове для заповнення",
-                                     }, minLength: {
-                                         value: 6, message: "Поле повинно мати більше ніж 5 символів",
-                                     },
+                                     }
                                  })}
                                  value={ingredientCategory.title}
                                  onChange={(e) => setIngredientCategory({_id: id, title: e.target.value})}

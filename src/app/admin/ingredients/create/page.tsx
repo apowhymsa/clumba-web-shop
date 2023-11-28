@@ -44,7 +44,7 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             }
-            const response = await axios.get('http://localhost:3001/ingredientCategories', requestConfig);
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategories`, requestConfig);
             response.data.forEach((category: any) => {
                 setIc((currentState) => [...currentState, {
                     value: category._id, label: category.title
@@ -69,7 +69,7 @@ const Page = () => {
         }
 
         try {
-            const response = await axios.put('http://localhost:3001/ingredient', requestBody, requestConfig);
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient`, requestBody, requestConfig);
             await queryClient.invalidateQueries({queryKey: ['ingredients']});
             info('Запис було успішно створено');
 
@@ -85,7 +85,7 @@ const Page = () => {
 
             switch (errorObject.response?.status) {
                 case 403: {
-                    error('Не отриманно необхідних даних для видалення запису, оновіть сторінку та повторіть спробу');
+                    error('Не отриманно необхідних даних для створення запису, оновіть сторінку та повторіть спробу');
                     break;
                 }
                 case 409: {
@@ -107,19 +107,19 @@ const Page = () => {
 
     // @ts-ignore
     return <div className="p-10">
-        <h2 className="text-lg font-semibold text-center">Створення інгредієнту</h2>
+        <h2 className="text-[16px] font-semibold text-center">Створення інгредієнту</h2>
         <form onSubmit={handleSubmit(createIngredient)} encType="multipart/form-data">
             <div className="flex flex-col gap-y-2">
                 <div>
                     <label
-                        htmlFor="categoryName"
+                        htmlFor="title"
                         className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.title ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
                     >
                         Назва інгредієнту
                     </label>
                     <div className="relative">
                         <input
-                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                            className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 ${errors.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                             {...register("title", {
                                 required: {
                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -143,7 +143,7 @@ const Page = () => {
                             onChange={field.onChange}
                             isSearchable={false}
                             options={ic}
-                            className={`block w-full rounded-md shadow-sm ${errors.categoryID ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                            className={`block text-sm w-full rounded-md shadow-sm ${errors.categoryID ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                         />)} name="categoryID" control={control}
                                     rules={{
                                         required: {
@@ -179,7 +179,7 @@ const Page = () => {
                                 {/*<div className="text-gray-600">Натисніть для завантаження</div>*/}
                                 <p className="text-sm text-gray-500">PNG or JPG</p>
                             </div>
-                            <input accept=".png, .jpg" id="image" type="file" className="sr-only" {...register("image", {
+                            <input accept=".png, .jpg, .jpeg" id="image" type="file" className="sr-only" {...register("image", {
                                 required: {
                                     value: true, message: "Зображення обов'язкове для завантаження",
                                 }
@@ -195,7 +195,7 @@ const Page = () => {
                 </div>
                 <div>
                     <div className="flex justify-between items-center my-4">
-                        <span className="flex-1">Типи інгредієнту</span>
+                        <span className="flex-1 text-[15px]">Типи інгредієнту</span>
                         <div className="w-fit">
                             <Button type="button" variant="primary" content="Додати ще одну модифікацію"
                                     onClick={() => append({vType: '', count: ''})}/>
@@ -214,7 +214,7 @@ const Page = () => {
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full text-[14px] h-8 rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${index}.vType`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -256,7 +256,7 @@ const Page = () => {
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${index}.count`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",

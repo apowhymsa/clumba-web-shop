@@ -12,9 +12,10 @@ import {createColumnHelper} from "@tanstack/react-table";
 import {useRouter} from "next/navigation";
 
 interface IVariants {
-    vType: string;
-    price: string;
-    count: string;
+    id: {
+        vType: string;
+        count: string;
+    }
 }
 
 interface ICategory {
@@ -36,13 +37,16 @@ const columns = [columnHelper.accessor('_id', {
         return <div className="h-[60px] w-full flex justify-center">
             <img src={(data.getValue()).data} alt="Image" className="object-cover"/>
             </div>
+    },
+    meta: {
+        col: 'image'
     }
 }), columnHelper.accessor('title', {
-    header: 'Найменування інгредієнту', cell: (data) => data.getValue()
+    header: 'Назва', cell: (data) => data.getValue()
 }), columnHelper.accessor('categoryID', {
-    header: 'Найменування категорії інгредієнту', cell: (data) => data.getValue()?.title
+    header: 'Категорія', cell: (data) => data.getValue()?.title
 }), columnHelper.accessor('variants', {
-    header: 'Наявна кількість типу інгредієнту', cell: (data) => data.getValue()
+    header: 'Наявна кількість', cell: (data) => data.getValue()
 })]
 
 const Page = () => {
@@ -52,7 +56,7 @@ const Page = () => {
 
     const {data, isLoading} = useQuery({
         queryKey: ['ingredients'], queryFn: async () => {
-            const {data} = await axios.get('http://localhost:3001/ingredients', {
+            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredients`, {
                 headers: {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
@@ -76,7 +80,7 @@ const Page = () => {
             }
 
             try {
-                await axios.delete(`http://localhost:3001/ingredient/${id}`, requestConfig);
+                await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${id}`, requestConfig);
                 await queryClient.invalidateQueries({queryKey: ['ingredients']});
                 info('Запис було успішно видалено');
             } catch (err: unknown) {
@@ -102,13 +106,13 @@ const Page = () => {
         return <div>Loading...</div>
     }
 
-    return (<div className="flex-1 p-6">
+    return (<div className="flex-1 p-6 text-[14px]">
         <div className="border-b pb-4">
             <button
                 onClick={() => router.push('/admin/ingredients/create')}
-                className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-10 rounded px-4 transition-colors">
+                className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-8 rounded px-4 transition-colors">
                 <span>Додати новий запис</span>
-                <PlusIcon className="w-6 h-6 text-white"/>
+                <PlusIcon className="w-5 h-5 text-white"/>
             </button>
         </div>
         <BasicTable data={data} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>

@@ -68,7 +68,7 @@ const ModalUpdatePC = (props: Props) => {
                 withCredentials: true
             }
 
-            await axios.put(`http://localhost:3001/productCategory/${id}`, requestBody, requestConfig);
+            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`, requestBody, requestConfig);
             await queryClient.invalidateQueries({queryKey: ['productCategories']});
             info('Категорія товарів була оновлена');
             onClose();
@@ -109,7 +109,7 @@ const ModalUpdatePC = (props: Props) => {
     }
 
     return (<ModalContainer onClose={onClose}>
-        <h3 className="text-center font-semibold text-xl">Редагування категорії товарів</h3>
+        <h3 className="text-center font-semibold text-[16px]">Редагування категорії товарів</h3>
         <div className="modal-container flex flex-col gap-y-5 mt-4">
             <form
                 encType="multipart/form-data"
@@ -129,7 +129,7 @@ const ModalUpdatePC = (props: Props) => {
                             </label>
                             <div className="relative">
                                 <input
-                                    className={`block w-full rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                    className={`block w-full text-sm h-8 rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                     {...register("categoryName", {
                                         required: {
                                             value: true, message: "Поле обов'язкове для заповнення",
@@ -168,7 +168,7 @@ const ModalUpdatePC = (props: Props) => {
                                         {/*<div className="text-gray-600">Натисніть для завантаження</div>*/}
                                         <p className="text-sm text-gray-500">PNG or JPG</p>
                                     </div>
-                                    <input accept=".png, .jpg" id="image" type="file" className="sr-only" {...register("image", {
+                                    <input accept=".png, .jpg, .jpeg" id="image" type="file" className="sr-only" {...register("image", {
 
                                     })} onChange={async (e) => {
                                         if (e.target.files && e.target.files.length > 0) {

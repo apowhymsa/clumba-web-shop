@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const NavMenu = () => {
     const ref = useRef<HTMLLIElement>(null);
-    return <ul className="flex flex-col p-6 bg-[#383f51] gap-y-4 h-screen fixed w-[320px]">
+    return <ul className="flex flex-col p-6 bg-[#383f51] gap-y-4 h-screen fixed w-[300px] text-[14px]">
         <li ref={ref} className="flex flex-col rounded gap-x-4 bg-white w-full transition-colors cursor-pointer">
             <div className="flex gap-x-4 items-center px-4 justify-between h-10 transition-colors hover:bg-rose-200 rounded" onClick={() => {
                 ref.current?.classList.toggle('active-nav-item');

@@ -72,7 +72,7 @@ const Page = () => {
     useEffect(() => {
         if (ingredient) {
             ingredient?.variants.forEach((variant: any) => {
-                append({vType: variant.vType, count: variant.count});
+                append({vType: variant.id.vType, count: variant.id.count});
             });
             setIngredientLoading(false);
         }
@@ -144,7 +144,7 @@ const Page = () => {
 
     // @ts-ignore
     return <div className="p-10">
-        <h2 className="text-lg font-semibold text-center">Оновлення інгредієнту</h2>
+        <h2 className="text-[16px] font-semibold text-center">Оновлення інгредієнту</h2>
         <form onSubmit={handleSubmit(updateIngredient)} encType="multipart/form-data">
             <div className="flex flex-col gap-y-2">
                 <div>
@@ -157,7 +157,7 @@ const Page = () => {
                     <div className="relative">
                         <input
                             defaultValue={ingredient.title}
-                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                            className={`block w-full rounded-md h-8 text-sm shadow-sm pl-4 ${errors.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                             {...register("title", {
                                 required: {
                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -183,7 +183,7 @@ const Page = () => {
                             }}
                             isSearchable={false}
                             options={ic}
-                            className={`block w-full rounded-md shadow-sm ${errors.categoryID ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                            className={`block w-full text-sm rounded-md shadow-sm ${errors.categoryID ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                         />)} name="categoryID" control={control}
                                     // rules={{
                                     //     required: {
@@ -219,7 +219,7 @@ const Page = () => {
                                 {/*<div className="text-gray-600">Натисніть для завантаження</div>*/}
                                 <p className="text-sm text-gray-500">PNG or JPG</p>
                             </div>
-                            <input accept=".png, .jpg" id="image" type="file" className="sr-only" {...register("image", {
+                            <input accept=".png, .jpg, .jpeg" id="image" type="file" className="sr-only" {...register("image", {
 
                             })} onChange={async (e) => {
                                 if (e.target.files && e.target.files.length > 0) {
@@ -233,7 +233,7 @@ const Page = () => {
                 </div>
                 <div>
                     <div className="flex justify-between items-center my-4">
-                        <span className="flex-1">Типи інгредієнту</span>
+                        <span className="flex-1 text-[15px]">Типи інгредієнту</span>
                         <div className="w-fit">
                             <Button type="button" variant="primary" content="Додати ще одну модифікацію"
                                     onClick={() => append({vType: '', count: ''})}/>
@@ -252,7 +252,7 @@ const Page = () => {
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${index}.vType`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -273,7 +273,7 @@ const Page = () => {
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${index}.count`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -288,7 +288,7 @@ const Page = () => {
                                     className="bg-red-600 cursor-pointer p-1 rounded transition-colors hover:bg-red-700 h-fit"
                                     title="Видалити"
                                     onClick={() => remove(index)}>
-                                        <TrashIcon className="w-6 h-6 text-white"/>
+                                        <TrashIcon className="w-5 h-5 text-white"/>
                                     </span>) : null}
                             </div>
                         </li>))}

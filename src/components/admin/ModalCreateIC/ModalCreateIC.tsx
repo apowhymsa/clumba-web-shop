@@ -40,7 +40,7 @@ const ModalCreateIC = (props: Props) => {
         }
 
         try {
-            await axios.put('http://localhost:3001/ingredientCategory', requestBody, requestConfig);
+            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory`, requestBody, requestConfig);
             await queryClient.invalidateQueries({queryKey: ['ingredientCategories']});
 
             info('Категорія інгредієнтів була створена');
@@ -59,13 +59,13 @@ const ModalCreateIC = (props: Props) => {
     }
 
     return (<ModalContainer onClose={onClose}>
-            <h3 className="text-center font-semibold text-xl">Створення категорії інгредієнтів</h3>
+            <h3 className="text-center font-semibold text-[16px]">Створення категорії інгредієнтів</h3>
             <div className="modal-container flex flex-col gap-y-5 mt-4">
                 <form
                     className="default-section flex flex-col gap-y-5 my-3"
                     onSubmit={handleSubmit(createIngredientCategory)}
                 >
-                    <div>
+                    <div className="text-[14px]">
                         <label
                             htmlFor="categoryName"
                             className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.categoryName ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
@@ -74,13 +74,11 @@ const ModalCreateIC = (props: Props) => {
                         </label>
                         <div className="relative">
                             <input
-                                className={`block w-full rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                className={`block w-full h-8 rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                 {...register("categoryName", {
                                     required: {
                                         value: true, message: "Поле обов'язкове для заповнення",
-                                    }, minLength: {
-                                        value: 6, message: "Поле повинно мати більше ніж 5 символів",
-                                    },
+                                    }
                                 })}
                             />
                         </div>

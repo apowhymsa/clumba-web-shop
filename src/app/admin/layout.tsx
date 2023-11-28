@@ -19,8 +19,8 @@ const Layout: FC<Props> = ({children}) => {
         <QueryClientProvider client={queryClient}>
             <div className={clsx("flex gap-x-4")}>
                 <NavMenu/>
-                <div className="w-full ml-[320px]">
-                    <div className="flex gap-x-2 text-lg shadow p-4 bg-[#f5f5f5]">
+                <div className="w-full ml-[300px]">
+                    <div className="flex gap-x-2 text-[16px] shadow p-4 bg-[#f5f5f5]">
                         <span>Поточна робоча область: </span>
                         {pathname.startsWith('/admin/ingCategories') && <h2 className="font-semibold">Категорії інгредієнтів</h2>}
                         {pathname.startsWith('/admin/ingredients') && <h2 className="font-semibold">Інгредієнти</h2>}

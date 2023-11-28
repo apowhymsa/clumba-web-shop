@@ -65,40 +65,44 @@ const BasicTable = (props: Props) => {
     }
 
     return (<>
-        <div className="flex items-center justify-between mb-6 w-full mt-4">
+        <div className="flex items-center justify-between mb-6 w-full mt-4 text-[14px]">
             <div className="flex items-center gap-x-4">
                 <p>Всього ({table.getFilteredRowModel().rows.length})</p>
             </div>
-            <input type="text" className="rounded" value={filtering} onChange={(e) => setFiltering(e.target.value)}
+            <input type="text" className="rounded h-8 text-[14px]" value={filtering} onChange={(e) => setFiltering(e.target.value)}
                    placeholder="Пошук..."/>
         </div>
-        <div className="flex items-center justify-between mb-3 w-full">
+        <div className="flex items-center justify-between mb-3 w-full text-[14px]">
             <span>
                 {`Сторінка: ${table.getState().pagination.pageIndex + 1} - ${Math.ceil(table.getFilteredRowModel().rows.length / 10)}`}
             </span>
             <div className="flex gap-x-2">
                 <button title="Перша сторінка" onClick={() => table.setPageIndex(0)}
-                        className="flex items-center justify-center bg-[#f5f5f5] w-8 h-8 transition-colors rounded hover:bg-gray-300">
-                    <ChevronDoubleLeftIcon className="w-6 h-6 text-black"/></button>
+                        className="flex items-center justify-center bg-[#f5f5f5] w-7 h-7 transition-colors rounded hover:bg-gray-300">
+                    <ChevronDoubleLeftIcon className="w-5 h-5 text-black"/></button>
                 <button title="Попередня сторінка" disabled={!table.getCanPreviousPage()}
                         onClick={() => table.previousPage()}
-                        className="flex items-center justify-center bg-[#f5f5f5] w-8 h-8 transition-colors rounded hover:bg-gray-300 disabled:hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-30">
-                    <ChevronLeftIcon className="w-6 h-6 text-black"/></button>
+                        className="flex items-center justify-center bg-[#f5f5f5] w-7 h-7 transition-colors rounded hover:bg-gray-300 disabled:hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-30">
+                    <ChevronLeftIcon className="w-5 h-5 text-black"/></button>
                 <button title="Наступна сторінка" disabled={!table.getCanNextPage()}
                         onClick={() => table.nextPage()}
-                        className="flex items-center justify-center bg-[#f5f5f5] w-8 h-8 transition-colors rounded hover:bg-gray-300 disabled:hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-30">
-                    <ChevronRightIcon className="w-6 h-6 text-black"/></button>
+                        className="flex items-center justify-center bg-[#f5f5f5] w-7 h-7 transition-colors rounded hover:bg-gray-300 disabled:hover:bg-[#f5f5f5] disabled:cursor-not-allowed disabled:opacity-30">
+                    <ChevronRightIcon className="w-5 h-5 text-black"/></button>
                 <button title="Остання сторінка" onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-                        className="flex items-center justify-center bg-[#f5f5f5] w-8 h-8 transition-colors rounded hover:bg-gray-300">
-                    <ChevronDoubleRightIcon className="w-6 h-6 text-black"/></button>
+                        className="flex items-center justify-center bg-[#f5f5f5] w-7 h-7 transition-colors rounded hover:bg-gray-300">
+                    <ChevronDoubleRightIcon className="w-5 h-5 text-black"/></button>
             </div>
         </div>
         <div className="max-w-full overflow-x-auto">
-            <table className="w-full border-collapse min-w-full">
+            <table className="w-full border-collapse min-w-full text-[14px]">
                 <thead>
                 {table.getHeaderGroups().map(headerGroup => (<tr key={headerGroup.id}>
                     {headerGroup.headers.map(header => (
-                        <th key={header.id} className="p-2 border border-[#eaeaea] min-w-[300px]">
+                        <th key={header.id} className="p-2 border border-[#eaeaea]" style={{
+                            width: 'fit-content',
+                            minWidth: (header.column.columnDef.meta as any)?.col === 'image' ? '150px' : "auto",
+                            maxWidth: (header.column.columnDef.meta as any)?.col === 'image' ? '150px' : "auto"
+                        }}>
                             <div onClick={header.column.getToggleSortingHandler()}
                                  className="flex items-center justify-center gap-x-4 cursor-pointer font-semibold">
                                 {flexRender(header.column.columnDef.header, header.getContext())}
@@ -107,7 +111,7 @@ const BasicTable = (props: Props) => {
                                 } [header.column.getIsSorted() as string] ?? <LiaSortSolid/>}
                             </div>
                         </th>))}
-                    <th className="p-2 border border-[#eaeaea] min-w-[145px]">
+                    <th className="p-2 border border-[#eaeaea] w-[145px] min-w-[145px]">
                         Дії
                     </th>
                 </tr>))}
@@ -124,12 +128,12 @@ const BasicTable = (props: Props) => {
                         <div className="flex justify-center items-center gap-x-4">
                         <span className="bg-blue-600 cursor-pointer p-1 rounded transition-colors hover:bg-blue-700"
                               title="Редагувати" onClick={() => onUpdate(row.getAllCells()[0].getValue<string>())}>
-                            <PencilSquareIcon className="w-6 h-6 text-white"/>
+                            <PencilSquareIcon className="w-5 h-5 text-white"/>
                         </span>
                             <span className="bg-red-600 cursor-pointer p-1 rounded transition-colors hover:bg-red-700"
                                   title="Видалити"
                                   onClick={() => onDelete(row.getAllCells()[0].getValue<string>())}>
-                                <TrashIcon className="w-6 h-6 text-white"/>
+                                <TrashIcon className="w-5 h-5 text-white"/>
                             </span>
                         </div>
                     </td>
@@ -139,10 +143,10 @@ const BasicTable = (props: Props) => {
                                 (cell.getValue() as any[]).map(renderCell => (
                                     <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
                                         <td className="bg-white"></td>
-                                        <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.vType}</td>
+                                        <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.id.vType}</td>
                                         <td className="bg-white"></td>
                                         <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium text-center">
-                                            {renderCell.count} одиниць
+                                            {renderCell.id.count} одиниць
                                         </td>
                                     </tr>
                                 ))

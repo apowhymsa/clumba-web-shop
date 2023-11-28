@@ -44,7 +44,7 @@ const ModalCreatePC = (props: Props) => {
         }
 
         try {
-            await axios.put('http://localhost:3001/productCategory', requestBody, requestConfig);
+            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory`, requestBody, requestConfig);
             await queryClient.invalidateQueries({queryKey: ['productCategories']});
 
             info('Категорія товарів була створена');
@@ -70,7 +70,7 @@ const ModalCreatePC = (props: Props) => {
     });
 
     return (<ModalContainer onClose={onClose}>
-        <h3 className="text-center font-semibold text-xl">Створення категорії товарів</h3>
+        <h3 className="text-center font-semibold text-[16px]">Створення категорії товарів</h3>
         <div className="modal-container flex flex-col gap-y-5 mt-4">
             <form
                 encType="multipart/form-data"
@@ -86,7 +86,7 @@ const ModalCreatePC = (props: Props) => {
                     </label>
                     <div className="relative">
                         <input
-                            className={`block w-full rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                            className={`block w-full text-sm h-8 rounded-md shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                             {...register("categoryName", {
                                 required: {
                                     value: true, message: "Поле обов'язкове для заповнення",

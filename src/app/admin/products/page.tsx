@@ -11,22 +11,31 @@ import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {createColumnHelper} from "@tanstack/react-table";
 import {useRouter} from "next/navigation";
 
-interface IVariants {
-    vType: string;
-    price: string;
-    count: string;
+interface IIngredient {
+    id: string;
+    variantID: string;
 }
 
-interface ICategory {
-    _id: string;
+interface IVariant {
     title: string;
+    ingredients: Array<{
+        ingredient: IIngredient; count: string;
+    }>;
 }
 
-type Ingredient = {
-    _id: string; title: string; categoryID: ICategory; variants: IVariants[]; image: any;
+interface Product {
+    _id: string;
+    image: any;
+    title: string;
+    categoryID: any;
+    price: string;
+    discount: {
+        state: boolean, percent: string
+    };
+    variants: IVariant[];
 }
 
-const columnHelper = createColumnHelper<Ingredient>();
+const columnHelper = createColumnHelper<Product>();
 
 const columns = [columnHelper.accessor('_id', {
     header: '№ товару', cell: (data) => data.getValue()
@@ -36,13 +45,24 @@ const columns = [columnHelper.accessor('_id', {
         return <div className="h-[60px] w-full flex justify-center">
             <img src={(data.getValue()).data} alt="Image" className="object-cover"/>
         </div>
+    },
+    meta: {
+        col: 'image'
     }
 }), columnHelper.accessor('title', {
-    header: 'Найменування інгредієнту', cell: (data) => data.getValue()
+    header: 'Назва', cell: (data) => data.getValue()
 }), columnHelper.accessor('categoryID', {
-    header: 'Найменування категорії інгредієнту', cell: (data) => data.getValue()?.title
-}), columnHelper.accessor('variants', {
-    header: 'Наявна кількість типу інгредієнту', cell: (data) => data.getValue()
+    header: 'Категорія', cell: (data) => data.getValue()?.title
+}), columnHelper.accessor('price', {
+    header: 'Ціна', cell: (data) => data.getValue()
+}), columnHelper.accessor('discount', {
+    header: 'Знижка', cell: (data) => {
+        if (data.getValue().state) {
+            return <span>Активна - <span>{data.getValue().percent}%</span></span>
+        } else {
+            return <span>Неактивна</span>
+        }
+    }
 })]
 
 const Page = () => {
@@ -51,8 +71,8 @@ const Page = () => {
     const {error, info} = useToast();
 
     const {data, isLoading} = useQuery({
-        queryKey: ['ingredients'], queryFn: async () => {
-            const {data} = await axios.get('http://localhost:3001/ingredients', {
+        queryKey: ['products'], queryFn: async () => {
+            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products`, {
                 headers: {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
@@ -76,8 +96,8 @@ const Page = () => {
             }
 
             try {
-                await axios.delete(`http://localhost:3001/ingredient/${id}`, requestConfig);
-                await queryClient.invalidateQueries({queryKey: ['ingredients']});
+                await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${id}`, requestConfig);
+                await queryClient.invalidateQueries({queryKey: ['products']});
                 info('Запис було успішно видалено');
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
@@ -95,20 +115,20 @@ const Page = () => {
     }
 
     const onUpdate = (id: string) => {
-        router.push(`/admin/ingredients/update?id=${id}`);
+        // router.push(`/admin/ingredients/update?id=${id}`);
     }
 
     if (isLoading) {
         return <div>Loading...</div>
     }
 
-    return (<div className="flex-1 p-6">
+    return (<div className="flex-1 p-6 text-[14px]">
         <div className="border-b pb-4">
             <button
                 onClick={() => router.push('/admin/products/create')}
-                className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-10 rounded px-4 transition-colors">
+                className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-8 rounded px-4 transition-colors">
                 <span>Додати новий запис</span>
-                <PlusIcon className="w-6 h-6 text-white"/>
+                <PlusIcon className="w-5 h-5 text-white"/>
             </button>
         </div>
         <BasicTable data={data} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
