@@ -96,7 +96,7 @@ const Page = () => {
         }
 
         try {
-            await axios.put(`http://localhost:3001/ingredient/${searchParams.get('id')}`, requestBody, requestConfig);
+            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${searchParams.get('id')}`, requestBody, requestConfig);
             await queryClient.invalidateQueries({queryKey: ['ingredients']});
             info('Запис було успішно оновлено');
             router.back();
