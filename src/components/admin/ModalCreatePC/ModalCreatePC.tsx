@@ -9,6 +9,7 @@ import Button from "@/components/UI/Button/Button";
 import {IFormValues} from "@/components/ModalSignUp/ModalSignIn";
 import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
 import {useQueryClient} from "@tanstack/react-query";
+import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories";
 
 type FormValues = {
     categoryName: string;
@@ -20,6 +21,7 @@ type Props = {
 }
 
 const ModalCreatePC = (props: Props) => {
+    const {addProductCategory} = useProductCategoriesStore();
     const {onClose} = props;
     const {error, info} = useToast();
     const [prodImage, setProdImage] = useState('');
@@ -44,8 +46,9 @@ const ModalCreatePC = (props: Props) => {
         }
 
         try {
-            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory`, requestBody, requestConfig);
-            await queryClient.invalidateQueries({queryKey: ['productCategories']});
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory`, requestBody, requestConfig);
+
+            addProductCategory(response.data);
 
             info('Категорія товарів була створена');
             onClose();

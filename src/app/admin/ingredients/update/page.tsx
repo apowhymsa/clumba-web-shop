@@ -9,6 +9,7 @@ import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRouter, useSearchParams} from "next/navigation";
 import useToast from "@/hooks/useToast";
+import {useIngredientsStore} from "@/utils/zustand-store/ingredients";
 
 interface IVariants {
     vType: string;
@@ -20,6 +21,7 @@ type FormValues = {
 }
 
 const Page = () => {
+    const {updateIngredient: updateI} = useIngredientsStore();
     const searchParams = useSearchParams();
     const [ingredient, setIngredient] = useState<any>(null);
     const {
@@ -47,7 +49,6 @@ const Page = () => {
             const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${searchParams.get('id')}`, requestConfig);
             setIngredient(response.data);
             setIngImage(response.data.image.data);
-            console.log(response.data);
         }
 
         async function getIngCategories() {
@@ -96,8 +97,9 @@ const Page = () => {
         }
 
         try {
-            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${searchParams.get('id')}`, requestBody, requestConfig);
-            await queryClient.invalidateQueries({queryKey: ['ingredients']});
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${searchParams.get('id')}`, requestBody, requestConfig);
+            updateI(response.data._id, response.data);
+
             info('Запис було успішно оновлено');
             router.back();
 

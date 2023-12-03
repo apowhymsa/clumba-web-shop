@@ -1,17 +1,17 @@
 'use client';
 
-import React, {BaseSyntheticEvent, useEffect, useState} from "react";
 import {Controller, useFieldArray, useForm} from "react-hook-form";
-import Button from "@/components/UI/Button/Button";
 import Select from "react-select";
-import axios, {AxiosRequestConfig} from "axios";
-import NestedFieldArray from "@/app/admin/products/create/NestedFieldArray";
-import {AxiosError} from "axios";
-import {useQueryClient} from "@tanstack/react-query";
-import {useRouter} from "next/navigation";
-import useToast from "@/hooks/useToast";
-import {TrashIcon} from "@heroicons/react/24/outline";
 import {toBase64} from "@/utils/toBase64";
+import Button from "@/components/UI/Button/Button";
+import {TrashIcon} from "@heroicons/react/24/outline";
+import NestedFieldArray from "@/app/admin/products/create/NestedFieldArray";
+import React, {BaseSyntheticEvent, useEffect, useState} from "react";
+import {useRouter, useSearchParams} from "next/navigation";
+import axios, {AxiosError} from "axios";
+import useToast from "@/hooks/useToast";
+import {AxiosRequestConfig} from "axios";
+import NestedFieldArrayUpdate from "@/app/admin/products/update/NestedFieldArrayUpdate";
 import {useProductsStore} from "@/utils/zustand-store/products";
 import {router} from "next/client";
 
@@ -40,36 +40,65 @@ interface FormValues {
 }
 
 const Page = () => {
+    const searchParams = useSearchParams();
+    const {updateProduct: updateP} = useProductsStore();
+    const [product, setProduct] = useState<any>(null);
+    const [isLoading, setLoading] = useState(true);
+    const [isCategoriesLoading, setCategoriesLoading] = useState(true);
+    const [prodImage, setProdImage] = useState('');
+    const [pc, setPc] = useState<any[]>([]);
+    const router = useRouter();
+    const {error, info} = useToast();
     const {
         control, setValue, register, handleSubmit, formState, reset, formState: {errors},
     } = useForm<FormValues>({
-        defaultValues: {
-            title: '', variants: [{
-                discount:  {
-                    state: false,
-                    percent: '0'
-                },
-                title: '', ingredients: [{
-                    ingredient: {
-                        id: '', variantID: ''
-                    }
-                }]
-            }]
-        }
+        // defaultValues: {
+        //     title: '', variants: [{
+        //         discount:  {
+        //             state: false,
+        //             percent: '0'
+        //         },
+        //         title: '', ingredients: [{
+        //             ingredient: {
+        //                 id: '', variantID: ''
+        //             }
+        //         }]
+        //     }]
+        // }
     });
-    const {addProduct} = useProductsStore();
-    const [categoriesLoading, setCategoriesLoading] = useState(true);
-    const [discount, setDiscount] = useState({state: false, percent: 0});
-    const [pc, setPc] = useState<any[]>([]);
-    const queryClient = useQueryClient()
-    const [prodImage, setProdImage] = useState('');
-    const router = useRouter();
-    const {error, info} = useToast();
-    const {update, insert, fields, append, remove} = useFieldArray({
+    const {update, fields, append, remove} = useFieldArray({
         control, name: "variants"
     });
 
     useEffect(() => {
+        async function getProduct() {
+            setLoading(true);
+            const id = searchParams.get('id');
+
+            if (id) {
+               try {
+                   const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${id}`);
+
+                   console.log(response.data);
+
+                   response.data.variants.forEach((variant: any) => {
+                       append({
+                           price: variant.price,
+                           discount: variant.discount,
+                           title: variant.title,
+                           ingredients: variant.ingredients
+                       });
+                   });
+                   setProduct(response.data);
+                   setProdImage(response.data.image.data);
+               } catch (err: any) {
+                   error(`${err.message} - ${err.code}`);
+               } finally {
+                   setLoading(false);
+               }
+            }
+        }
+
         async function getProductCategories() {
             setCategoriesLoading(true);
             const requestConfig: AxiosRequestConfig = {
@@ -83,13 +112,28 @@ const Page = () => {
                     value: category._id, label: category.title
                 }])
             })
+
+            setCategoriesLoading(false);
         }
 
-        getProductCategories().finally(() => setCategoriesLoading(false));
+        Promise.all([getProduct(), getProductCategories()]);
     }, []);
 
-    async function createProduct(data: FormValues, event: BaseSyntheticEvent<object, any, any> | undefined) {
-        const image: any = data.image;
+    const toImage = (base64: string) => {
+        const cleanedBase64String = base64.replace(/\s/g, '');
+
+        const normalBase64 = cleanedBase64String.split(',')[1];
+
+        const arrayBuffer = Uint8Array.from(atob(normalBase64), (c) => c.charCodeAt(0)).buffer;
+        const blob = new Blob([arrayBuffer]);
+        const fileType = (product?.image.name as string).endsWith('.png') ? 'image/png' : 'image/jpeg';
+
+        return new File([blob], product?.image.name, {type: fileType});
+    }
+
+    async function updateProduct(data: FormValues, event: BaseSyntheticEvent<object, any, any> | undefined) {
+        const img = data.image.length === 0 ? toImage(prodImage) : data.image[0]
+        const category = typeof data.categoryID === 'string' ? JSON.parse(data.categoryID).value : (data.categoryID as any).value;
 
         // const requestBody = {
         //     title: data.title, categoryID: (data.categoryID as any).value, variants: data.variants, image: image[0]
@@ -97,20 +141,20 @@ const Page = () => {
 
         const normalizeIngredients = data.variants.map((variant: IVariant) => {
             return {title: variant.title, price: variant.price, discount: variant.discount, ingredients: variant.ingredients.map(ingredient => {
-                return {
-                    count: ingredient.count,
-                    ingredient: {
-                        id: (ingredient.ingredient.id as any).value,
-                        variantID: (ingredient.ingredient.variantID as any).value
+                    return {
+                        count: ingredient.count,
+                        ingredient: {
+                            id: (ingredient.ingredient.id as any).hasOwnProperty('_id') ? (ingredient.ingredient.id as any)._id : (ingredient.ingredient.id as any).value,
+                            variantID: (ingredient.ingredient.variantID as any).hasOwnProperty('_id') ? (ingredient.ingredient.variantID as any)._id : (ingredient.ingredient.variantID as any).value
+                        }
                     }
-                }
-            })}
+                })}
         })
 
         const requestBody = {
-            image: image[0],
+            image: img,
             title: data.title,
-            categoryID: (data.categoryID as any).value,
+            categoryID: category,
             variants: normalizeIngredients
         }
 
@@ -123,12 +167,11 @@ const Page = () => {
         }
 
         try {
-            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/product`, requestBody, requestConfig);
-            addProduct(response.data);
-
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${searchParams.get('id')}`, requestBody, requestConfig);
+            updateP(response.data._id, response.data);
             router.back();
-            // console.log(response.data);
-            info('Запис було успішно створено');
+
+            info('Запис було успішно оновлено');
             // reset();
 
             // fields.slice(0, 0);
@@ -140,7 +183,7 @@ const Page = () => {
 
             switch (errorObject.response?.status) {
                 case 403: {
-                    error('Не отриманно необхідних даних для створення запису, оновіть сторінку та повторіть спробу');
+                    error('Не отриманно необхідних даних для оновлення запису, оновіть сторінку та повторіть спробу');
                     break;
                 }
                 case 409: {
@@ -153,10 +196,13 @@ const Page = () => {
         }
     }
 
-    // @ts-ignore
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
+
     return <div className="p-10">
-        <h2 className="text-[16px] font-semibold text-center">Створення товару</h2>
-        <form onSubmit={handleSubmit(createProduct)} encType="multipart/form-data">
+        <h2 className="text-[16px] font-semibold text-center">Редагування товару</h2>
+        <form onSubmit={handleSubmit(updateProduct)} encType="multipart/form-data">
             <div className="flex flex-col gap-y-2">
                 <div>
                     <label
@@ -167,6 +213,7 @@ const Page = () => {
                     </label>
                     <div className="relative">
                         <input
+                            defaultValue={product.title}
                             className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                             {...register("title", {
                                 required: {
@@ -185,8 +232,9 @@ const Page = () => {
                         Категорія
                     </label>
                     <div className="relative">
-                        <Controller render={({field}) => (<Select
-                            isDisabled={categoriesLoading}
+                        <Controller defaultValue={JSON.stringify({label: product.categoryID.title, value: product.categoryID._id})} render={({field}) => (<Select
+                            defaultValue={{label: product.categoryID.title, value: product.categoryID._id}}
+                            isDisabled={isCategoriesLoading}
                             ref={field.ref}
                             onChange={field.onChange}
                             isSearchable={false}
@@ -227,11 +275,7 @@ const Page = () => {
                                 {/*<div className="text-gray-600">Натисніть для завантаження</div>*/}
                                 <p className="text-sm text-gray-500">PNG or JPG</p>
                             </div>
-                            <input accept=".png, .jpg, .jpeg" id="image" type="file" className="sr-only" {...register("image", {
-                                required: {
-                                    value: true, message: "Зображення обов'язкове для завантаження",
-                                }
-                            })} onChange={async (e) => {
+                            <input accept=".png, .jpg, .jpeg" id="image" type="file" className="sr-only" {...register("image")} onChange={async (e) => {
                                 if (e.target.files && e.target.files.length > 0) {
                                     const base64: any = await toBase64(e.target.files[0]);
                                     setProdImage(base64);
@@ -299,6 +343,7 @@ const Page = () => {
                                             <input
                                                 min={1}
                                                 type="number"
+                                                defaultValue={variant.price}
                                                 className={`block w-full h-8 text-sm rounded-md shadow-sm pl-8 ${errors.price ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                                 {...register(`variants.${variantIndex}.price`, {
                                                     required: {
@@ -313,10 +358,7 @@ const Page = () => {
                                     </div>
                                     <div className="flex flex-2 items-center space-x-3 self-end mb-[10px]">
                                         <label htmlFor={`variants.${variantIndex}.discount.state`} className="relative inline-flex cursor-pointer items-center">
-                                            <input {...register(`variants.${variantIndex}.discount.state`)}
-                                            //        onChange={(e) => {
-                                            //     // setDiscount({state: e.target.checked, percent: discount.percent});
-                                            // }}
+                                            <input defaultChecked={variant.discount.state} {...register(`variants.${variantIndex}.discount.state`)}
                                                    type="checkbox" id={`variants.${variantIndex}.discount.state`} className="peer sr-only h-8 text-sm"/>
                                             <div
                                                 className="h-6 w-11 rounded-full bg-gray-100 after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-all after:content-[''] hover:bg-gray-200 peer-checked:bg-rose-400 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-200 peer-disabled:cursor-not-allowed peer-disabled:bg-gray-100 peer-disabled:after:bg-gray-50"></div>
@@ -337,8 +379,7 @@ const Page = () => {
                                                 min={0}
                                                 max={100}
                                                 type="number"
-                                                defaultValue={discount.percent}
-                                                // disabled={!discount.state}
+                                                defaultValue={variant.discount.percent}
                                                 className={`block w-full h-8 text-sm rounded-md shadow-sm pl-8 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                                 {...register(`variants.${variantIndex}.discount.percent`)}
                                             />
@@ -353,15 +394,15 @@ const Page = () => {
                                 onClick={() => remove(variantIndex)}>
                                         <TrashIcon className="w-6 h-6 text-white"/>
                                     </span>) : null}
-                            </div>
+                        </div>
 
 
-                        <NestedFieldArray nestIndex={variantIndex} control={control} register={register} errors={errors}/>
+                        <NestedFieldArrayUpdate defaultIngredients={variant.ingredients} nestIndex={variantIndex} control={control} register={register} errors={errors}/>
                     </div>))}
                 </div>
             </div>
             <div className="flex gap-x-4 w-max mt-4">
-                <Button type="submit" variant="primary" content="Зберегти"/>
+                <Button type="submit" variant="primary" content="Зберегти та створити ще"/>
             </div>
         </form>
     </div>

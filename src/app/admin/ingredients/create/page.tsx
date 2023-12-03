@@ -9,6 +9,7 @@ import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {useQueryClient} from "@tanstack/react-query";
 import {useRouter} from "next/navigation";
 import useToast from "@/hooks/useToast";
+import {useIngredientsStore} from "@/utils/zustand-store/ingredients";
 
 interface IVariants {
     vType: string;
@@ -20,6 +21,7 @@ type FormValues = {
 }
 
 const Page = () => {
+    const {addIngredient} = useIngredientsStore();
     const {
         control, register, handleSubmit, formState, reset, formState: {errors},
     } = useForm<FormValues>();
@@ -70,10 +72,9 @@ const Page = () => {
 
         try {
             const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient`, requestBody, requestConfig);
-            await queryClient.invalidateQueries({queryKey: ['ingredients']});
-            info('Запис було успішно створено');
 
-            console.log('res', response.data);
+            addIngredient(response.data);
+            info('Запис було успішно створено');
             reset();
 
             fields.slice(0, 0);

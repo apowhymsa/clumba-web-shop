@@ -10,6 +10,7 @@ import useToast from "@/hooks/useToast";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {createColumnHelper} from "@tanstack/react-table";
 import {useRouter} from "next/navigation";
+import {useIngredientsStore} from "@/utils/zustand-store/ingredients";
 
 interface IVariants {
     id: {
@@ -50,6 +51,7 @@ const columns = [columnHelper.accessor('_id', {
 })]
 
 const Page = () => {
+    const {addIngredient, ingredients, deleteIngredient} = useIngredientsStore();
     const queryClient = useQueryClient()
     const router = useRouter();
     const {error, info} = useToast();
@@ -62,11 +64,11 @@ const Page = () => {
                 }, withCredentials: true
             })
 
+            addIngredient(data);
+
             return data;
         }
     });
-
-    console.log(data);
 
     const onDelete = async (id: string) => {
         const confirmDelete = confirm('Ви дійсно хочете видалити запис з бази даних?');
@@ -81,7 +83,9 @@ const Page = () => {
 
             try {
                 await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${id}`, requestConfig);
-                await queryClient.invalidateQueries({queryKey: ['ingredients']});
+
+                deleteIngredient(id);
+
                 info('Запис було успішно видалено');
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
@@ -115,7 +119,7 @@ const Page = () => {
                 <PlusIcon className="w-5 h-5 text-white"/>
             </button>
         </div>
-        <BasicTable data={data} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+        <BasicTable data={ingredients} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
     </div>)
 }
 

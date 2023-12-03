@@ -10,6 +10,7 @@ import useToast from "@/hooks/useToast";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {createColumnHelper} from "@tanstack/react-table";
 import {useRouter} from "next/navigation";
+import {useProductsStore} from "@/utils/zustand-store/products";
 
 interface IIngredient {
     id: string;
@@ -18,6 +19,10 @@ interface IIngredient {
 
 interface IVariant {
     title: string;
+    price: string;
+    discount: {
+        state: boolean, percent: string
+    };
     ingredients: Array<{
         ingredient: IIngredient; count: string;
     }>;
@@ -29,9 +34,6 @@ interface Product {
     title: string;
     categoryID: any;
     price: string;
-    discount: {
-        state: boolean, percent: string
-    };
     variants: IVariant[];
 }
 
@@ -41,7 +43,6 @@ const columns = [columnHelper.accessor('_id', {
     header: '№ товару', cell: (data) => data.getValue()
 }), columnHelper.accessor('image', {
     header: 'Зображення', cell: (data) => {
-        console.log(data.getValue());
         return <div className="h-[60px] w-full flex justify-center">
             <img src={(data.getValue()).data} alt="Image" className="object-cover"/>
         </div>
@@ -53,19 +54,26 @@ const columns = [columnHelper.accessor('_id', {
     header: 'Назва', cell: (data) => data.getValue()
 }), columnHelper.accessor('categoryID', {
     header: 'Категорія', cell: (data) => data.getValue()?.title
-}), columnHelper.accessor('price', {
-    header: 'Ціна', cell: (data) => data.getValue()
-}), columnHelper.accessor('discount', {
-    header: 'Знижка', cell: (data) => {
-        if (data.getValue().state) {
-            return <span>Активна - <span>{data.getValue().percent}%</span></span>
-        } else {
-            return <span>Неактивна</span>
-        }
-    }
-})]
+}), columnHelper.accessor('variants', {
+        header: 'Ціна та знижка', cell: (data) => data.getValue()
+})
+//     columnHelper.accessor('discount', {
+//     header: 'Знижка', cell: (data) => {
+//         if (data.getValue().state) {
+//             return <span>Активна - <span>{data.getValue().percent}%</span></span>
+//         } else {
+//             return <span>Неактивна</span>
+//         }
+//     }
+// })
+]
+
+// columnHelper.accessor('price', {
+//     header: 'Ціна', cell: (data) => data.getValue()
+// }),
 
 const Page = () => {
+    const {addProduct, products, deleteProduct} = useProductsStore();
     const queryClient = useQueryClient()
     const router = useRouter();
     const {error, info} = useToast();
@@ -77,6 +85,7 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             })
+            addProduct(data);
 
             return data;
         }
@@ -97,7 +106,7 @@ const Page = () => {
 
             try {
                 await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${id}`, requestConfig);
-                await queryClient.invalidateQueries({queryKey: ['products']});
+                deleteProduct(id);
                 info('Запис було успішно видалено');
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
@@ -115,7 +124,7 @@ const Page = () => {
     }
 
     const onUpdate = (id: string) => {
-        // router.push(`/admin/ingredients/update?id=${id}`);
+        router.push(`/admin/products/update?id=${id}`);
     }
 
     if (isLoading) {
@@ -131,7 +140,7 @@ const Page = () => {
                 <PlusIcon className="w-5 h-5 text-white"/>
             </button>
         </div>
-        <BasicTable data={data} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+        <BasicTable isProducts={true} data={products} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
     </div>)
 }
 

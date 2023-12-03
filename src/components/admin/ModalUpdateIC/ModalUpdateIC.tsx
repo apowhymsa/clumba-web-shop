@@ -5,6 +5,7 @@ import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
 import Button from "@/components/UI/Button/Button";
 import React, {useEffect, useState} from "react";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
+import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
 
 type FormValues = {
     categoryName: string;
@@ -15,6 +16,7 @@ type Props = {
     id: string;
 }
 const ModalUpdateIC = (props: Props) => {
+    const {updateIngredientCategory: updateIC} = useIngredientCategoriesStore();
     const {onClose, id} = props;
     const {error, info} = useToast();
     const queryClient = useQueryClient()
@@ -64,8 +66,8 @@ const ModalUpdateIC = (props: Props) => {
                 withCredentials: true
             }
 
-            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestBody, requestConfig);
-            await queryClient.invalidateQueries({queryKey: ['ingredientCategories']});
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestBody, requestConfig);
+            updateIC(id, response.data);
             info('Категорія інгредієнтів була оновлена');
             onClose();
         } catch (err: unknown) {

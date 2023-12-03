@@ -1,6 +1,6 @@
 import {EnvelopeIcon, KeyIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import InputField from "@/components/UI/InputField/InputField";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import useToast from "@/hooks/useToast";
 import {AuthContext} from "@/contexts/AuthContext/AuthContext";
@@ -9,6 +9,7 @@ import Button from "@/components/UI/Button/Button";
 import {IFormValues} from "@/components/ModalSignUp/ModalSignIn";
 import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
 import {useQueryClient} from "@tanstack/react-query";
+import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
 
 type FormValues = {
     categoryName: string;
@@ -19,6 +20,7 @@ type Props = {
 }
 
 const ModalCreateIC = (props: Props) => {
+    const {addIngredientCategory, ingredientCategories} = useIngredientCategoriesStore();
     const {onClose} = props;
     const {error, info} = useToast();
     const queryClient = useQueryClient()
@@ -26,6 +28,10 @@ const ModalCreateIC = (props: Props) => {
     const {
         register, handleSubmit, formState: {errors},
     } = useForm<FormValues>();
+
+    useEffect(() => {
+        console.log('ingredientCategories', ingredientCategories);
+    }, [ingredientCategories]);
 
     const createIngredientCategory = async (data: FormValues) => {
         const requestBody = {
@@ -40,8 +46,9 @@ const ModalCreateIC = (props: Props) => {
         }
 
         try {
-            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory`, requestBody, requestConfig);
-            await queryClient.invalidateQueries({queryKey: ['ingredientCategories']});
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory`, requestBody, requestConfig);
+            // await queryClient.invalidateQueries({queryKey: ['ingredientCategories']});
+            addIngredientCategory(response.data);
 
             info('Категорія інгредієнтів була створена');
             onClose();

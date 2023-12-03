@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import React, {ReactNode, useEffect, useState} from "react";
 import {XMarkIcon} from "@heroicons/react/24/outline";
 
 type Props = {
@@ -6,7 +6,15 @@ type Props = {
 }
 
 const ModalContainer = ({onClose, children}: Props) => {
-    return (<div className="absolute w-screen h-screen bg-black bg-opacity-50 top-0 left-0 z-50 backdrop-blur-sm"
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+
+        return () => {
+            document.body.style.overflow = 'visible';
+        }
+    }, []);
+
+    return (<div className="absolute w-screen h-full bg-black bg-opacity-50 top-0 left-0 z-50 backdrop-blur-sm"
                  onClick={onClose}>
             <div
                 className="absolute top-1/2 left-1/2 bg-white h-fit w-[500px] -translate-x-1/2 -translate-y-1/2 px-9 py-9 rounded"

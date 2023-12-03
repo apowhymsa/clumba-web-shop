@@ -9,6 +9,7 @@ import ModalCreateIC from "@/components/admin/ModalCreateIC/ModalCreateIC";
 import {AxiosError, AxiosRequestConfig} from "axios";
 import useToast from "@/hooks/useToast";
 import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
+import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
 
 type IngredientCategory = {
     _id: string; title: string;
@@ -23,6 +24,7 @@ const columns = [columnHelper.accessor('_id', {
 })]
 
 const Page = () => {
+    const {addIngredientCategory, ingredientCategories, deleteIngredientCategory} = useIngredientCategoriesStore();
     const [isOpenCreateModal, setOpenCreateModal] = useState(false);
     const [isOpenUpdateModal, setOpenUpdateModal] = useState<{isOpen: boolean, id: string} | null>(null);
     const queryClient = useQueryClient()
@@ -35,6 +37,8 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             })
+
+            addIngredientCategory(data);
 
             return data;
         }
@@ -52,8 +56,8 @@ const Page = () => {
             }
 
             try {
-                await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestConfig);
-                await queryClient.invalidateQueries({queryKey: ['ingredientCategories']});
+                const response = await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestConfig);
+                deleteIngredientCategory(response.data._id);
                 info('Запис було успішно видалено');
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
@@ -87,7 +91,7 @@ const Page = () => {
                     <PlusIcon className="w-5 h-5 text-white"/>
                 </button>
             </div>
-            <BasicTable data={data} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+            <BasicTable data={ingredientCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
             {isOpenCreateModal ? <ModalCreateIC onClose={() => setOpenCreateModal(false)}/> : null}
             {isOpenUpdateModal?.isOpen ? <ModalUpdateIC onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
         </div>

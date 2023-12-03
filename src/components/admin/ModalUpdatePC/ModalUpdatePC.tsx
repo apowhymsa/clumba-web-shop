@@ -5,6 +5,7 @@ import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
 import Button from "@/components/UI/Button/Button";
 import React, {useEffect, useState} from "react";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
+import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories";
 
 type FormValues = {
     categoryName: string;
@@ -16,6 +17,7 @@ type Props = {
     id: string;
 }
 const ModalUpdatePC = (props: Props) => {
+    const {updateProductCategory: updatePC} = useProductCategoriesStore();
     const {onClose, id} = props;
     const {error, info} = useToast();
     const queryClient = useQueryClient()
@@ -68,8 +70,10 @@ const ModalUpdatePC = (props: Props) => {
                 withCredentials: true
             }
 
-            await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`, requestBody, requestConfig);
-            await queryClient.invalidateQueries({queryKey: ['productCategories']});
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`, requestBody, requestConfig);
+            console.log('updated', response.data);
+            updatePC(id, response.data);
+
             info('Категорія товарів була оновлена');
             onClose();
         } catch (err: unknown) {

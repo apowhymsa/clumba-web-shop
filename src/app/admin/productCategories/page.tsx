@@ -11,6 +11,7 @@ import useToast from "@/hooks/useToast";
 import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
 import ModalCreatePC from "@/components/admin/ModalCreatePC/ModalCreatePC";
 import ModalUpdatePC from "@/components/admin/ModalUpdatePC/ModalUpdatePC";
+import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories";
 
 type ProductCategory = {
     _id: string; title: string; image: any;
@@ -35,6 +36,7 @@ const columns = [columnHelper.accessor('_id', {
 })]
 
 const Page = () => {
+    const {addProductCategory, productCategories, deleteProductCategory} = useProductCategoriesStore();
     const [isOpenCreateModal, setOpenCreateModal] = useState(false);
     const [isOpenUpdateModal, setOpenUpdateModal] = useState<{isOpen: boolean, id: string} | null>(null);
     const queryClient = useQueryClient()
@@ -47,6 +49,8 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             })
+
+            addProductCategory(data);
 
             return data;
         }
@@ -65,7 +69,8 @@ const Page = () => {
 
             try {
                 await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`, requestConfig);
-                await queryClient.invalidateQueries({queryKey: ['productCategories']});
+
+                deleteProductCategory(id);
                 info('Запис було успішно видалено');
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
@@ -100,7 +105,7 @@ const Page = () => {
                     <PlusIcon className="w-5 h-5 text-white"/>
                 </button>
             </div>
-            <BasicTable data={data} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+            <BasicTable data={productCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
             {isOpenCreateModal ? <ModalCreatePC onClose={() => setOpenCreateModal(false)}/> : null}
             {isOpenUpdateModal?.isOpen ? <ModalUpdatePC onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
         </div>

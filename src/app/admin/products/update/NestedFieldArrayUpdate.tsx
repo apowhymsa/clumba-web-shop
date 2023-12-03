@@ -4,7 +4,9 @@ import Select from "react-select";
 import Button from "@/components/UI/Button/Button";
 import axios, {AxiosRequestConfig} from "axios";
 import {TrashIcon} from "@heroicons/react/24/outline";
-import NestedFieldArrayItem from "@/app/admin/products/create/NestedFieldArrayItem";
+import {useProductsStore} from "@/utils/zustand-store/products";
+import {useSearchParams} from "next/navigation";
+import NestedFieldArrayUpdateItem from "@/app/admin/products/update/NestedFieldArrayUpdateItem";
 
 interface IIngredient {
     id: string;
@@ -34,9 +36,12 @@ type Props = {
     nestIndex: number;
     control: Control<FormValues>;
     register: UseFormRegister<FormValues>;
-    errors: FieldErrors<FormValues>
+    errors: FieldErrors<FormValues>;
+    defaultIngredients: any[]
 }
-const NestedFieldArray = (props: Props) => {
+const NestedFieldArrayUpdate = (props: Props) => {
+    const searchParams = useSearchParams();
+    const {products} = useProductsStore();
     const {nestIndex, register, control, errors} = props;
     const [isLoadingIngredients, setLoadingIngredients] = useState(true);
     const [ingredients, setIngredients] = useState<any[]>([]);
@@ -46,6 +51,9 @@ const NestedFieldArray = (props: Props) => {
     });
 
     useEffect(() => {
+        console.log('current ingredients', + nestIndex, props.defaultIngredients);
+        console.log('products', products);
+
         async function getIngredients() {
             setLoadingIngredients(true);
             const requestConfig: AxiosRequestConfig = {
@@ -59,10 +67,16 @@ const NestedFieldArray = (props: Props) => {
             })
         }
 
-        getIngredients().finally(() => setLoadingIngredients(false));
-        console.log(ingredients);
+            getIngredients().finally(() => {
+                // const foundedVariants = ingredients.find(ingredient => ingredient._id === props.defaultIngredients[nestIndex].ingredient);
+                // setIngredientVariants(foundedVariants);
+                setLoadingIngredients(false)
+            });
     }, []);
 
+    useEffect(() => {
+        console.log('ing', ingredients);
+    }, [ingredients]);
     return (<div>
         <div className="flex justify-between items-center my-4">
             <span className="flex-1 text-[15px]">Інгредієнти товару</span>
@@ -77,7 +91,7 @@ const NestedFieldArray = (props: Props) => {
             </div>
         </div>
         {fields.map((item, k) => {
-            return <NestedFieldArrayItem key={item.id} item={item} nestIndex={nestIndex} k={k} errors={errors} isLoadingIngredients={isLoadingIngredients} ingredients={ingredients} control={control} register={register}/>
+            return <NestedFieldArrayUpdateItem key={item.id} fields={fields} remove={remove} item={item} k={k} isLoadingIngredients={isLoadingIngredients} ingredients={ingredients} nestIndex={nestIndex} control={control} register={register} errors={errors} defaultIngredients={props.defaultIngredients}/>
             // return (<div key={item.id} className="flex gap-x-4 mt-2 pl-10">
             //     <div className="flex-1">
             //         <label
@@ -87,7 +101,8 @@ const NestedFieldArray = (props: Props) => {
             //             Назва інгредієнту
             //         </label>
             //         <div className="relative">
-            //             <Controller render={({field}) => (<Select
+            //             <Controller defaultValue={props.defaultIngredients[k] ? JSON.stringify({label: props.defaultIngredients[k].ingredient.id.title, value: props.defaultIngredients[k].ingredient.id._id}): JSON.stringify({label: '', value: ''})} render={({field, fieldState}) => (<Select
+            //                 defaultValue={props.defaultIngredients[k] ? {label: props.defaultIngredients[k].ingredient.id.title, value: props.defaultIngredients[k].ingredient.id._id}: {label: '', value: ''}}
             //                 isDisabled={isLoadingIngredients}
             //                 ref={field.ref}
             //                 onChange={(data) => {
@@ -121,12 +136,18 @@ const NestedFieldArray = (props: Props) => {
             //             Варіант інгредієнту
             //         </label>
             //         <div className="relative">
-            //             <Controller render={({field}) => (<Select
-            //                 isDisabled={!ingredientVariants}
+            //             <Controller
+            //                 defaultValue={props.defaultIngredients[k] ? JSON.stringify({label: props.defaultIngredients[k].ingredient.variantID.vType, value: props.defaultIngredients[k].ingredient.variantID._id}) : JSON.stringify({label: '', value: ''})}
+            //                 render={({field}) => (<Select
+            //                 defaultValue={props.defaultIngredients[k] ? {label: props.defaultIngredients[k].ingredient.variantID.vType, value: props.defaultIngredients[k].ingredient.variantID._id} : {label: '', value: ''}}
+            //                 isDisabled={props.defaultIngredients[k] ? false : ingredientVariants}
             //                 ref={field.ref}
             //                 onChange={field.onChange}
             //                 isSearchable={false}
-            //                 options={ingredientVariants && ingredientVariants.variants.map((variant: any) => ({
+            //                 options={ingredientVariants ? ingredientVariants.variants.map((variant: any) => ({
+            //                     value: variant.id._id,
+            //                     label: variant.id.vType
+            //                 })) : ingredients.length > 0 && ingredients[nestIndex].variants.map((variant: any) => ({
             //                         value: variant.id._id,
             //                         label: variant.id.vType
             //                     }))}
@@ -180,4 +201,4 @@ const NestedFieldArray = (props: Props) => {
     </div>);
 };
 
-export default NestedFieldArray;
+export default NestedFieldArrayUpdate;

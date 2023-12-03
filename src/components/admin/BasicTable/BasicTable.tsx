@@ -28,9 +28,10 @@ import {clsx} from "clsx";
 
 type Props = {
     data: any[]; columns: ColumnDef<any, any>[]; onDelete: (id: string) => void; onUpdate: (id: string) => void;
+    isProducts?: boolean;
 }
 const BasicTable = (props: Props) => {
-    const {data, columns, onUpdate, onDelete} = props;
+    const {data, columns, onUpdate, onDelete, isProducts} = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [filtering, setFiltering] = useState('');
     const [dropDownShown, setDropDownShown] = useState(false);
@@ -138,20 +139,40 @@ const BasicTable = (props: Props) => {
                         </div>
                     </td>
                 </tr>
-                        {row.getAllCells().map(cell => (
-                            Array.isArray(cell.getValue()) && (
-                                (cell.getValue() as any[]).map(renderCell => (
-                                    <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
-                                        <td className="bg-white"></td>
-                                        <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.id.vType}</td>
-                                        <td className="bg-white"></td>
-                                        <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium text-center">
-                                            {renderCell.id.count} одиниць
-                                        </td>
-                                    </tr>
+                        {isProducts ? (
+                            row.getAllCells().map(cell => (
+                                Array.isArray(cell.getValue()) && (
+                                    (cell.getValue() as any[]).map(renderCell => (
+                                        <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
+                                            <td className="bg-white"></td>
+                                            <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.title}</td>
+                                            <td className="bg-white"></td>
+                                            <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium text-center">
+                                                <ul className="flex flex-col gap-y-2">
+                                                    <li>Ціна: {renderCell.price} &#8372;</li>
+                                                    <li>Знижка: {renderCell.discount.state ? `Присутня - ${renderCell.discount.percent}%` : 'Відсутня'}</li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )
+                            ))
+                        ): (
+                            row.getAllCells().map(cell => (
+                                    Array.isArray(cell.getValue()) && (
+                                        (cell.getValue() as any[]).map(renderCell => (
+                                            <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
+                                                <td className="bg-white"></td>
+                                                <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.id.vType}</td>
+                                                <td className="bg-white"></td>
+                                                <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium text-center">
+                                                    {renderCell.id.count} одиниць
+                                                </td>
+                                            </tr>
+                                        ))
+                                    )
                                 ))
-                            )
-                        ))}
+                        )}
                     </>
                 ))}
                 </tbody>
