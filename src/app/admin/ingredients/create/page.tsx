@@ -77,9 +77,10 @@ const Page = () => {
             info('Запис було успішно створено');
             reset();
 
-            fields.slice(0, 0);
-            setIngImage('');
-            append({vType: '', count: ''});
+            // fields.slice(0, 0);
+            // setIngImage('');
+            // append({vType: '', count: ''});
+            router.back();
 
         } catch (err: unknown) {
             const errorObject = err as AxiosError;
@@ -280,7 +281,7 @@ const Page = () => {
                 </div>
             </div>
             <div className="flex gap-x-4 w-max mt-4">
-                <Button type="submit" variant="primary" content="Зберегти та створити ще"/>
+                <Button type="submit" variant="primary" content="Створити"/>
             </div>
         </form>
     </div>

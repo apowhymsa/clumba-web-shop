@@ -22,7 +22,7 @@ const ModalUpdatePC = (props: Props) => {
     const {error, info} = useToast();
     const queryClient = useQueryClient()
     const [productCategory, setProductCategory] = useState<{_id: string, title: string, image: any} | null>(null);
-    const [prodImage, setProdImage] = useState('');
+    const [prodImage, setProdImage] = useState<any>(null);
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -31,7 +31,13 @@ const ModalUpdatePC = (props: Props) => {
                 setLoading(true);
                 const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`);
                 setProductCategory({_id: response.data._id, title: response.data.title, image: response.data.image});
-                setProdImage(response.data.image.data);
+                setProdImage({
+                    url: `${process.env.ADMIN_ENDPOINT_BACKEND}/images/${response.data.image}`,
+                    fileName: response.data.image,
+                    isNew: false,
+                    base64: ''
+                })
+                // setProdImage(`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${response.data.image}`);
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
 
@@ -57,15 +63,18 @@ const ModalUpdatePC = (props: Props) => {
 
     const updateProductCategory = async (data: FormValues) => {
         try {
-            const img = data.image.length === 0 ? toImage(prodImage) : data.image[0]
+            const img = data.image.length === 0 ? prodImage.fileName : data.image[0]
             const requestBody = {
                 title: data.categoryName,
-                image: img
+                image: img,
+                isNewImage: data.image.length !== 0
             }
+
+            console.log(requestBody);
 
             const requestConfig: AxiosRequestConfig = {
                 headers: {
-                    'Content-Type': 'multipart/form-data',
+                    'Content-Type': requestBody.isNewImage ? 'multipart/form-data' : 'application/json',
                 },
                 withCredentials: true
             }
@@ -99,18 +108,6 @@ const ModalUpdatePC = (props: Props) => {
         reader.onload = () => resolve(reader.result);
         reader.onerror = reject;
     });
-
-    const toImage = (base64: string) => {
-        const cleanedBase64String = base64.replace(/\s/g, '');
-
-        const normalBase64 = cleanedBase64String.split(',')[1];
-
-        const arrayBuffer = Uint8Array.from(atob(normalBase64), (c) => c.charCodeAt(0)).buffer;
-        const blob = new Blob([arrayBuffer]);
-        const fileType = (productCategory?.image.name as string).endsWith('.png') ? 'image/png' : 'image/jpeg';
-
-        return new File([blob], productCategory?.image.name, {type: fileType});
-    }
 
     return (<ModalContainer onClose={onClose}>
         <h3 className="text-center font-semibold text-[16px]">Редагування категорії товарів</h3>
@@ -155,7 +152,7 @@ const ModalUpdatePC = (props: Props) => {
                             <div className="flex gap-x-4">
 
                                 {prodImage ? (<div className="flex h-[200px] w-full">
-                                    <img src={prodImage} alt="Image" className="object-cover border-0 outline-0 rounded"/>
+                                    <img src={prodImage.isNew ? prodImage.base64 : prodImage.url} alt="Image" className="object-cover border-0 outline-0 rounded"/>
                                 </div>) : null}
 
                                 <label
@@ -177,14 +174,19 @@ const ModalUpdatePC = (props: Props) => {
                                     })} onChange={async (e) => {
                                         if (e.target.files && e.target.files.length > 0) {
                                             const base64: any = await toBase64(e.target.files[0]);
-                                            setProdImage(base64);
+                                            setProdImage({
+                                                url: '',
+                                                fileName: '',
+                                                isNew: true,
+                                                base64: base64
+                                            })
                                         }
                                     }}/>
                                 </label>
                             </div>
                             {errors.image ? (<p className="mt-1 text-sm text-red-500">{(errors.image as any).message}</p>) : null}
                         </div>
-                        <Button type='submit' variant='primary' content='Редагувати' isLoading={false}/>
+                        <Button type='submit' variant='primary' content='Оновити' isLoading={false}/>
                     </>
                 )}
             </form>

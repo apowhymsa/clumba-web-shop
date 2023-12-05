@@ -30,7 +30,7 @@ interface IVariant {
 
 interface Product {
     _id: string;
-    image: any;
+    image: string;
     title: string;
     categoryID: any;
     price: string;
@@ -44,7 +44,11 @@ const columns = [columnHelper.accessor('_id', {
 }), columnHelper.accessor('image', {
     header: 'Зображення', cell: (data) => {
         return <div className="h-[60px] w-full flex justify-center">
-            <img src={(data.getValue()).data} alt="Image" className="object-cover"/>
+            <img
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${data.getValue()}`}
+                alt="Image"
+                className="object-cover"
+            />
         </div>
     },
     meta: {

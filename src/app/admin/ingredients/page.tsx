@@ -25,7 +25,7 @@ interface ICategory {
 }
 
 type Ingredient = {
-    _id: string; title: string; categoryID: ICategory; variants: IVariants[]; image: any;
+    _id: string; title: string; categoryID: ICategory; variants: IVariants[]; image: string;
 }
 
 const columnHelper = createColumnHelper<Ingredient>();
@@ -36,8 +36,12 @@ const columns = [columnHelper.accessor('_id', {
     header: 'Зображення', cell: (data) => {
         console.log(data.getValue());
         return <div className="h-[60px] w-full flex justify-center">
-            <img src={(data.getValue()).data} alt="Image" className="object-cover"/>
-            </div>
+            <img
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${data.getValue()}`}
+                alt="Image"
+                className="object-cover"
+            />
+        </div>
     },
     meta: {
         col: 'image'

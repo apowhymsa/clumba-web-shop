@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    domains: ['localhost'],
     remotePatterns: [
       {
         protocol: "https",
@@ -14,6 +15,12 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      // {
+      //   protocol: "http",
+      //   hostname: "localhost:3001",
+      //   port: "",
+      //   pathname: "images/**",
+      // },
     ],
   },
   env: {
@@ -22,8 +29,9 @@ const nextConfig = {
     GOOGLE_API_KEY: 'AIzaSyAOgRCpjCpoIfNeyDL5CxW2nVt0hD1iexo',
     POSTER_API_ACCESS_TOKEN: '198381:78956798666468f0d7fde56893b15402',
     POSTER_API_URL: 'https://joinposter.com/api',
-    ADMIN_ENDPOINT_BACKEND: 'https://flowers-shop-backend.onrender.com'
-    // ADMIN_ENDPOINT_BACKEND: 'http://localhost:3001'
+    // ADMIN_ENDPOINT_BACKEND: 'https://flowers-shop-backend.onrender.com'
+    ADMIN_ENDPOINT_BACKEND: 'http://localhost:3001'
+    // ADMIN_ENDPOINT_BACKEND: 'http://16.171.242.251:3001'
   },
   async headers() {
     return [

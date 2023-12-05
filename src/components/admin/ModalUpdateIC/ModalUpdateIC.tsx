@@ -121,7 +121,7 @@ const ModalUpdateIC = (props: Props) => {
                              <p className="mt-1 text-sm text-red-500">{errors.categoryName.message}</p>) : null}
                      </div>
 
-                     <Button type='submit' variant='primary' content='Редагувати' isLoading={false}/>
+                     <Button type='submit' variant='primary' content='Оновити' isLoading={false}/>
                  </>
                 )}
             </form>

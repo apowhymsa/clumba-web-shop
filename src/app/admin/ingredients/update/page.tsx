@@ -28,7 +28,7 @@ const Page = () => {
         control, register, handleSubmit, formState, reset, formState: {errors},
     } = useForm<FormValues>();
     const [ic, setIc] = useState<any[]>([]);
-    const [ingImage, setIngImage] = useState('');
+    const [ingImage, setIngImage] = useState<any>();
     const [ingredientLoading, setIngredientLoading] = useState(true);
     const queryClient = useQueryClient()
     const router = useRouter();
@@ -48,7 +48,12 @@ const Page = () => {
             }
             const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredient/${searchParams.get('id')}`, requestConfig);
             setIngredient(response.data);
-            setIngImage(response.data.image.data);
+            setIngImage({
+                url: `${process.env.ADMIN_ENDPOINT_BACKEND}/images/${response.data.image}`,
+                fileName: response.data.image,
+                isNew: false,
+                base64: ''
+            })
         }
 
         async function getIngCategories() {
@@ -80,19 +85,21 @@ const Page = () => {
     }, [ingredient]);
 
     async function updateIngredient(data: FormValues, event: BaseSyntheticEvent<object, any, any> | undefined) {
-        const image: any = data.image;
-
         const category = typeof data.categoryID === 'string' ? JSON.parse(data.categoryID).value : (data.categoryID as any).value;
-        const img = image.length === 0 ? toImage(ingImage) : image[0]
+        const img = data.image.length === 0 ? ingImage.fileName : data.image[0]
 
         const requestBody = {
-            title: data.title, categoryID: category, variants: data.variants, image: img
+            title: data.title,
+            categoryID: category,
+            variants: data.variants,
+            image: img,
+            isNewImage: data.image.length !== 0
         }
 
 
         const requestConfig: AxiosRequestConfig = {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': requestBody.isNewImage ? 'multipart/form-data' : 'application/json',
             }, withCredentials: true
         }
 
@@ -204,7 +211,7 @@ const Page = () => {
                     <div className="flex gap-x-4">
 
                         {ingImage ? (<div className="flex h-[200px]">
-                            <img src={ingImage} alt="Image" className="object-cover border-0 outline-0 rounded"/>
+                            <img src={ingImage.isNew ? ingImage.base64 : ingImage.url} alt="Image" className="object-cover border-0 outline-0 rounded"/>
                         </div>) : null}
 
                         <label
@@ -226,7 +233,12 @@ const Page = () => {
                             })} onChange={async (e) => {
                                 if (e.target.files && e.target.files.length > 0) {
                                     const base64: any = await toBase64(e.target.files[0]);
-                                    setIngImage(base64);
+                                    setIngImage({
+                                        url: '',
+                                        fileName: '',
+                                        isNew: true,
+                                        base64: base64
+                                    })
                                 }
                             }}/>
                         </label>
@@ -298,7 +310,7 @@ const Page = () => {
                 </div>
             </div>
             <div className="flex gap-x-4 w-max mt-4">
-                <Button type="submit" variant="primary" content="Оновити та перейти до таблиці"/>
+                <Button type="submit" variant="primary" content="Оновити"/>
             </div>
         </form>
     </div>

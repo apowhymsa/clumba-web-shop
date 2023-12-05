@@ -12,9 +12,11 @@ import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
 import ModalCreatePC from "@/components/admin/ModalCreatePC/ModalCreatePC";
 import ModalUpdatePC from "@/components/admin/ModalUpdatePC/ModalUpdatePC";
 import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories";
+import Image from "next/image";
+import {processImage} from "@/utils/processImage";
 
 type ProductCategory = {
-    _id: string; title: string; image: any;
+    _id: string; title: string; image: string;
 }
 
 const columnHelper = createColumnHelper<ProductCategory>();
@@ -24,7 +26,11 @@ const columns = [columnHelper.accessor('_id', {
 }), columnHelper.accessor('image', {
     header: 'Зображення', cell: (data) => {
         return <div className="h-[60px] w-full flex justify-center">
-            <img src={(data.getValue()).data} alt="Image" className="object-cover"/>
+            <img
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${data.getValue()}`}
+                alt="Image"
+                className="object-cover"
+            />
         </div>
     },
     meta: {
@@ -32,7 +38,7 @@ const columns = [columnHelper.accessor('_id', {
     }
 }),
     columnHelper.accessor('title', {
-    header: 'Категорія', cell: (data) => data.getValue()
+    header: 'Назва', cell: (data) => data.getValue()
 })]
 
 const Page = () => {
@@ -49,6 +55,8 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             })
+
+            console.log('data', data)
 
             addProductCategory(data);
 
@@ -94,6 +102,7 @@ const Page = () => {
     if (isLoading) {
         return <div>Loading...</div>
     }
+
 
     return (
         <div className="flex-1 p-6 text-[14px]">

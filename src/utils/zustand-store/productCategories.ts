@@ -1,12 +1,8 @@
 import {create} from 'zustand';
 import {state} from "sucrase/dist/types/parser/traverser/base";
 
-type Image = {
-    data: string;
-    name: string;
-}
 type ProductCategory = {
-    _id: string; title: string; image: Image
+    _id: string; title: string; image: string
 }
 
 type Store = {

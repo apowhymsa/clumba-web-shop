@@ -13,7 +13,7 @@ interface ICategory {
 }
 
 type Ingredient = {
-    _id: string; title: string; categoryID: ICategory; variants: IVariants[]; image: any;
+    _id: string; title: string; categoryID: ICategory; variants: IVariants[]; image: string;
 }
 
 type Store = {

@@ -45,7 +45,7 @@ const Page = () => {
     const [product, setProduct] = useState<any>(null);
     const [isLoading, setLoading] = useState(true);
     const [isCategoriesLoading, setCategoriesLoading] = useState(true);
-    const [prodImage, setProdImage] = useState('');
+    const [prodImage, setProdImage] = useState<any>(null);
     const [pc, setPc] = useState<any[]>([]);
     const router = useRouter();
     const {error, info} = useToast();
@@ -90,7 +90,12 @@ const Page = () => {
                        });
                    });
                    setProduct(response.data);
-                   setProdImage(response.data.image.data);
+                   setProdImage({
+                       url: `${process.env.ADMIN_ENDPOINT_BACKEND}/images/${response.data.image}`,
+                       fileName: response.data.image,
+                       isNew: false,
+                       base64: ''
+                   })
                } catch (err: any) {
                    error(`${err.message} - ${err.code}`);
                } finally {
@@ -132,7 +137,7 @@ const Page = () => {
     }
 
     async function updateProduct(data: FormValues, event: BaseSyntheticEvent<object, any, any> | undefined) {
-        const img = data.image.length === 0 ? toImage(prodImage) : data.image[0]
+        const img = data.image.length === 0 ? prodImage.fileName : data.image[0]
         const category = typeof data.categoryID === 'string' ? JSON.parse(data.categoryID).value : (data.categoryID as any).value;
 
         // const requestBody = {
@@ -155,14 +160,15 @@ const Page = () => {
             image: img,
             title: data.title,
             categoryID: category,
-            variants: normalizeIngredients
+            variants: normalizeIngredients,
+            isNewImage: data.image.length !== 0
         }
 
         console.log(requestBody);
 
         const requestConfig: AxiosRequestConfig = {
             headers: {
-                'Content-Type': 'multipart/form-data',
+                'Content-Type': requestBody.isNewImage ? 'multipart/form-data' : 'application/json',
             }, withCredentials: true
         }
 
@@ -258,7 +264,7 @@ const Page = () => {
                     <div className="flex gap-x-4">
 
                         {prodImage ? (<div className="flex h-[200px]">
-                            <img src={prodImage} alt="Image" className="object-cover border-0 outline-0 rounded"/>
+                            <img src={prodImage.isNew ? prodImage.base64 : prodImage.url} alt="Image" className="object-cover border-0 outline-0 rounded"/>
                         </div>) : null}
 
                         <label
@@ -278,7 +284,12 @@ const Page = () => {
                             <input accept=".png, .jpg, .jpeg" id="image" type="file" className="sr-only" {...register("image")} onChange={async (e) => {
                                 if (e.target.files && e.target.files.length > 0) {
                                     const base64: any = await toBase64(e.target.files[0]);
-                                    setProdImage(base64);
+                                    setProdImage({
+                                        url: '',
+                                        fileName: '',
+                                        isNew: true,
+                                        base64: base64
+                                    })
                                 }
                             }}/>
                         </label>
@@ -402,7 +413,7 @@ const Page = () => {
                 </div>
             </div>
             <div className="flex gap-x-4 w-max mt-4">
-                <Button type="submit" variant="primary" content="Зберегти та створити ще"/>
+                <Button type="submit" variant="primary" content="Оновити запис"/>
             </div>
         </form>
     </div>
