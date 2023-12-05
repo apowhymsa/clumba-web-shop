@@ -31,7 +31,7 @@ const nextConfig = {
     POSTER_API_URL: 'https://joinposter.com/api',
     // ADMIN_ENDPOINT_BACKEND: 'https://flowers-shop-backend.onrender.com'
     // ADMIN_ENDPOINT_BACKEND: 'http://localhost:3001'
-    ADMIN_ENDPOINT_BACKEND: 'https://16.171.242.251:3001'
+    ADMIN_ENDPOINT_BACKEND: 'http://16.171.242.251:3001'
   },
   async headers() {
     return [
