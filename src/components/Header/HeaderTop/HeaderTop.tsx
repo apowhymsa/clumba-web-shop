@@ -32,11 +32,12 @@ const HeaderTop = () => {
             withCredentials: true
         }
 
-        const response = await axios.post('http://localhost:3001/auth/logout', requestConfig);
+        const response = await axios.post(`${process.env.ADMIN_ENDPOINT_BACKEND}/auth/logout`, requestConfig);
 
-        setLogged(false);
         document.cookie = "USER-AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        localStorage.removeItem('authUserId');
         info('Успішний вихід з облікового запису')
+        setLogged(false);
     } catch (err: unknown) {
         const errObject = err as AxiosError;
         console.error(errObject);

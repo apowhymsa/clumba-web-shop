@@ -11,6 +11,7 @@ import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {createColumnHelper} from "@tanstack/react-table";
 import {useRouter} from "next/navigation";
 import {useIngredientsStore} from "@/utils/zustand-store/ingredients";
+import Loader from "@/components/Loader/Loader";
 
 interface IVariants {
     id: {
@@ -111,7 +112,7 @@ const Page = () => {
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
     return (<div className="flex-1 p-6 text-[14px]">

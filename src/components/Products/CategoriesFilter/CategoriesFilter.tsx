@@ -43,7 +43,7 @@ const CategoriesFilter = (props: Props) => {
           <div className="category-grid grid grid-cols-4 gap-5 gap-y-4">
             {categories.map((category, index) => (
                 <div
-                  key={category.category_id}
+                  key={index}
                   className="flex items-center gap-x-2 flex-0"
                 >
                   <input
@@ -51,18 +51,18 @@ const CategoriesFilter = (props: Props) => {
                     type="checkbox"
                     checked={
                       !!categoriesFilter.find(
-                        (value) => value === category.category_id,
+                        (value) => value === category._id,
                       ) || false
                     }
-                    value={category.category_id}
-                    id={category.category_id}
+                    value={category._id}
+                    id={category._id}
                     className="h-4 w-4 rounded checked:text-rose-400 shadow-sm text-rose-400 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-offset-0 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:text-gray-400"
                   />
                   <label
-                    htmlFor={category.category_id}
+                    htmlFor={category._id}
                     className="text-sm text-gray-700"
                   >
-                    {category.category_name}
+                    {category.title}
                   </label>
                 </div>
             ))}

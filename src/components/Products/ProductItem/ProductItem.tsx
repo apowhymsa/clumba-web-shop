@@ -38,15 +38,20 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
   const cart = useAppSelector((state) => state.cartReducer).cart;
 
   return (
-    <div className="product-item">
-      <Link className="product-image" href={`/products/${product.product_id}`}>
+    <div className="relative product-item">
+        {product.variants[0].discount.state && (
+            <div className="absolute z-10 top-[5px] left-[5px] h-12 w-12 bg-rose-400 flex items-center justify-center rounded-full">
+                <span className="text-white text-[14px]">-{product.variants[0].discount.percent} %</span>
+            </div>
+        )}
+      <Link className="product-image" href={`/products/${product._id}`}>
         <Image
-          src={
-            product.photo_origin
-              ? `https://poster-shop.joinposter.com${product.photo_origin}`
-              : "/flower_image.jpg"
-          }
-          // src="/flower_image.jpg"
+          // src={
+          //   product.photo_origin
+          //     ? `https://poster-shop.joinposter.com${product.photo_origin}`
+          //     : "/flower_image.jpg"
+          // }
+          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
           alt="Product Image"
           width={0}
           height={0}
@@ -66,38 +71,49 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
       </Link>
       <div className="product-description">
         <Link
-          href={`/products/${product.product_id}`}
+          href={`/products/${product._id}`}
           className="product-name"
-          title={product.product_name}
+          title={product.title}
         >
-          {product.product_name}
+          {product.title}
         </Link>
         <span className="product-price">
-          &#8372; {product.price["1"].slice(0, -2)}
+            {product.variants[0].discount.state ? (
+                <span className="flex gap-x-4">
+                    <span className="line-through text-[14px] text-gray-500">
+                    &#8372; {product.variants[0].price}
+                </span>
+                <span className="font-semibold">
+                    &#8372; {Number(product.variants[0].price) - (Number(product.variants[0].price) * Number(product.variants[0].discount.percent)) / 100}
+                </span>
+                </span>
+            ): (
+                <span>&#8372; {product.variants[0].price} </span>
+            )}
         </span>
       </div>
-      {isButtonVisible ? (
-        <button
-          onClick={async () => {
-            if (!isLogged) {
-              error(
-                "Чтобы добавить товар в корзину, войдите в учётную запись!");
-            } else {
-              dispatch(
-                setCartItem({
-                  product: product,
-                  quantity: 1,
-                })
-              );
+      {/*{isButtonVisible ? (*/}
+      {/*  <button*/}
+      {/*    onClick={async () => {*/}
+      {/*      if (!isLogged) {*/}
+      {/*        error(*/}
+      {/*          "Чтобы добавить товар в корзину, войдите в учётную запись!");*/}
+      {/*      } else {*/}
+      {/*        dispatch(*/}
+      {/*          setCartItem({*/}
+      {/*            product: product,*/}
+      {/*            quantity: 1,*/}
+      {/*          })*/}
+      {/*        );*/}
 
-              info('Товар успешно добавлен в корзину');
-            }
-          }}
-          className="border border-rose-400 text-rose-400 px-4 py-2 rounded transition-colors hover:bg-rose-400 hover:text-white"
-        >
-          Добавить в корзину
-        </button>
-      ) : null}
+      {/*        info('Товар успешно добавлен в корзину');*/}
+      {/*      }*/}
+      {/*    }}*/}
+      {/*    className="border border-rose-400 text-rose-400 px-4 py-2 rounded transition-colors hover:bg-rose-400 hover:text-white"*/}
+      {/*  >*/}
+      {/*    Добавить в корзину*/}
+      {/*  </button>*/}
+      {/*) : null}*/}
     </div>
   );
 };

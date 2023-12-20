@@ -6,46 +6,56 @@ import Button from "@/components/UI/Button/Button";
 import React, {useEffect, useState} from "react";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
+import Loader from "@/components/Loader/Loader";
 
 type FormValues = {
     categoryName: string;
 }
 
 type Props = {
-    onClose: () => void;
-    id: string;
+    onClose: () => void; isOpen: boolean; id: string;
 }
 const ModalUpdateIC = (props: Props) => {
     const {updateIngredientCategory: updateIC} = useIngredientCategoriesStore();
-    const {onClose, id} = props;
+    const {onClose, id, isOpen} = props;
     const {error, info} = useToast();
     const queryClient = useQueryClient()
-    const [ingredientCategory, setIngredientCategory] = useState<{_id: string, title: string} | null>(null);
+    const [ingredientCategory, setIngredientCategory] = useState<{ _id: string, title: string } | null>(null);
     const [isLoading, setLoading] = useState(false);
 
     useEffect(() => {
-        const getIngredientCategory = async () => {
-            try {
-                setLoading(true);
-                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`);
-                setIngredientCategory({_id: response.data._id, title: response.data.title});
-            } catch (err: unknown) {
-                const errorObject = err as AxiosError;
+        console.log(isOpen);
 
-                switch (errorObject.response?.status) {
-                    case 403: {
-                        error('Не отриманно необхідних даних для оновлення запису, оновіть сторінку та повторіть спробу');
-                        break;
+        if (isOpen) {
+            const getIngredientCategory = async () => {
+                try {
+                    setLoading(true);
+                    const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`);
+                    setIngredientCategory({_id: response.data._id, title: response.data.title});
+                    console.log(response.data)
+                } catch (err: unknown) {
+                    const errorObject = err as AxiosError;
+
+                    switch (errorObject.response?.status) {
+                        case 403: {
+                            error('Не отриманно необхідних даних для оновлення запису, оновіть сторінку та повторіть спробу');
+                            break;
+                        }
+                        default:
+                            error(`${errorObject.message} - ${errorObject.name}`)
                     }
-                    default: error(`${errorObject.message} - ${errorObject.name}`)
+                } finally {
+                    setLoading(false);
                 }
             }
-            finally {
-                setLoading(false);
-            }
+
+            Promise.all([getIngredientCategory()]);
         }
 
-        Promise.all([getIngredientCategory()]);
+        return () => {
+
+                    document.body.style.overflow = 'visible';
+        }
     }, []);
 
     const {
@@ -62,8 +72,7 @@ const ModalUpdateIC = (props: Props) => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                withCredentials: true
+                }, withCredentials: true
             }
 
             const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestBody, requestConfig);
@@ -82,50 +91,44 @@ const ModalUpdateIC = (props: Props) => {
                     error('Категорія інгредієнтів з вказанною назвою вже існує');
                     break;
                 }
-                default: error(`${errorObject.message} - ${errorObject.name}`)
+                default:
+                    error(`${errorObject.message} - ${errorObject.name}`)
             }
         }
     }
 
-    return (<ModalContainer onClose={onClose}>
-        <h3 className="text-center font-semibold text-[16px]">Редагування категорії інгредієнтів</h3>
-        <div className="modal-container flex flex-col gap-y-5 mt-4">
-            <form
-                className="default-section flex flex-col gap-y-5 my-3"
-                onSubmit={handleSubmit(updateIngredientCategory)}
-            >
-                {isLoading || !ingredientCategory ? (
-                    <div>Loading...</div>
-                ) : (
-                 <>
-                     <div>
-                         <label
-                             htmlFor="categoryName"
-                             className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.categoryName ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
-                         >
-                             Назва категорії інгредієнтів
-                         </label>
-                         <div className="relative">
-                             <input
-                                 className={`block w-full h-8 rounded-md text-[14px] shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                                 {...register("categoryName", {
-                                     required: {
-                                         value: true, message: "Поле обов'язкове для заповнення",
-                                     }
-                                 })}
-                                 value={ingredientCategory.title}
-                                 onChange={(e) => setIngredientCategory({_id: id, title: e.target.value})}
-                             />
-                         </div>
-                         {errors.categoryName ? (
-                             <p className="mt-1 text-sm text-red-500">{errors.categoryName.message}</p>) : null}
-                     </div>
+    return (<ModalContainer isOpen={isOpen} onClose={onClose} headerContent="Редагування категорії інгредієнтів">
+        <form
+            className="default-section flex flex-col gap-y-5 px-6 py-4"
+            onSubmit={handleSubmit(updateIngredientCategory)}
+        >
+            {isLoading || !ingredientCategory ? (<Loader/>) : (<>
+                    <div>
+                        <label
+                            htmlFor="categoryName"
+                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.categoryName ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                        >
+                            Назва категорії інгредієнтів
+                        </label>
+                        <div className="relative">
+                            <input
+                                className={`block w-full h-8 rounded-md text-[14px] shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                {...register("categoryName", {
+                                    required: {
+                                        value: true, message: "Поле обов'язкове для заповнення",
+                                    }
+                                })}
+                                value={ingredientCategory.title}
+                                onChange={(e) => setIngredientCategory({_id: id, title: e.target.value})}
+                            />
+                        </div>
+                        {errors.categoryName ? (
+                            <p className="mt-1 text-sm text-red-500">{errors.categoryName.message}</p>) : null}
+                    </div>
 
-                     <Button type='submit' variant='primary' content='Оновити' isLoading={false}/>
-                 </>
-                )}
-            </form>
-        </div>
+                    <Button type='submit' variant='primary' content='Оновити' isLoading={false}/>
+                </>)}
+        </form>
     </ModalContainer>)
 }
 

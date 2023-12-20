@@ -1,0 +1,8 @@
+.checked {
+  @apply relative;
+
+  &:before {
+    content: '';
+    @apply absolute bottom-0 w-full bg-rose-400 h-0.5;
+  }
+}

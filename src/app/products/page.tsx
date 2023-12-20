@@ -2,7 +2,7 @@ import "./ProductsPage.scss";
 import ProductsComponent from "@/components/ProductsComponent";
 
 const getProducts = async () => {
-  const response = await fetch(`${process.env.POSTER_API_URL}/menu.getProducts?token=${process.env.POSTER_API_ACCESS_TOKEN}&type=batchtickets`, {
+  const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=all`, {
     cache: 'no-store'
   });
 
@@ -10,7 +10,7 @@ const getProducts = async () => {
 };
 
 const getCategories = async () => {
-  const response = await fetch(`${process.env.POSTER_API_URL}/menu.getCategories?token=${process.env.POSTER_API_ACCESS_TOKEN}`, {
+  const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=100`, {
     cache: 'no-store'
   });
 
@@ -22,7 +22,7 @@ const Page = async () => {
   const categories = await getCategories();
 
   return (
-    <ProductsComponent isLoadingData={true} productsData={products.response} categoriesData={categories.response}/>
+    <ProductsComponent isLoadingData={true} productsData={products} categoriesData={categories}/>
   );
 };
 

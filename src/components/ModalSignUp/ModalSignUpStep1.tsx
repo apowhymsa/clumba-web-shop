@@ -45,7 +45,7 @@ const ModalSignUpStep1 = (props: Props) => {
         },
         withCredentials: true
       }
-      const response = await axios.get(`http://localhost:3001/users/${userFields?.email}`, requestConfig);
+      const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/users/${userFields?.email}`, requestConfig);
 
       error('Обліковий запис з вказаною електронною адресою вже існує')
     } catch (err: unknown) {

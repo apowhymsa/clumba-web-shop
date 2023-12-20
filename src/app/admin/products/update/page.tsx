@@ -14,6 +14,7 @@ import {AxiosRequestConfig} from "axios";
 import NestedFieldArrayUpdate from "@/app/admin/products/update/NestedFieldArrayUpdate";
 import {useProductsStore} from "@/utils/zustand-store/products";
 import {router} from "next/client";
+import Loader from "@/components/Loader/Loader";
 
 interface IIngredient {
     id: string;
@@ -203,7 +204,7 @@ const Page = () => {
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
     return <div className="p-10">

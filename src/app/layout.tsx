@@ -13,6 +13,20 @@ import ModalContextProvider from "@/contexts/ModalContext/ModalContextProvider";
 import { ToastContainer } from "react-toastify";
 import {usePathname} from "next/navigation";
 import {useEffect, useLayoutEffect, useState} from "react";
+import {QueryClientProvider, useQuery} from "@tanstack/react-query";
+import axios from "axios";
+import {setProducts} from "@/utils/store/productSlice";
+import {useAppDispatch} from "@/utils/store/hooks";
+import {QueryClient} from "@tanstack/react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      refetchOnMount: false
+    }
+  }
+});
 
 const comfarta = Comfortaa({ subsets: ["cyrillic"] });
 
@@ -31,7 +45,7 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body className={[comfarta.className].join(" ")}>
+      <body className={[comfarta.className].join(" ")} data-theme="light">
         <Providers>
           {isAdminRoute ? (
               <>
@@ -41,6 +55,7 @@ export default function RootLayout({
                 <ToastContainer />
               </>
           ) : (
+              <QueryClientProvider client={queryClient}>
               <NavigationContextProvider>
                 <AuthContextProvider>
                   <ModalContextProvider>
@@ -54,6 +69,7 @@ export default function RootLayout({
                   </ModalContextProvider>
                 </AuthContextProvider>
               </NavigationContextProvider>
+              </QueryClientProvider>
           )}
         </Providers>
       </body>

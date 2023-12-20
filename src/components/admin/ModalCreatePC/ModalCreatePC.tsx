@@ -1,6 +1,6 @@
 import {EnvelopeIcon, KeyIcon, XMarkIcon} from "@heroicons/react/24/outline";
 import InputField from "@/components/UI/InputField/InputField";
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import useToast from "@/hooks/useToast";
 import {AuthContext} from "@/contexts/AuthContext/AuthContext";
@@ -18,14 +18,21 @@ type FormValues = {
 
 type Props = {
     onClose: () => void;
+    isOpen: boolean;
 }
 
 const ModalCreatePC = (props: Props) => {
     const {addProductCategory} = useProductCategoriesStore();
-    const {onClose} = props;
+    const {onClose, isOpen} = props;
     const {error, info} = useToast();
     const [prodImage, setProdImage] = useState('');
     const queryClient = useQueryClient()
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = 'visible';
+        }
+    }, []);
 
     const {
         register, handleSubmit, formState: {errors},
@@ -72,12 +79,10 @@ const ModalCreatePC = (props: Props) => {
         reader.onerror = reject;
     });
 
-    return (<ModalContainer onClose={onClose}>
-        <h3 className="text-center font-semibold text-[16px]">Створення категорії товарів</h3>
-        <div className="modal-container flex flex-col gap-y-5 mt-4">
+    return (<ModalContainer isOpen={isOpen} onClose={onClose} headerContent="Створення категорії товарів">
             <form
                 encType="multipart/form-data"
-                className="default-section flex flex-col gap-y-5 my-3"
+                className="default-section flex flex-col gap-y-5 px-6 py-4"
                 onSubmit={handleSubmit(createProductCategory)}
             >
                 <div>
@@ -142,7 +147,6 @@ const ModalCreatePC = (props: Props) => {
                 </div>
                 <Button type='submit' variant='primary' content='Створити' isLoading={false}/>
             </form>
-        </div>
     </ModalContainer>)
 }
 

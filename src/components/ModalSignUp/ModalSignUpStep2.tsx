@@ -61,7 +61,7 @@ const ModalSignUpStep2 = (props: Props) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/auth/register', requestBody, requestConfig);
+      const response = await axios.post(`${process.env.ADMIN_ENDPOINT_BACKEND}/auth/register`, requestBody, requestConfig);
 
       setStep(3);
       info('Обліковий запис було успішно створено, виконайне вхід для продовження');

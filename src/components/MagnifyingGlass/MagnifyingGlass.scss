@@ -1,0 +1,16 @@
+.magnifying-glass {
+  position: relative;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+}
+
+.magnifying-glass.hovered {
+  cursor: crosshair;
+}
+
+.magnifying-glass img {
+  width: 100%;
+  height: 100%;
+}

@@ -77,7 +77,17 @@ const NestedFieldArray = (props: Props) => {
             </div>
         </div>
         {fields.map((item, k) => {
-            return <NestedFieldArrayItem key={item.id} item={item} nestIndex={nestIndex} k={k} errors={errors} isLoadingIngredients={isLoadingIngredients} ingredients={ingredients} control={control} register={register}/>
+            return (<div className="flex gap-x-4">
+                    <NestedFieldArrayItem key={item.id} item={item} nestIndex={nestIndex} k={k} errors={errors}
+                                          isLoadingIngredients={isLoadingIngredients} ingredients={ingredients}
+                                          control={control} register={register}/>
+                    {fields.length > 1 ? (<span
+                        className="bg-red-600 cursor-pointer p-1 rounded transition-colors hover:bg-red-700 h-fit"
+                        title="Видалити"
+                        onClick={() => remove(k)}>
+            <TrashIcon className="w-6 h-6 text-white"/>
+            </span>) : null}
+                </div>)
             // return (<div key={item.id} className="flex gap-x-4 mt-2 pl-10">
             //     <div className="flex-1">
             //         <label

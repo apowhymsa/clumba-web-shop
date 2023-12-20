@@ -6,6 +6,7 @@ import Button from "@/components/UI/Button/Button";
 import React, {useEffect, useState} from "react";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories";
+import Loader from "@/components/Loader/Loader";
 
 type FormValues = {
     categoryName: string;
@@ -14,11 +15,12 @@ type FormValues = {
 
 type Props = {
     onClose: () => void;
+    isOpen: boolean;
     id: string;
 }
 const ModalUpdatePC = (props: Props) => {
     const {updateProductCategory: updatePC} = useProductCategoriesStore();
-    const {onClose, id} = props;
+    const {onClose, id, isOpen} = props;
     const {error, info} = useToast();
     const queryClient = useQueryClient()
     const [productCategory, setProductCategory] = useState<{_id: string, title: string, image: any} | null>(null);
@@ -55,6 +57,10 @@ const ModalUpdatePC = (props: Props) => {
         }
 
         Promise.all([getProductCategory()]);
+
+        return () => {
+                    document.body.style.overflow = 'visible';
+        }
     }, []);
 
     const {
@@ -109,16 +115,14 @@ const ModalUpdatePC = (props: Props) => {
         reader.onerror = reject;
     });
 
-    return (<ModalContainer onClose={onClose}>
-        <h3 className="text-center font-semibold text-[16px]">Редагування категорії товарів</h3>
-        <div className="modal-container flex flex-col gap-y-5 mt-4">
+    return (<ModalContainer isOpen={isOpen} onClose={onClose} headerContent="Редагування категорії товарів">
             <form
                 encType="multipart/form-data"
-                className="default-section flex flex-col gap-y-5 my-3"
+                className="default-section flex flex-col gap-y-5 px-6 py-4"
                 onSubmit={handleSubmit(updateProductCategory)}
             >
                 {isLoading || !productCategory ? (
-                    <div>Loading...</div>
+                    <Loader/>
                 ) : (
                     <>
                         <div>
@@ -190,7 +194,6 @@ const ModalUpdatePC = (props: Props) => {
                     </>
                 )}
             </form>
-        </div>
     </ModalContainer>)
 }
 

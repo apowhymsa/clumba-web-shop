@@ -14,6 +14,7 @@ import ModalUpdatePC from "@/components/admin/ModalUpdatePC/ModalUpdatePC";
 import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories";
 import Image from "next/image";
 import {processImage} from "@/utils/processImage";
+import Loader from "@/components/Loader/Loader";
 
 type ProductCategory = {
     _id: string; title: string; image: string;
@@ -50,7 +51,7 @@ const Page = () => {
 
     const {data, isLoading} = useQuery({
         queryKey: ['productCategories'], queryFn: async () => {
-            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories`, {
+            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=100`, {
                 headers: {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
@@ -100,7 +101,7 @@ const Page = () => {
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
 
@@ -115,8 +116,8 @@ const Page = () => {
                 </button>
             </div>
             <BasicTable data={productCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
-            {isOpenCreateModal ? <ModalCreatePC onClose={() => setOpenCreateModal(false)}/> : null}
-            {isOpenUpdateModal?.isOpen ? <ModalUpdatePC onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
+            {isOpenCreateModal ? <ModalCreatePC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/> : null}
+            {isOpenUpdateModal?.isOpen ? <ModalUpdatePC isOpen={isOpenUpdateModal?.isOpen} onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
         </div>
     )
 }

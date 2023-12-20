@@ -6,23 +6,29 @@ import CategoriesFilter from "@/components/Products/CategoriesFilter/CategoriesF
 import Products from "@/components/Products/Products";
 import React, {useCallback, useEffect, useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {useAppDispatch} from "@/utils/store/hooks";
+import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
 import {filterProducts, setProducts} from "@/utils/store/productSlice";
 import axios from "axios";
 import {Category, Product} from "@/types";
 import {setCategories} from "@/utils/store/categoriesSlice";
 import {SingleValue} from "react-select";
+import {ArrowPathIcon} from "@heroicons/react/24/outline";
+import Loader from "@/components/Loader/Loader";
 
 type Props = {
     isLoadingData: boolean;
-    productsData: Product[];
+    productsData: {
+        products: Product[],
+        productsCount: number
+    };
     categoriesData: Category[];
 }
 
 const ProductsComponent = (props: Props) => {
     const {productsData, categoriesData, isLoadingData} = props;
-
     const [isLoading, setLoading] = useState(isLoadingData);
+    const [page, setPage] = useState(1);
+    const [totalCount, setTotalCount] = useState(productsData.productsCount);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams()!;
@@ -40,21 +46,29 @@ const ProductsComponent = (props: Props) => {
     const [priceFilter, setPriceFilter] = useState<string[] | [number, number]>(
         getQueryValue("price")?.split("-") || [0, 10000],
     );
+    const products = useAppSelector(state => state.productsReducer).products;
 
     useEffect(() => {
-        dispatch(setProducts(productsData));
+        dispatch(setProducts(productsData.products));
         dispatch(setCategories(categoriesData));
-        setLoading(false);
+        setTotalCount(productsData.productsCount);
     }, []);
 
     useEffect(() => {
-        dispatch(
-            filterProducts({
-                categoriesFilter: categoriesFilter,
-                sortFilter: sortFilter,
-                priceFilter: priceFilter,
-            }),
-        );
+        const getProductsByFilters = async () => {
+            const sort = sortFilter === '1' ? 'asc' : sortFilter === '2' ? 'desc' : sortFilter === '3' ? 'desc' : 'desc';
+            const price = priceFilter.join('-');
+            const categories = categoriesFilter.length > 0 ? categoriesFilter : 'all';
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`)
+
+            console.log(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`);
+            dispatch(setProducts(response.data.products));
+            setTotalCount(response.data.productsCount);
+        }
+
+        Promise.all([getProductsByFilters()]).then(() => {
+            setLoading(false)
+        })
     }, [categoriesFilter, sortFilter, priceFilter]);
 
     useEffect(() => {
@@ -65,7 +79,7 @@ const ProductsComponent = (props: Props) => {
         router.push(
             `${pathname}?${createQueryString(
                 "category",
-                categoriesFilter.join(","),
+                categoriesFilter.length > 0 ? categoriesFilter.join(",") : 'all',
             )}`,
             {
                 scroll: false,
@@ -103,9 +117,6 @@ const ProductsComponent = (props: Props) => {
     ) => {
         console.log(newValue?.value);
         setSortFilter(newValue!.value.toString());
-        // router.push(`${pathname}?${createQueryString("sort", newValue!.value)}`, {
-        //   scroll: false,
-        // });
     };
 
     const onChangeFilterCategoriesHandler = (
@@ -114,7 +125,7 @@ const ProductsComponent = (props: Props) => {
         const target = e.target as HTMLInputElement;
 
         if (target.checked) {
-            setCategoriesFilter((prev) => [...prev, target.value]);
+            setCategoriesFilter((prev) => [...prev.filter(value => value !== 'all'), target.value]);
         } else {
             const updatedFilter = categoriesFilter.filter(
                 (category) => category !== target.value,
@@ -129,12 +140,6 @@ const ProductsComponent = (props: Props) => {
         resultValues: [number, number],
         thumbIndex: number,
     ) => {
-        // router.push(
-        //   `${pathname}?${createQueryString("price", resultValues.join("-"))}`,
-        //   {
-        //     scroll: false,
-        //   },
-        // );
         setPriceFilter(resultValues);
     };
 
@@ -184,7 +189,7 @@ const ProductsComponent = (props: Props) => {
             priceSliderDefaultValue={priceFilter}
             categoriesFilter={categoriesFilter}
         />
-        <Products isLoading={isLoading} />
+        <Products isLoading={isLoading} totalProductsAmount={totalCount} price={priceFilter} categories={categoriesFilter} sort={sortFilter}/>
     </div>
 }
 

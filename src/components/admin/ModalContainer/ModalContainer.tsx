@@ -1,34 +1,54 @@
-import React, {ReactNode, useEffect, useState} from "react";
+import React, {ReactElement, ReactNode, useEffect, useState} from "react";
 import {XMarkIcon} from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import {CSSTransition} from "react-transition-group";
+import './ModalContainer.scss';
 
 type Props = {
-    onClose: () => void; children: ReactNode
+    onClose: () => void;
+    children: ReactNode;
+    headerContent?: string;
+    containerWidthClass?: string;
+    isOpen: boolean;
 }
 
-const ModalContainer = ({onClose, children}: Props) => {
+const ModalContainer = ({onClose, children, headerContent, containerWidthClass, isOpen}: Props) => {
+    const [isVisible, setVisible] = useState(false);
+
     useEffect(() => {
-        document.body.style.overflow = 'hidden';
+        isOpen ? document.body.style.overflow = 'hidden' : document.body.style.overflow = 'visible';
+    }, [isOpen]);
 
-        return () => {
-            document.body.style.overflow = 'visible';
-        }
-    }, []);
-
-    return (<div className="absolute w-screen h-full bg-black bg-opacity-50 top-0 left-0 z-50 backdrop-blur-sm"
-                 onClick={onClose}>
-            <div
-                className="absolute top-1/2 left-1/2 bg-white h-fit w-[500px] -translate-x-1/2 -translate-y-1/2 px-9 py-9 rounded"
-                onClick={(e) => e.stopPropagation()}
+    return (
+        <CSSTransition
+            in={isOpen}
+            timeout={300}
+            classNames="modal-container"
+            unmountOnExit
+        >
+            <div className="absolute w-screen h-screen bg-black bg-opacity-50 top-0 left-0 z-50 backdrop-blur-sm"
+                 onMouseDown={onClose}
             >
                 <div
-                    className="btn-close-modal flex absolute right-5 top-5 cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
-                    onClick={onClose}
+                    className={clsx(containerWidthClass ? containerWidthClass : "w-[500px]", "absolute top-1/2 left-1/2 bg-white h-fit -translate-x-1/2 -translate-y-1/2 rounded")}
+                    onMouseDown={(e) => e.stopPropagation()}
                 >
-                    <XMarkIcon className="h-6 w-6 text-black"/>
+                        <div className="flex items-center justify-between px-6 py-3 border-b">
+                            <div className="font-bold text-lg">{headerContent}</div>
+                            <div
+                                className="btn-close-modal flex cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
+                                onClick={onClose}
+                            >
+                                <XMarkIcon className="h-6 w-6 text-black"/>
+                            </div>
+                        </div>
+                        <div>
+                            {children}
+                        </div>
                 </div>
-                {children}
             </div>
-        </div>)
+        </CSSTransition>
+    );
 }
 
 export default ModalContainer;

@@ -11,6 +11,7 @@ import {onAuthStateChanged} from "@firebase/auth";
 import axios from "axios";
 import {Autocomplete, useLoadScript} from "@react-google-maps/api";
 import {getGeocode, getLatLng} from "use-places-autocomplete";
+import Loader from "@/components/Loader/Loader";
 
 interface IPaymentData {
     name: string;
@@ -26,7 +27,8 @@ const Checkout = () => {
 
     const [isLoading, setloading] = useState(true);
     const [isCompleteRequest, setCompleteRequest] = useState(true);
-    const cart = useAppSelector(state => state.cartReducer.cart);
+    const cart = useAppSelector(state => state.cartReducer).cart;
+    const cartPrice = useAppSelector(state => state.cartReducer).cartPrice;
     const [user, setUser] = useState<any>();
     const dispatch = useAppDispatch();
     const [searchResult, setSearchResult] = useState<any>(null);
@@ -53,20 +55,12 @@ const Checkout = () => {
 
         const userAuthId = localStorage.getItem("authUserId");
 
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                if (userAuthId) {
-                    console.log("auth", userAuthId);
+        if (userAuthId) {
+            console.log("auth", userAuthId);
 
-                    Promise.all([getUserInfo(userAuthId), getCart(userAuthId)])
-                        .then(() => setloading(false));
-                }
-            } else {
-                dispatch(setCart([]));
-
-                setloading(false);
-            }
-        });
+            Promise.all([getUserInfo(userAuthId)])
+                .then(() => setloading(false));
+        }
     }, []);
 
     const onLoad = (autocomplete: any) => {
@@ -130,65 +124,53 @@ const Checkout = () => {
 
     const submitHandler = (data: IPaymentData, event: BaseSyntheticEvent<object, any, any> | undefined) => {
         setCompleteRequest(false);
-        const amount = cart.reduce(
-            (acc, cartItem) =>
-                acc +
-                Number(cartItem.product.price["1"].slice(0, -2)) *
-                cartItem.quantity,
-            0,
-        );
-        const cartJoin = cart.map(cartItem => `${cartItem.product.product_name} (${cartItem.quantity} ед.)`).join(' ');
+        const cartJoin = cart.map(cartItem => `${cartItem.product.title} - ${cartItem.variant.title} (${cartItem.quantity} ед.)`).join(' ');
 
-        const params = {
-            amount: amount,
-            description: `Оплата товаров: ${cartJoin}`,
-            posterData: {
-                phone: data.phone,
-                products: cart.map(cartItem => {
-                    return {product_id: Number(cartItem.product.product_id), count: Number(cartItem.quantity)};
-                }),
-                shippingAddress: deliveryType === 1 ? 'Самовывоз' : data.shippingAddress,
-                name: data.name
+        const userID = localStorage.getItem('authUserId');
+
+        if (userID) {
+            const params = {
+                amount: cartPrice,
+                description: `Оплата товаров: ${cartJoin}`,
+                additionalData: {
+                    userID: userID,
+                    phone: data.phone,
+                    products: cart.map(cartItem => {
+                        return {product_id: cartItem.product._id, productVariant: {title: cartItem.variant.title, id: cartItem.variant._id}, count: Number(cartItem.quantity)};
+                    }),
+                    shippingAddress: deliveryType === 1 ? 'Самовывоз' : data.shippingAddress,
+                    name: data.name
+                }
             }
-        }
 
-        axios.post('https://poster-shop-server.onrender.com/payment', {
-            ...params
-        }, {
-            headers: {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*"
-            }
-        })
-            .then((data) => {
-                console.log(data.data, data.status)
+            console.log(params);
 
-                if (data.status === 200) {
-                    setOpenPayment(data.data.paymentURL);
-                } else {
-                    console.error('ERROR', data.data)
+            axios.post(`${process.env.ADMIN_ENDPOINT_BACKEND}/payment`, {
+                ...params
+            }, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "Access-Control-Allow-Origin": "*"
                 }
             })
-            .catch(error => console.error(error))
-            .finally(() => setCompleteRequest(true))
+                .then((data) => {
+                    console.log(data.data, data.status)
+
+                    if (data.status === 200) {
+                        setOpenPayment(data.data.paymentURL);
+                    } else {
+                        console.error('ERROR', data.data)
+                    }
+                })
+                .catch(error => console.error(error))
+                .finally(() => setCompleteRequest(true))
+        }
     }
 
-    const getCart = async (userAuthId: string) => {
-        const userRef = doc(db, "users", userAuthId!.toString());
-        const userSnapshot = await getDoc(userRef);
-
-        dispatch(setCart(userSnapshot.data()?.cart || []));
-        // setC(userSnapshot.data()?.cart || []);
-    };
-
     const getUserInfo = async (userAuthId: string) => {
-        const userRef = doc(db, "users", userAuthId!.toString());
-        const userSnapshot = await getDoc(userRef);
+        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userAuthId}`);
 
-        const name = userSnapshot.data()?.name;
-        const phone = userSnapshot.data()?.phone;
-
-        setUser({...user, name, phone});
+        setUser(response.data);
     }
 
     function handleChangeRadio(e: SyntheticEvent<HTMLInputElement>) {
@@ -197,7 +179,7 @@ const Checkout = () => {
     }
 
     if (isLoading || !isLoaded) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
     return <div id="liqpay_checkout" className="shadow mx-24 my-14 p-5">
@@ -216,8 +198,7 @@ const Checkout = () => {
                             </label>
                             <div className="relative">
                                 <input
-                                    readOnly={!!user.name}
-                                    value={user.name}
+                                    defaultValue={user.personals.fullName}
                                     className={`block w-full rounded-md shadow-sm ${
                                         errors.name
                                             ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
@@ -248,8 +229,7 @@ const Checkout = () => {
                             </label>
                             <div className="relative">
                                 <input
-                                    readOnly={!!user.phone}
-                                    value={user.phone}
+                                    defaultValue={user.personals.phoneNumber}
                                     className={`block w-full rounded-md shadow-sm ${
                                         errors.phone
                                             ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
@@ -335,19 +315,12 @@ const Checkout = () => {
                     </form>
                     <div className="flex-1">
                         <h3 className="text-right border-b pb-2">
-                            <span>Всего к оплате: &#8372;{" "}</span>
-                            {cart.reduce(
-                                (acc, cartItem) =>
-                                    acc +
-                                    Number(cartItem.product.price["1"].slice(0, -2)) *
-                                    cartItem.quantity,
-                                0,
-                            )}
+                            <span>Всего к оплате: <span className="font-bold">{cartPrice} ₴</span></span>
                         </h3>
                         <div className="pt-6 flex flex-col gap-y-6">
-                            {cart.map(cartItem => (
+                            {cart.map((cartItem, index) => (
                                 <CartItem cartItem={cartItem} quantityItem={cartItem.quantity}
-                                          key={cartItem.product.product_id} inCheckout={true}/>
+                                          key={index} inCheckout={true}/>
                             ))}
                         </div>
                     </div>
@@ -356,7 +329,6 @@ const Checkout = () => {
         ) : (
             <div>Нет доступа</div>
         )}
-
     </div>
 }
 

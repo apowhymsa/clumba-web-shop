@@ -7,6 +7,7 @@ import {FindProductItem} from "@/components/SearchModal/FindProductItem";
 import {collection, onSnapshot} from "@firebase/firestore";
 import {db} from "@/utils/firebase/firebase";
 import {setComments} from "@/utils/store/commentsSlice";
+import axios from "axios";
 
 type Props = {
     onClose: () => void;
@@ -26,13 +27,14 @@ const SearchModal = (props: Props) => {
     }, [isOpen]);
 
     useEffect(() => {
-
+        const searchProducts = async (searchValue: string) => {
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}`);
+            setFilteredProducts(response.data);
+        }
         if (debouncedSearchValue.trim().length <= 0) {
             setFilteredProducts([]);
-            console.log('here')
         } else {
-            const filtered = products.filter(product => product.product_name.toLowerCase().trim().includes(debouncedSearchValue.toLowerCase().trim()));
-            setFilteredProducts(filtered);
+            searchProducts(debouncedSearchValue);
         }
     }, [debouncedSearchValue]);
 
@@ -64,12 +66,12 @@ const SearchModal = (props: Props) => {
             <div>
                 <h2 className="text-lg font-medium leading-10">Результаты
                     поиска {filteredProducts.length > 0 && `(${filteredProducts.length})`}</h2>
-                <div className="grid grid-cols-2 max-h-[300px] overflow-y-auto">
+                <div className="grid grid-cols-2 max-h-[300px] overflow-y-auto gap-x-4">
                     {filteredProducts.length === 0 ? (
                         <span>Товаров не найдено</span>
                     ) : (
                         filteredProducts.map(findProduct => (
-                            <FindProductItem key={findProduct.product_id} product={findProduct} onClose={onClose}/>
+                            <FindProductItem key={findProduct._id} product={findProduct} onClose={onClose}/>
                         ))
                     )}
                 </div>

@@ -4,11 +4,10 @@ import { Category } from "@/types";
 export type Comment = {
     commentText: string;
     dateInMs: number;
-    productId: string;
+    productID: string;
     publishingDate: string;
     rating: number;
-    userName: string;
-    userPhoto: string;
+    userID: any;
 };
 
 type CommentsState = {
@@ -27,7 +26,7 @@ export const commentsSlice = createSlice({
             state.comments = action.payload;
         },
         addComment: (state, action: PayloadAction<Comment>) => {
-            state.comments.push(action.payload);
+            state.comments.unshift(action.payload);
         }
     },
 });

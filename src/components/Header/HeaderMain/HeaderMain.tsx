@@ -10,7 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import HeaderNav from "@/components/Header/HeaderMain/HeaderNav/HeaderNav";
-import {useEffect, useRef, useState} from "react";
+import {useContext, useEffect, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import HeaderBurgerContent from "@/components/Header/HeaderBurgerContent/HeaderBurgerContent";
 import {is} from "immutable";
@@ -19,8 +19,12 @@ import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
 import {SearchModal} from "@/components/SearchModal/SearchModal";
 import {doc, getDoc} from "@firebase/firestore";
 import {setCart} from "@/utils/store/cartSlice";
+import {useRouter} from "next/navigation";
+import {AuthContext} from "@/contexts/AuthContext/AuthContext";
 
 const HeaderMain = () => {
+    const router = useRouter();
+    const { isLoading, isLogged, setLogged, setLoading } = useContext(AuthContext);
     const [isOpenSearchModal, setOpenSearchModal] = useState(false);
     const [isVisible, setVisible] = useState(false);
     const burgerContentRef = useRef<HTMLDivElement>(null);
@@ -88,9 +92,12 @@ const HeaderMain = () => {
             <div className="header-buttons">
                 <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" onClick={() => setOpenSearchModal(true)}/>
                 <SearchModal onClose={() => setOpenSearchModal(false)} isOpen={isOpenSearchModal}/>
-                <UserIcon
-                    className="h-6 w-6 text-gray-400"
-                />
+                {isLogged && (
+                    <UserIcon
+                        onClick={() => router.push('/profile')}
+                        className="h-6 w-6 text-gray-400"
+                    />
+                )}
                 <span className="header-main-divider"></span>
                 <div className="relative">
                     <ShoppingCartIcon
@@ -112,6 +119,7 @@ const HeaderMain = () => {
                 {/*    document.body,*/}
                 {/*)}*/}
                 <Cart isOpen={isOpenCart} setOpen={setOpenCart}/>
+                {/*{true ? <Cart isOpen={isOpenCart} setOpen={setOpenCart}/> : null}*/}
             </div>
         </div>
     );

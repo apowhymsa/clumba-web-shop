@@ -61,13 +61,13 @@ const SwiperProducts = (props: Props) => {
                 ))
                 : products.map((product) => (
                     <SwiperSlide
-                        key={product.product_id}
+                        key={product._id}
                         style={{
                             height: "auto",
                         }}
                     >
                         <ProductItem
-                            key={product.product_id}
+                            key={product._id}
                             product={product}
                             isButtonVisible={false}
                         />

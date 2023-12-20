@@ -10,6 +10,7 @@ import useToast from "@/hooks/useToast";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import Button from "@/components/UI/Button/Button";
 import {AuthContext} from "@/contexts/AuthContext/AuthContext";
+import {useAppDispatch} from "@/utils/store/hooks";
 
 type Props = {
   onClose: () => void;
@@ -48,8 +49,8 @@ const ModalSignIn = (props: Props) => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/auth/login', requestBody, requestConfig);
-
+      const response = await axios.post(`${process.env.ADMIN_ENDPOINT_BACKEND}/auth/login`, requestBody, requestConfig);
+      localStorage.setItem('authUserId', response.data._id);
       setLogged(true);
       info('Успішний вхід у обліковий запис');
       onClose();

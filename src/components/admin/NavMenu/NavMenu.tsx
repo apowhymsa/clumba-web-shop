@@ -41,11 +41,11 @@ const NavMenu = () => {
                 {/*</li>*/}
             </ul>
         </li>
-        <li className="flex items-center justify-between px-4 rounded gap-x-4 bg-white w-full transition-colors cursor-pointer h-10 hover:bg-rose-200">
-            <div className="flex gap-x-4 items-center">
+        <li className="flex items-center justify-between rounded gap-x-4 bg-white w-full transition-colors cursor-pointer h-10 hover:bg-rose-200">
+            <Link href="/admin/orders" className="flex gap-x-4 px-4 flex-1 h-10 items-center">
                 <span><TbCheckupList/></span>
                 <span>Замовлення</span>
-            </div>
+            </Link>
         </li>
     </ul>
 }

@@ -17,13 +17,20 @@ type FormValues = {
 
 type Props = {
     onClose: () => void;
+    isOpen: boolean;
 }
 
 const ModalCreateIC = (props: Props) => {
     const {addIngredientCategory, ingredientCategories} = useIngredientCategoriesStore();
-    const {onClose} = props;
+    const {onClose, isOpen} = props;
     const {error, info} = useToast();
     const queryClient = useQueryClient()
+
+    useEffect(() => {
+        return () => {
+            document.body.style.overflow = 'visible';
+        }
+    }, []);
 
     const {
         register, handleSubmit, formState: {errors},
@@ -65,11 +72,9 @@ const ModalCreateIC = (props: Props) => {
         }
     }
 
-    return (<ModalContainer onClose={onClose}>
-            <h3 className="text-center font-semibold text-[16px]">Створення категорії інгредієнтів</h3>
-            <div className="modal-container flex flex-col gap-y-5 mt-4">
+    return (<ModalContainer onClose={onClose} isOpen={isOpen} headerContent="Створення категорії інгредієнтів">
                 <form
-                    className="default-section flex flex-col gap-y-5 my-3"
+                    className="default-section flex flex-col gap-y-5 px-6 py-4"
                     onSubmit={handleSubmit(createIngredientCategory)}
                 >
                     <div className="text-[14px]">
@@ -95,7 +100,6 @@ const ModalCreateIC = (props: Props) => {
 
                     <Button type='submit' variant='primary' content='Створити' isLoading={false}/>
                 </form>
-            </div>
         </ModalContainer>)
 }
 

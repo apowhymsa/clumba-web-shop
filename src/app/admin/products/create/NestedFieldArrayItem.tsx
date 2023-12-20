@@ -16,7 +16,7 @@ type Props = {
 const NestedFieldArrayItem = (props: Props) => {
     const {nestIndex, register, control, errors, k, item, isLoadingIngredients, ingredients} = props;
     const [ingredientVariants, setIngredientVariants] = useState<any>(null)
-    return (<div key={item.id} className="flex gap-x-4 mt-2 pl-10">
+    return (<div key={item.id} className="flex-1 flex gap-x-4 mt-2 pl-10">
         <div className="flex-1">
             <label
                 htmlFor={`variants.${nestIndex}.ingredients.${k}.ingredient.id`}

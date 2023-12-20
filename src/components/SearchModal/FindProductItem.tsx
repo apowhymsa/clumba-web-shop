@@ -3,20 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 
 type Props = {
-    product: Product;
-    onClose: () => void;
+    product: Product; onClose: () => void;
 }
 
 const FindProductItem = (props: Props) => {
     const {product, onClose} = props;
-    return <Link onClick={onClose} className="flex gap-x-4 h-auto w-full py-4 border-b items-center active:bg-gray-200 transition-colors hover:bg-gray-100" href={`/products/${product.product_id}`}>
+    return <Link onClick={onClose}
+                 className="flex gap-x-4 px-4 h-auto w-full py-4 border-b items-center active:bg-gray-200 transition-colors hover:bg-gray-100"
+                 href={`/products/${product._id}`}>
         <div className="h-20 w-20">
             <Image
-                src={
-                    product.photo_origin
-                        ? `https://poster-shop.joinposter.com${product.photo}`
-                        : "/flower_image.jpg"
-                }
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
                 // src="/flower_image.jpg"
                 alt="Product Image"
                 width={0}
@@ -36,8 +33,19 @@ const FindProductItem = (props: Props) => {
             />
         </div>
         <div>
-            <p className="font-medium text-lg">{product.product_name}</p>
-            <p className="font-semibold text-[16px]">&#8372; {product.price["1"].slice(0, -2)}</p>
+            <p className="font-medium text-lg">{product.title}</p>
+            <p className="font-semibold text-[16px]">
+                <span>
+                {product?.variants[0].discount.state ? (<span className="flex gap-x-4">
+                    <span className="line-through text-[14px] text-gray-500">
+                    &#8372; {product.variants[0].price}
+                </span>
+                <span className="font-semibold text-[16px]">
+                    &#8372; {Number(product.variants[0].price) - (Number(product.variants[0].price) * Number(product.variants[0].discount.percent)) / 100}
+                </span>
+                </span>) : (<span>&#8372; {product?.variants[0].price} </span>)}
+            </span>
+            </p>
         </div>
     </Link>
 }

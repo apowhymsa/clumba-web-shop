@@ -10,6 +10,7 @@ import {AxiosError, AxiosRequestConfig} from "axios";
 import useToast from "@/hooks/useToast";
 import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
 import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
+import Loader from "@/components/Loader/Loader";
 
 type IngredientCategory = {
     _id: string; title: string;
@@ -26,7 +27,8 @@ const columns = [columnHelper.accessor('_id', {
 const Page = () => {
     const {addIngredientCategory, ingredientCategories, deleteIngredientCategory} = useIngredientCategoriesStore();
     const [isOpenCreateModal, setOpenCreateModal] = useState(false);
-    const [isOpenUpdateModal, setOpenUpdateModal] = useState<{isOpen: boolean, id: string} | null>(null);
+    const [isOpenUpdateModal, setOpenUpdateModal] = useState(false);
+    const [updatingID, setUpdatingID] = useState('');
     const queryClient = useQueryClient()
     const {error, info} = useToast();
 
@@ -74,11 +76,12 @@ const Page = () => {
     }
 
     const onUpdate = (id: string) => {
-        setOpenUpdateModal({isOpen: true, id: id});
+        setUpdatingID(id);
+        setOpenUpdateModal(true);
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
     return (
@@ -92,8 +95,8 @@ const Page = () => {
                 </button>
             </div>
             <BasicTable data={ingredientCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
-            {isOpenCreateModal ? <ModalCreateIC onClose={() => setOpenCreateModal(false)}/> : null}
-            {isOpenUpdateModal?.isOpen ? <ModalUpdateIC onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
+            {isOpenCreateModal && <ModalCreateIC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/>}
+            {isOpenUpdateModal && <ModalUpdateIC isOpen={isOpenUpdateModal} onClose={() => setOpenUpdateModal(false)} id={updatingID}/>}
         </div>
     )
 }

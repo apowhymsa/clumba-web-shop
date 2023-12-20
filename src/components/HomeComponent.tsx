@@ -9,17 +9,18 @@ import {setProducts} from "@/utils/store/productSlice";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
 
 type Props = {
-    productsData: Product[];
+    productsData: any;
     isLoadingData: boolean;
 }
 const HomeComponent = (props: Props) => {
-    const {productsData,isLoadingData} = props;
+    const {isLoadingData, productsData} = props;
     const [isLoading, setLoading] = useState(isLoadingData);
     const dispatch = useAppDispatch();
     const products = useAppSelector(state => state.productsReducer.products);
 
     useEffect(() => {
-        dispatch(setProducts(productsData))
+        // dispatch(setProducts(productsData))
+        // console.log('products', products);
         setLoading(false);
     }, []);
 
@@ -34,7 +35,7 @@ const HomeComponent = (props: Props) => {
             <div className="mb-7 flex justify-between">
                 <h3 className="text-2xl font-medium">Популярные товары</h3>
                 <Link
-                    href="/products?sort=1&price=0-10000"
+                    href="/products?limit=15&page=1&sort=1&price=0-10000&categories=all"
                     className="underline text-rose-400 flex gap-x-2 items-center"
                     title="Перейти в каталог товаров"
                 >
@@ -58,7 +59,7 @@ const HomeComponent = (props: Props) => {
                         slidesPerView: 4.5,
                     },
                 }}
-                products={products}
+                products={productsData.popularProducts.products}
             />
         </div>
         <div className="flex gap-x-16 px-10 justify-center bg-[#e5e7eb] py-10 bg-opacity-50">
@@ -76,7 +77,7 @@ const HomeComponent = (props: Props) => {
             <div className="mb-7 flex justify-between">
                 <h3 className="text-2xl font-medium">Новые товары</h3>
                 <Link
-                    href="/products?sort=2&price=0-10000"
+                    href="/products?limit=15&page=1&sort=2&price=0-10000&categories=all"
                     className="underline text-rose-400 flex gap-x-2 items-center"
                     title="Перейти в каталог товаров"
                 >
@@ -100,7 +101,7 @@ const HomeComponent = (props: Props) => {
                         slidesPerView: 4.5,
                     },
                 }}
-                products={[...products].reverse()}
+                products={productsData.newProducts.products}
             />
         </div>
     </div>

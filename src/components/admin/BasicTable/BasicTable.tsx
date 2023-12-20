@@ -9,7 +9,8 @@ import {
     getFilteredRowModel,
     ColumnResizeMode,
     SortingState,
-    ColumnDef, VisibilityState
+    ColumnDef,
+    VisibilityState
 } from '@tanstack/react-table';
 import {memo, useEffect, useState} from "react";
 import {
@@ -25,13 +26,20 @@ import './BasicTable.scss';
 import {LiaSortSolid, LiaSortUpSolid, LiaSortDownSolid} from 'react-icons/lia';
 import {BsThreeDots} from 'react-icons/bs';
 import {clsx} from "clsx";
+import Link from "next/link";
 
 type Props = {
-    data: any[]; columns: ColumnDef<any, any>[]; onDelete: (id: string) => void; onUpdate: (id: string) => void;
+    data: any[];
+    columns: ColumnDef<any, any>[];
+    onDelete?: (id: string) => void;
+    onUpdate?: (id: string) => void;
     isProducts?: boolean;
+    isOrders?: boolean;
+    isOrderHistory?: boolean;
+    onClickDetails?: (id: string) => void;
 }
 const BasicTable = (props: Props) => {
-    const {data, columns, onUpdate, onDelete, isProducts} = props;
+    const {isOrders, isOrderHistory, onClickDetails, data, columns, onUpdate, onDelete, isProducts} = props;
     const [sorting, setSorting] = useState<SortingState>([]);
     const [filtering, setFiltering] = useState('');
     const [dropDownShown, setDropDownShown] = useState(false);
@@ -51,8 +59,7 @@ const BasicTable = (props: Props) => {
             }
         },
         state: {
-            sorting: sorting, globalFilter: filtering,
-            columnVisibility
+            sorting: sorting, globalFilter: filtering, columnVisibility
         },
         onSortingChange: setSorting,
         onGlobalFilterChange: setFiltering,
@@ -70,8 +77,11 @@ const BasicTable = (props: Props) => {
             <div className="flex items-center gap-x-4">
                 <p>Всього ({table.getFilteredRowModel().rows.length})</p>
             </div>
-            <input type="text" className="rounded h-8 text-[14px]" value={filtering} onChange={(e) => setFiltering(e.target.value)}
-                   placeholder="Пошук..."/>
+            {!isOrderHistory && (
+                <input type="text" className="rounded h-8 text-[14px]" value={filtering}
+                       onChange={(e) => setFiltering(e.target.value)}
+                       placeholder="Пошук..."/>
+            )}
         </div>
         <div className="flex items-center justify-between mb-3 w-full text-[14px]">
             <span>
@@ -112,37 +122,42 @@ const BasicTable = (props: Props) => {
                                 } [header.column.getIsSorted() as string] ?? <LiaSortSolid/>}
                             </div>
                         </th>))}
-                    <th className="p-2 border border-[#eaeaea] w-[145px] min-w-[145px]">
-                        Дії
-                    </th>
+                    {!isOrderHistory && (
+                        <th className="p-2 border border-[#eaeaea] w-[145px] min-w-[145px]">
+                            Дії
+                        </th>
+                    )}
                 </tr>))}
                 </thead>
                 <tbody>
-                {table.getRowModel().rows.map(row => (
-                    <>
-                    <tr key={row.id} className="transition-colors hover:bg-[#f5f5f5]">
-                    {row.getVisibleCells().map(cell => (
-                        <td key={cell.id} className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">
-                            {!Array.isArray(cell.getValue()) && flexRender(cell.column.columnDef.cell, cell.getContext())}
-                        </td>))}
-                    <td className="drop-down-button relative transition-colors border border-[#eaeaea] text-[#6c757d] font-medium">
-                        <div className="flex justify-center items-center gap-x-4">
+                {table.getRowModel().rows.map(row => (<>
+                        <tr key={row.id} className="transition-colors hover:bg-[#f5f5f5]">
+                            {row.getVisibleCells().map(cell => (<td key={cell.id}
+                                                                    className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">
+                                {!Array.isArray(cell.getValue()) && flexRender(cell.column.columnDef.cell, cell.getContext())}
+                            </td>))}
+                            {isOrders ? (
+                                <td className="flex justify-center items-center py-[5px] drop-down-button relative transition-colors border border-[#eaeaea] text-[#6c757d] font-medium">
+                                    <span className="rounded bg-rose-400 cursor-pointer text-white p-2 transition-all hover:bg-rose-500"
+                                          onClick={() => onClickDetails && onClickDetails(row.getAllCells()[0].getValue<string>())}>Докладніше</span>
+                                </td>) : !isOrderHistory && (
+                                <td className="drop-down-button relative transition-colors border border-[#eaeaea] text-[#6c757d] font-medium">
+                                    <div className="flex justify-center items-center gap-x-4">
                         <span className="bg-blue-600 cursor-pointer p-1 rounded transition-colors hover:bg-blue-700"
-                              title="Редагувати" onClick={() => onUpdate(row.getAllCells()[0].getValue<string>())}>
+                              title="Редагувати"
+                              onClick={() => onUpdate && onUpdate(row.getAllCells()[0].getValue<string>())}>
                             <PencilSquareIcon className="w-5 h-5 text-white"/>
                         </span>
-                            <span className="bg-red-600 cursor-pointer p-1 rounded transition-colors hover:bg-red-700"
-                                  title="Видалити"
-                                  onClick={() => onDelete(row.getAllCells()[0].getValue<string>())}>
+                                        <span
+                                            className="bg-red-600 cursor-pointer p-1 rounded transition-colors hover:bg-red-700"
+                                            title="Видалити"
+                                            onClick={() => onDelete && onDelete(row.getAllCells()[0].getValue<string>())}>
                                 <TrashIcon className="w-5 h-5 text-white"/>
                             </span>
-                        </div>
-                    </td>
-                </tr>
-                        {isProducts ? (
-                            row.getAllCells().map(cell => (
-                                Array.isArray(cell.getValue()) && (
-                                    (cell.getValue() as any[]).map(renderCell => (
+                                    </div>
+                                </td>)}
+                        </tr>
+                        {isProducts ? (row.getAllCells().map(cell => (Array.isArray(cell.getValue()) && ((cell.getValue() as any[]).map(renderCell => (
                                         <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
                                             <td className="bg-white"></td>
                                             <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.title}</td>
@@ -153,28 +168,25 @@ const BasicTable = (props: Props) => {
                                                     <li>Знижка: {renderCell.discount.state ? `Присутня - ${renderCell.discount.percent}%` : 'Відсутня'}</li>
                                                 </ul>
                                             </td>
-                                        </tr>
-                                    ))
-                                )
-                            ))
-                        ): (
-                            row.getAllCells().map(cell => (
-                                    Array.isArray(cell.getValue()) && (
-                                        (cell.getValue() as any[]).map(renderCell => (
-                                            <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
-                                                <td className="bg-white"></td>
-                                                <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.id.vType}</td>
-                                                <td className="bg-white"></td>
-                                                <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium text-center">
-                                                    {renderCell.id.count} одиниць
-                                                </td>
-                                            </tr>
-                                        ))
-                                    )
-                                ))
-                        )}
-                    </>
-                ))}
+                                        </tr>)))))) : isOrders ? (row.getAllCells().map(cell => (Array.isArray(cell.getValue()) && ((cell.getValue() as any[]).map((renderCell, index) => (
+                                        <tr key={index} className="transition-colors bg-[#f5f5f5]">
+                                            <td className="bg-white"></td>
+                                            <td className="bg-white"></td>
+                                            <td className="flex flex-col gap-y-2 flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">
+                                                <span>Назва: {renderCell.product_id.title}</span>
+                                                <span>Варіант:{renderCell.productVariant.title}</span>
+                                                <span>Кількість: {renderCell.count} од.</span>
+                                            </td>
+                                        </tr>)))))) : !isOrderHistory && (row.getAllCells().map(cell => (Array.isArray(cell.getValue()) && ((cell.getValue() as any[]).map(renderCell => (
+                                        <tr key={renderCell._id} className="transition-colors bg-[#f5f5f5]">
+                                            <td className="bg-white"></td>
+                                            <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium">{renderCell.id.vType}</td>
+                                            <td className="bg-white"></td>
+                                            <td className="flex-1 p-2 border border-[#eaeaea] text-[#6c757d] font-medium text-center">
+                                                {renderCell.id.count} одиниць
+                                            </td>
+                                        </tr>))))))}
+                    </>))}
                 </tbody>
             </table>
         </div>

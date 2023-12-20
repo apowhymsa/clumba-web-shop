@@ -1,36 +1,40 @@
 import Image from "next/image";
 import { StarIcon } from "@heroicons/react/24/solid";
-import {Dispatch, SetStateAction, useEffect, useState} from "react";
+import {Dispatch, memo, SetStateAction, useEffect, useState} from "react";
 import {addDoc, collection, doc, getDoc, onSnapshot} from "@firebase/firestore";
 import {db} from "@/utils/firebase/firebase";
 import ReactStars from "react-rating-stars-component";
 import {toast} from "react-toastify";
 import useToast from "@/hooks/useToast";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
-import {setComments} from "@/utils/store/commentsSlice";
+import {addComment, Comment, setComments} from "@/utils/store/commentsSlice";
+import {IVariantProduct, Product} from "@/types";
+import axios, {AxiosRequestConfig} from "axios";
+import { v4 as uuidv4 } from 'uuid';
+import {QueryClient, useQuery} from "@tanstack/react-query";
+import clsx from "clsx";
 
 type Props = {
   classNameContainer: string;
   setTab: Dispatch<SetStateAction<number>>;
   tab: number;
   productId: string | undefined;
+  product: IVariantProduct | undefined;
+  comments: Comment[]
 };
+
 const ProductOverview = (props: Props) => {
   const {info, error} = useToast();
+  const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
-  const comments = useAppSelector(state => state.commentsReducer).comments;
   const dispatch = useAppDispatch();
-  const { tab, setTab, classNameContainer, productId } = props;
+  const {comments, tab, setTab, classNameContainer, productId, product } = props;
+
   const addCommentHandler = async () => {
     const userId = localStorage.getItem("authUserId");
 
     if (userId) {
-      const commentsRef = collection(db, 'comments');
-
-      const userRef = doc(db, 'users', userId!.toString());
-      const user = await getDoc(userRef);
-
       let today = new Date();
       let dd = String(today.getDate()).padStart(2, '0');
       let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -40,78 +44,50 @@ const ProductOverview = (props: Props) => {
 
       const ms = new Date().getTime();
 
-      const commentObj = {
-        productId: productId,
+      const requestBody = {
+        productID: productId,
         rating: rating,
         commentText: comment,
         publishingDate: date,
         dateInMs: ms,
-        userName: user.data()?.name,
-        userPhoto: user.data()?.profilePhoto
+        userID: userId
       }
 
-      addDoc(commentsRef, {
-        ...commentObj
-      })
-          .then(() => {
-            info('Отзыв успешно опубликован 😍');
-            setRating(0);
-            setComment('');
-          })
-          .catch(() => {
-            info('Ошибка публикации отзыва 😢');
-          })
+      const requestConfig: AxiosRequestConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+        }, withCredentials: true
+      }
+
+      console.log(requestBody);
+      const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/comment`, requestBody, requestConfig);
+
+      dispatch(addComment(response.data));
+      info('Дякуємо за ваш відгук 😊')
     } else {
       error('Войдите в аккаунт для публикации отзыва 😳');
     }
-
   };
-
-  useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'comments'), (collection) => {
-      const commentsCollection = collection.docs
-          .sort((a, b) => b.data().dateInMs - a.data().dateInMs)
-          .filter(comment => comment.data().productId === productId)
-          .map((comment) => comment.data());
-
-      dispatch(setComments(commentsCollection))
-    })
-
-    return () => unsub();
-  }, []);
-
-  useEffect(() => {
-    console.log(comments);
-  }, [comments]);
 
   return (
     <div className={classNameContainer}>
       <div className="flex flex-col gap-y-3 w-full">
         <div className="flex gap-x-3 border-b border-b-gray-10 w-full">
-          <ul className="flex gap-x-5 w-full">
-            <li
-              onClick={() => setTab(1)}
-              className={
-                tab === 1
-                  ? "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 hover:text-rose-400 relative text-rose-400  after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-rose-400"
-                  : "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 text-black hover:text-rose-500"
-              }
-            >
-              Информация для покупателя
-            </li>
-            <li
-              onClick={() => setTab(2)}
-              className={
-                tab === 2
-                  ? "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 hover:text-rose-400 relative text-rose-400  after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-rose-400"
-                  : "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 text-black hover:text-rose-500"
-              }
-            >
-              Отзывы
-            </li>
-          </ul>
+          <div role="tablist" className="tabs tabs-boxed flex-1">
+            <span onClick={() => setTab(1)} role="tab" className={clsx("tab", tab === 1 && "bg-rose-400 text-white")}>Інформація для клієнта</span>
+            <span onClick={() => setTab(2)} role="tab" className={clsx("tab", tab === 2 && "bg-rose-400 text-white")}>Відгуки</span>
+          </div>
         </div>
-        {tab === 1 && <div>Info</div>}
+        {tab === 1 && <div>
+          <p>Склад товару:</p>
+          <ul>
+          {
+            product?.ingredients.map((currentIng: any, index) => (
+                <li key={index}>Назва: {currentIng.ingredient.id.title} - Тип: {currentIng.ingredient.variantID.vType} - {currentIng.count} шт.</li>
+            ))
+          }
+          </ul>
+        </div>}
         {tab === 2 && (
           <div className="flex flex-col gap-y-8 max-h-[300px] overflow-y-auto px-1 py-2">
             <div className="max-w-full">
@@ -149,49 +125,49 @@ const ProductOverview = (props: Props) => {
               </div>
             </div>
             {/*border-b pb-8*/}
-            {comments.length <= 0 ? (
-                <div>Комментарии отсутствуют</div>
-            ) : (
-                comments.map((currentComment) => (
-                      <div key={currentComment.dateInMs} className="flex gap-x-4 border-b pb-8">
-                        {/*//TODO Insert user image*/}
-                        <Image
-                            src="https://i.pravatar.cc/50"
-                            alt="Profile Photo"
-                            width={50}
-                            height={50}
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                              objectFit: "cover",
-                              borderRadius: "100%",
-                            }}
-                            priority
-                        />
-                        <div className="flex flex-col gap-y-3">
-                          <div className="flex flex-col">
-                            <span>{currentComment.userName}</span>
-                            <span className="text-[#6b7290]">{currentComment.publishingDate}</span>
-                          </div>
-                          <div className="flex">
-                            {[0,0,0,0,0].map((value, index) => (
-                                index <= currentComment.rating - 1 ? (
-                                    <StarIcon key={index + 1} className="text-[#facc15] h-5 w-5"/>
-                                ) : (
-                                    <StarIcon key={index + 2} className="text-[#f4f4f4] h-5 w-5" />
-                                )
-                            ))}
-                          </div>
-                          <div>
+            {
+                comments.length <= 0 ? (
+                      <div>Цей товар ще немає відгуків 🙄</div>
+                  ) : (
+                      comments.map((currentComment) => (
+                          <div key={currentComment.dateInMs} className="flex gap-x-4 border-b pb-8">
+                            {/*//TODO Insert user image*/}
+                            <Image
+                                src={currentComment.userID.personals.avatar}
+                                alt="Profile Photo"
+                                width={50}
+                                height={50}
+                                style={{
+                                  width: "50px",
+                                  height: "50px",
+                                  objectFit: "cover",
+                                  borderRadius: "100%",
+                                }}
+                                priority
+                            />
+                            <div className="flex flex-col gap-y-3">
+                              <div className="flex flex-col">
+                                <span>{currentComment.userID.personals.fullName}</span>
+                                <span className="text-[#6b7290]">{currentComment.publishingDate}</span>
+                              </div>
+                              <div className="flex">
+                                {[0,0,0,0,0].map((value, index) => (
+                                    index <= currentComment.rating - 1 ? (
+                                        <StarIcon key={index + 1} className="text-[#facc15] h-5 w-5"/>
+                                    ) : (
+                                        <StarIcon key={index + 2} className="text-[#f4f4f4] h-5 w-5" />
+                                    )
+                                ))}
+                              </div>
+                              <div>
                   <span>
                     {currentComment.commentText}
                   </span>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                  ))
+                      ))
             )}
-
           </div>
         )}
       </div>
@@ -199,4 +175,4 @@ const ProductOverview = (props: Props) => {
   );
 };
 
-export default ProductOverview;
+export default memo(ProductOverview);

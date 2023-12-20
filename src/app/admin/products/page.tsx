@@ -11,6 +11,7 @@ import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {createColumnHelper} from "@tanstack/react-table";
 import {useRouter} from "next/navigation";
 import {useProductsStore} from "@/utils/zustand-store/products";
+import Loader from "@/components/Loader/Loader";
 
 interface IIngredient {
     id: string;
@@ -84,12 +85,12 @@ const Page = () => {
 
     const {data, isLoading} = useQuery({
         queryKey: ['products'], queryFn: async () => {
-            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products`, {
+            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=100&page=1&sort=asc&price=0-10000&categories=all`, {
                 headers: {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             })
-            addProduct(data);
+            addProduct(data.products);
 
             return data;
         }
@@ -132,7 +133,7 @@ const Page = () => {
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <Loader/>
     }
 
     return (<div className="flex-1 p-6 text-[14px]">

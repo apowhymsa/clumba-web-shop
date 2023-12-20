@@ -68,19 +68,6 @@ const ProductOverviewMobile = (props: Props) => {
   };
 
   useEffect(() => {
-    const unsub = onSnapshot(collection(db, 'comments'), (collection) => {
-      const commentsCollection = collection.docs
-          .sort((a, b) => b.data().dateInMs - a.data().dateInMs)
-          .filter(comment => comment.data().productId === productId)
-          .map((comment) => comment.data());
-
-      dispatch(setComments(commentsCollection))
-    })
-
-    return () => unsub();
-  }, []);
-
-  useEffect(() => {
     console.log(comments);
   }, [comments]);
 
@@ -155,7 +142,7 @@ const ProductOverviewMobile = (props: Props) => {
                 <div key={currentComment.dateInMs} className="flex flex-col gap-x-4 border-b pb-4">
                   <div className="flex justify-between">
                     <Image
-                        src="https://i.pravatar.cc/50"
+                        src={currentComment.userID.personals.avatar}
                         alt="Profile Photo"
                         width={50}
                         height={50}
@@ -169,7 +156,7 @@ const ProductOverviewMobile = (props: Props) => {
                     />
                     <div className="flex flex-col gap-y-3">
                       <div className="flex flex-col">
-                        <span>{currentComment.userName}</span>
+                        <span>{currentComment.userID.personals.fullName}</span>
                         <span className="text-[#6b7290]">{currentComment.publishingDate}</span>
                       </div>
                       <div className="flex">
