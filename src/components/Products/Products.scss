@@ -3,7 +3,7 @@
 }
 
 .product-item {
-  @apply flex flex-col h-full gap-y-6 p-4 border border-gray-200 transition-shadow hover:rounded hover:shadow;
+  @apply flex flex-col h-full gap-y-3 p-4 border border-gray-200 transition-shadow hover:rounded hover:shadow;
   & > .product-image {
     @apply transition-opacity cursor-pointer;
   }

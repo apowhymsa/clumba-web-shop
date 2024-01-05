@@ -25,6 +25,7 @@ const Checkout = () => {
         libraries: ['places', 'geocoding']
     });
 
+    const [deliveryAmount, setDeliveryAmount] = useState(0);
     const [isLoading, setloading] = useState(true);
     const [isCompleteRequest, setCompleteRequest] = useState(true);
     const cart = useAppSelector(state => state.cartReducer).cart;
@@ -116,7 +117,12 @@ const Checkout = () => {
 
             // 47.939615 33.426008
 
-            getDistance(shopLat, shopLng, lat, lng).then(response => console.log('res', response));
+            getDistance(shopLat, shopLng, lat, lng).then((response: any) => {
+                console.log('res', response);
+                const dAmount = Math.ceil(response.rows[0].elements[0].distance.value / 1000) * 12
+                console.log(dAmount);
+                setDeliveryAmount(dAmount);
+            });
 
             console.log(lat, lng);
         }
@@ -130,7 +136,7 @@ const Checkout = () => {
 
         if (userID) {
             const params = {
-                amount: cartPrice,
+                amount: deliveryType === 1 ? cartPrice : cartPrice + deliveryAmount,
                 description: `Оплата товаров: ${cartJoin}`,
                 additionalData: {
                     userID: userID,
@@ -184,7 +190,7 @@ const Checkout = () => {
 
     return <div id="liqpay_checkout" className="shadow mx-24 my-14 p-5">
         {cart.length > 0 ? (
-            <><h2 className="text-xl font-bold border-b py-2">Заказ</h2>
+            <><h2 className="text-xl font-bold border-b py-2">Оформлення замовлення</h2>
                 <div className="flex gap-x-14 justify-center pt-6">
                     <form className="flex-1 flex flex-col gap-y-5" onSubmit={handleSubmit(submitHandler)}>
                         <div>
@@ -194,7 +200,7 @@ const Checkout = () => {
                                     errors.name ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null
                                 }`}
                             >
-                                Имя
+                                Ім`я та прізвище
                             </label>
                             <div className="relative">
                                 <input
@@ -254,15 +260,15 @@ const Checkout = () => {
                             <div className="flex flex-col gap-y-2 mb-4">
                                 <div className="flex items-center space-x-2">
                                     <input onChange={handleChangeRadio} value="1" type="radio" id="delivery1" checked={deliveryType === 1} name="delivery" className="h-4 w-4 rounded-full border-gray-300 text-rose-400 shadow-sm focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:text-gray-400" />
-                                    <label htmlFor="delivery1" className="text-sm font-medium text-gray-700">Самовывоз из магазина</label>
+                                    <label htmlFor="delivery1" className="text-sm font-medium text-gray-700">Самовивіз з нашого магазину</label>
                                 </div>
                                 <div className="flex space-x-2">
                                     <div className="flex h-5 items-center">
                                         <input onChange={handleChangeRadio} value="2" type="radio" id="delivery2" checked={deliveryType === 2} name="delivery" className="h-4 w-4 rounded-full border-gray-300 text-rose-400 shadow-sm focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:text-gray-400" />
                                     </div>
                                     <label htmlFor="delivery2" className="text-sm">
-                                        <div className="font-medium text-gray-700">Доставка по адресу</div>
-                                        <p className="text-gray-500">Укажите корректный адрес, стоимость доставки будет расчитываться на его основе!</p>
+                                        <div className="font-medium text-gray-700">Доставка за адресою</div>
+                                        <p className="text-gray-500">Вкажіть коректну адресу, вартість доставки буде розраховуватись на її основі!</p>
                                     </label>
                                 </div>
                             </div>
@@ -274,7 +280,7 @@ const Checkout = () => {
                                             errors.shippingAddress ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null
                                         }`}
                                     >
-                                        Адрес доставки
+                                        Адреса доставки
                                     </label>
                                     <div className="relative">
                                         <Autocomplete onPlaceChanged={onPlaceChanged} onLoad={onLoad}
@@ -303,6 +309,9 @@ const Checkout = () => {
                                     {errors.shippingAddress ? (
                                         <p className="mt-1 text-sm text-red-500">{errors.shippingAddress.message}</p>
                                     ) : null}
+                                    {deliveryAmount > 0 && (
+                                        <span className="block text-[15px] w-full text-right pt-4 underline">Розрахункова вартість доставки: <span className="font-semibold text-[16px]">{deliveryAmount} ₴</span></span>
+                                    )}
                                 </>
                             )}
                         </div>
@@ -315,7 +324,7 @@ const Checkout = () => {
                     </form>
                     <div className="flex-1">
                         <h3 className="text-right border-b pb-2">
-                            <span>Всего к оплате: <span className="font-bold">{cartPrice} ₴</span></span>
+                            <span>Всього до сплати: <span className="font-bold">{cartPrice} ₴ {deliveryAmount > 0 && `+ ${deliveryAmount} ₴ доставка`}</span></span>
                         </h3>
                         <div className="pt-6 flex flex-col gap-y-6">
                             {cart.map((cartItem, index) => (

@@ -1,0 +1,119 @@
+.product-category-additional {
+  position: absolute;
+  top: -100%;
+  color: white;
+  transition: top 0.25s ease-in-out;
+  font-weight: bold;
+  font-size: 16px;
+  width: 100%;
+  z-index: 2;
+}
+
+.product-category-title {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  z-index: 2;
+  color: white;
+  font-size: 20px;
+}
+
+.product-category-image {
+  position: relative;
+}
+
+.product-category-item-container:hover .product-category-image:after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  content: '';
+  width: 100%;
+  height: 100%;
+  opacity: 0.3;
+  transition: opacity 0.2s ease-in-out;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 1), transparent 50%, rgba(0, 0, 0,1)),
+  linear-gradient(to top, rgba(0, 0, 0, 1), transparent 50%, rgba(0, 0, 0, 1));
+}
+
+.product-category-item-container {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+
+  //&::after {
+  //  position: absolute;
+  //  top: 0;
+  //  left: 0;
+  //  content: '';
+  //  width: 100%;
+  //  height: 100%;
+  //  opacity: 0.3;
+  //  transition: opacity 0.2s ease-in-out;
+  //  background: linear-gradient(to bottom, rgba(0, 0, 0, 1), transparent 50%, rgba(0, 0, 0,1)),
+  //  linear-gradient(to top, rgba(0, 0, 0, 1), transparent 50%, rgba(0, 0, 0, 1));
+  //}
+
+  //&:hover::after {
+  //  opacity: 0.5;
+  //}
+
+  & img {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out, background-color 0.3s ease-in-out;
+  }
+
+  &:hover img {
+    transform: scale(1.2);
+  }
+
+  &:hover .product-category-additional {
+    top: 15px;
+  }
+}
+
+.product-category-item-container:hover > .product-category-additional {
+  opacity: 1;
+}
+
+.more-products-categories > svg {
+  transition: transform 0.3s ease-in-out;
+}
+.more-products-categories:hover {
+  & > svg {
+    transform: rotate(180deg);
+  }
+}
+
+// Wide
+@media (max-width: 1100px) {
+  .product-category-wrapper {
+    @apply grid-cols-3;
+  }
+}
+
+// Laptop
+@media (max-width: 992px) {
+}
+
+// Tablet
+@media (max-width: 900px) {
+  .product-category-wrapper {
+    @apply grid-cols-2;
+  }
+}
+
+// Tablet
+@media (max-width: 768px) {
+}
+
+// Mobile
+@media (max-width: 576px) {
+  .product-category-wrapper {
+    @apply grid-cols-1 py-3;
+  }
+}
+
+// Small Mobile
+@media (max-width: 320px) {
+}

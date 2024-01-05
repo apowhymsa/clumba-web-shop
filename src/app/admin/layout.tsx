@@ -46,9 +46,10 @@ const Layout: FC<Props> = ({children}) => {
 
     return <div className="bg-white min-h-screen">
         <QueryClientProvider client={queryClient}>
-            <div className={clsx("flex gap-x-4")}>
+            <div className={clsx("flex flex-col")}>
                 <NavMenu/>
-                <div className="w-full ml-[300px]">
+                {/*//ml-[300px]*/}
+                <div className="w-full">
                     <div className="flex gap-x-2 text-[16px] shadow p-4 bg-[#f5f5f5]">
                         <span>Поточна робоча область: </span>
                         {pathname.startsWith('/admin/ingCategories') &&
@@ -58,6 +59,7 @@ const Layout: FC<Props> = ({children}) => {
                             <h2 className="font-semibold">Категорії товарів</h2>}
                         {pathname.startsWith('/admin/products') && <h2 className="font-semibold">Товари</h2>}
                         {pathname.startsWith('/admin/orders') && <h2 className="font-semibold">Замовлення</h2>}
+                        {pathname.startsWith('/admin/mailing') && <h2 className="font-semibold">Розсилка</h2>}
                     </div>
                         {children}
                 </div>

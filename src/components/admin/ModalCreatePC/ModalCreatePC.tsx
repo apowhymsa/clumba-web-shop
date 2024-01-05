@@ -98,9 +98,7 @@ const ModalCreatePC = (props: Props) => {
                             {...register("categoryName", {
                                 required: {
                                     value: true, message: "Поле обов'язкове для заповнення",
-                                }, minLength: {
-                                    value: 6, message: "Поле повинно мати більше ніж 5 символів",
-                                },
+                                }
                             })}
                         />
                     </div>

@@ -209,14 +209,14 @@ const Page = () => {
                                 {/*Назва типу*/}
                                 <div className="flex-1">
                                     <label
-                                        htmlFor="variant-0-title"
-                                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                                        htmlFor={`variants.${index}.vType`}
+                                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants?.at?.(index)?.vType ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
                                     >
                                         Назва типу
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full text-[14px] h-8 rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full text-[14px] h-8 rounded-md shadow-sm pl-4 ${errors.variants?.at?.(index)?.vType ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${index}.vType`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -224,8 +224,8 @@ const Page = () => {
                                             })}
                                         />
                                     </div>
-                                    {errors.variants ? (
-                                        <p className="mt-1 text-sm text-red-500">{errors.variants.message}</p>) : null}
+                                    {errors.variants?.at?.(index)?.vType ? (
+                                        <p className="mt-1 text-sm text-red-500">{errors.variants?.at?.(index)?.vType?.message}</p>) : null}
                                 </div>
                                 {/*/!*Ціна за одиницю*!/*/}
                                 {/*<div className="flex-1">*/}
@@ -251,14 +251,14 @@ const Page = () => {
                                 {/*Наявна кількість*/}
                                 <div className="flex-1">
                                     <label
-                                        htmlFor="variant-0-title"
-                                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                                        htmlFor={`variants.${index}.count`}
+                                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants?.at?.(index)?.count ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
                                     >
                                         Наявна кількість
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.variants?.at?.(index)?.count ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${index}.count`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -266,8 +266,8 @@ const Page = () => {
                                             })}
                                         />
                                     </div>
-                                    {errors.variants ? (
-                                        <p className="mt-1 text-sm text-red-500">{errors.variants.message}</p>) : null}
+                                    {errors.variants?.at?.(index)?.count ? (
+                                        <p className="mt-1 text-sm text-red-500">{errors.variants?.at?.(index)?.count?.message}</p>) : null}
                                 </div>
                                 {fields.length > 1 ? (<span
                                     className="bg-red-600 cursor-pointer p-1 rounded transition-colors hover:bg-red-700 h-fit"

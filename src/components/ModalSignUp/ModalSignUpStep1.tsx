@@ -63,7 +63,7 @@ const ModalSignUpStep1 = (props: Props) => {
 
   return (
     <div
-      className="absolute top-1/2 left-1/2 bg-white h-fit w-[500px] -translate-x-1/2 -translate-y-1/2 px-9 py-9 rounded"
+      className="absolute top-1/2 left-1/2 bg-white h-fit w-full sm:w-[500px] -translate-x-1/2 -translate-y-1/2 px-9 py-9 rounded"
       onClick={(e) => e.stopPropagation()}
     >
       <div

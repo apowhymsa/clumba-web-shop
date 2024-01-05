@@ -112,8 +112,8 @@ const Page = () => {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
             }
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories`, requestConfig);
-            response.data.forEach((category: any) => {
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=1000&page=1`, requestConfig);
+            response.data.categories.forEach((category: any) => {
                 setPc((currentState) => [...currentState, {
                     value: category._id, label: category.title
                 }])
@@ -324,13 +324,13 @@ const Page = () => {
                                 <div className="flex-1">
                                     <label
                                         htmlFor={`variants.${variantIndex}.title`}
-                                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants && (errors.variants.at?.(variantIndex) as any)?.title? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
                                     >
                                         Назва варіанту товару
                                     </label>
                                     <div className="relative">
                                         <input
-                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                            className={`block w-full h-8 text-sm rounded-md shadow-sm pl-4 ${errors.variants && (errors.variants.at?.(variantIndex) as any)?.title ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                             {...register(`variants.${variantIndex}.title`, {
                                                 required: {
                                                     value: true, message: "Поле обов'язкове для заповнення",
@@ -338,14 +338,14 @@ const Page = () => {
                                             })} defaultValue={variant.title}
                                         />
                                     </div>
-                                    {errors.variants ? (
-                                        <p className="mt-1 text-sm text-red-500">{errors.variants.message}</p>) : null}
+                                    {errors.variants && (errors.variants.at?.(variantIndex) as any)?.title ? (
+                                        <p className="mt-1 text-sm text-red-500">{errors.variants && (errors.variants.at?.(variantIndex) as any)?.title.message}</p>) : null}
                                 </div>
                                 <div className="flex gap-x-4 items-center">
                                     <div className="flex-1">
                                         <label
                                             htmlFor={`variants.${variantIndex}.price`}
-                                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.price ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants && (errors.variants.at?.(variantIndex) as any)?.price ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
                                         >
                                             Ціна товару
                                         </label>
@@ -356,7 +356,7 @@ const Page = () => {
                                                 min={1}
                                                 type="number"
                                                 defaultValue={variant.price}
-                                                className={`block w-full h-8 text-sm rounded-md shadow-sm pl-8 ${errors.price ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                                className={`block w-full h-8 text-sm rounded-md shadow-sm pl-8 ${errors.variants && (errors.variants.at?.(variantIndex) as any)?.price ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
                                                 {...register(`variants.${variantIndex}.price`, {
                                                     required: {
                                                         value: true, message: "Поле обов'язкове для заповнення",
@@ -366,7 +366,7 @@ const Page = () => {
                                                 })}
                                             />
                                         </div>
-                                        {errors.price ? (<p className="mt-1 text-sm text-red-500">{errors.price.message}</p>) : null}
+                                        {errors.variants && (errors.variants.at?.(variantIndex) as any)?.price ? (<p className="mt-1 text-sm text-red-500">{errors.variants && (errors.variants.at?.(variantIndex) as any)?.price.message}</p>) : null}
                                     </div>
                                     <div className="flex flex-2 items-center space-x-3 self-end mb-[10px]">
                                         <label htmlFor={`variants.${variantIndex}.discount.state`} className="relative inline-flex cursor-pointer items-center">
@@ -380,7 +380,7 @@ const Page = () => {
                                     <div className="flex-1">
                                         <label
                                             htmlFor="price"
-                                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.price ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.variants && (errors.variants.at?.(variantIndex) as any)?.discount?.percent ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
                                         >
                                             Відсоток знижки
                                         </label>
@@ -388,14 +388,24 @@ const Page = () => {
                                             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2.5">%
                                             </div>
                                             <input
-                                                min={0}
+                                                // min={0}
                                                 max={100}
                                                 type="number"
                                                 defaultValue={variant.discount.percent}
-                                                className={`block w-full h-8 text-sm rounded-md shadow-sm pl-8 ${errors.variants ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                                                {...register(`variants.${variantIndex}.discount.percent`)}
+                                                className={`block w-full h-8 text-sm rounded-md shadow-sm pl-8 ${errors.variants && (errors.variants.at?.(variantIndex) as any)?.discount?.percent ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                                {...register(`variants.${variantIndex}.discount.percent`, {
+                                                    min: {
+                                                        value: 0,
+                                                        message: 'Мінімальний відсоток знижки 0,'
+                                                    },
+                                                    required: {
+                                                        value: true,
+                                                        message: 'Поле обов`язкове для заповнення'
+                                                    }
+                                                })}
                                             />
                                         </div>
+                                        {errors.variants && (errors.variants.at?.(variantIndex) as any)?.discount?.percent ? (<p className="mt-1 text-sm text-red-500">{errors.variants && (errors.variants.at?.(variantIndex) as any)?.discount?.percent.message}</p>) : null}
                                     </div>
                                 </div>
                             </div>

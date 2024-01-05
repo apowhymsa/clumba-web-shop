@@ -21,7 +21,10 @@ type Props = {
         products: Product[],
         productsCount: number
     };
-    categoriesData: Category[];
+    categoriesData: {
+        categories: Category[];
+        count: number;
+    };
 }
 
 const ProductsComponent = (props: Props) => {

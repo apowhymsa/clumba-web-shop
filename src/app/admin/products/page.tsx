@@ -145,7 +145,9 @@ const Page = () => {
                 <PlusIcon className="w-5 h-5 text-white"/>
             </button>
         </div>
-        <BasicTable isProducts={true} data={products} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+        <div>
+            <BasicTable isProducts={true} data={products} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+        </div>
     </div>)
 }
 

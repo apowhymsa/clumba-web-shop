@@ -77,7 +77,7 @@ const NestedFieldArray = (props: Props) => {
             </div>
         </div>
         {fields.map((item, k) => {
-            return (<div className="flex gap-x-4">
+            return (<div key={k} className="flex gap-x-4">
                     <NestedFieldArrayItem key={item.id} item={item} nestIndex={nestIndex} k={k} errors={errors}
                                           isLoadingIngredients={isLoadingIngredients} ingredients={ingredients}
                                           control={control} register={register}/>

@@ -109,8 +109,24 @@ export const cartSlice = createSlice({
             state.cartPrice = 0;
         },
     }, extraReducers: (builder) => {
-        builder.addCase(getUserCart.fulfilled, (state, action) => {
-            state.cart = action.payload;
+        builder.addCase(getUserCart.fulfilled,(state, action) => {
+            const resultCart = (action.payload as any[]).map((cartItem: any) => {
+                const quantity = cartItem.quantity;
+                const itemVariantID = cartItem.variant._id;
+                let isAvailable = null;
+
+                const cartItemVariant = cartItem.product.variants.find((variant: any) => variant._id === itemVariantID);
+
+                if (cartItemVariant) {
+                    isAvailable = !!cartItemVariant.ingredients.findIndex((ing: any) => Number(ing.ingredient.variantID.count) >= Number(ing.count))
+                }
+                console.log('cartItemVariant', cartItemVariant, 'isAvailable', isAvailable)
+
+                if (!isAvailable) return cartItem;
+            });
+            state.cart = resultCart.filter((value: any) => value !== undefined);
+
+            console.log('CART', resultCart.filter((value: any) => value !== undefined));
 
             state.cartPrice = 0;
             state.cart.map(cartItem => {

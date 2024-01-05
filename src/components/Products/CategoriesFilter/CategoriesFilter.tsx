@@ -41,7 +41,7 @@ const CategoriesFilter = (props: Props) => {
         <div className="categories">
           <h3 className="font-medium text-gray-900 mb-2">Категории</h3>
           <div className="category-grid grid grid-cols-4 gap-5 gap-y-4">
-            {categories.map((category, index) => (
+            {categories.categories.map((category, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-x-2 flex-0"

@@ -50,7 +50,7 @@ const HeaderTop = () => {
   return (
     <div className="header-top">
       <span className="header-top-lang text flex-1">UA</span>
-      <p className="text flex-none">Цветочный магазин &quot;Clumba&quot;</p>
+      <p className="text flex-none">Магазин квітів &quot;Clumba&quot;</p>
       <div className="header-top-buttons flex flex-1 justify-end gap-x-3 items-center">
         {isLoading ? (
           <Skeleton inline className="w-12" />
@@ -61,11 +61,11 @@ const HeaderTop = () => {
         ) : (
           <>
             <span className="text" role="button" onClick={() => setOpen({step: 1, isOpen: true})}>
-              Создать аккаунт
+              Створити
             </span>
             <span className="header-top-divider"></span>
             <span className="text" role="button" onClick={() => setOpen({step: 3, isOpen: true})}>
-              Войти
+              Увійти
             </span>
           </>
         )}

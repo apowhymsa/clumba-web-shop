@@ -24,7 +24,7 @@ const HeaderNav = () => {
           <Link href="/">Главная</Link>
         </li>
         <li className={navClasses[1]}>
-          <Link href="/products?sort=1">Каталог товаров</Link>
+          <Link href="/products?limit=15&page=1&sort=1&price=0-10000&category=all">Каталог товаров</Link>
         </li>
         <li className={navClasses[2]}>
           <Link href="/about-us">О нас</Link>

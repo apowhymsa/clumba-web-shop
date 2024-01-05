@@ -138,9 +138,7 @@ const ModalUpdatePC = (props: Props) => {
                                     {...register("categoryName", {
                                         required: {
                                             value: true, message: "Поле обов'язкове для заповнення",
-                                        }, minLength: {
-                                            value: 6, message: "Поле повинно мати більше ніж 5 символів",
-                                        },
+                                        }
                                     })}
                                     value={productCategory.title}
                                     onChange={(e) => setProductCategory({...productCategory, _id: id, title: e.target.value})}

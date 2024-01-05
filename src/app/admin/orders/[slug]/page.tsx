@@ -16,7 +16,7 @@ const Page = ({params}: { params: { slug: string } }) => {
     const [order, setOrder] = useState<Order | null>(null);
     const [isLoading, setLoading] = useState(true);
     const [orderStatus, setOrderStatus] = useState(1);
-    const {error} = useToast();
+    const {error, info} = useToast();
 
     useEffect(() => {
         const getOrder = async () => {
@@ -57,8 +57,12 @@ const Page = ({params}: { params: { slug: string } }) => {
                         setOrderStatus(3)
                         break;
                     }
-                    case 'complete': {
+                    case 'waiting': {
                         setOrderStatus(4)
+                        break;
+                    }
+                    case 'complete': {
+                        setOrderStatus(5)
                         break;
                     }
                 }
@@ -76,6 +80,31 @@ const Page = ({params}: { params: { slug: string } }) => {
         const target = e.target as HTMLInputElement;
         console.log(Number(target.value));
         setOrderStatus(Number(target.value))
+    }
+
+    async function handleChangeStatus() {
+        try {
+            const requestBody = {
+                status: orderStatus === 1 ? 'processing' : orderStatus === 2 ? 'packing' : orderStatus === 3 ? 'shipping' : orderStatus === 4 ? 'waiting' : 'complete',
+            }
+
+            const requestConfig: AxiosRequestConfig = {
+                headers: {
+                    'Content-Type': 'application/json',
+                }, withCredentials: true
+            }
+
+            console.log(requestBody);
+
+            const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/order/${params.slug}`, requestBody, requestConfig)
+
+            console.log(response.data);
+            info(`Статус замовлення ${response.data.payment.liqpayPaymentID} оновлено на ${requestBody.status}`);
+        } catch (err: unknown) {
+            const errObject = err as any;
+            console.log(error);
+            error('Помилка отримання даних, спробуйте ще раз: ', errObject.message);
+        }
     }
 
     if (isLoading) {
@@ -134,6 +163,7 @@ const Page = ({params}: { params: { slug: string } }) => {
                             </div>
                         </div>
                         <button
+                            onClick={handleChangeStatus}
                             type="submit"
                             className="border border-rose-400 text-white bg-rose-400 px-4 py-2 rounded transition-colors hover:bg-rose-500"
                         >
@@ -172,7 +202,7 @@ const Page = ({params}: { params: { slug: string } }) => {
                                         </div>
                                         <div>
                                             <h3 className="font-bold text-[16px]">Склад товару</h3>
-                                            {item.product_id.variants.find((variant: any) => variant._id === item.productVariant.id).ingredients.map((ing: any, index: number) => (
+                                            {item.product_id.variants.find((variant: any) => variant._id === item.productVariant.id)?.ingredients.map((ing: any, index: number) => (
                                                 <p key={index}>{ing.ingredient.id.title} - {ing.ingredient.variantID.vType} - {ing.count}</p>
                                             ))}
                                         </div>

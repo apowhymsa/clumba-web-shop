@@ -105,7 +105,7 @@ const BasicTable = (props: Props) => {
             </div>
         </div>
         <div className="max-w-full overflow-x-auto">
-            <table className="w-full border-collapse min-w-full text-[14px]">
+            <table className="w-full border-collapse text-[14px]">
                 <thead>
                 {table.getHeaderGroups().map(headerGroup => (<tr key={headerGroup.id}>
                     {headerGroup.headers.map(header => (

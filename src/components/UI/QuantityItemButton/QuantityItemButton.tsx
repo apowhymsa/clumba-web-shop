@@ -6,9 +6,10 @@ type Props = {
   setQuantity: Dispatch<SetStateAction<number>>;
   quantity: number;
   onClick: () => void;
+  isDisabled?: boolean;
 };
 const QuantityItemButton = (props: Props) => {
-  const { quantity, setQuantity, onClick } = props;
+  const { quantity, setQuantity, isDisabled, onClick } = props;
   return (
     <div className="product-quantity-container flex flex-col gap-y-4 max-w-fit min-w-[220px]">
       {/*<div className="flex gap-x-4">*/}
@@ -38,7 +39,9 @@ const QuantityItemButton = (props: Props) => {
       {/*  </button>*/}
       {/*</div>*/}
       <button
-        className="bg-rose-400 text-white px-4 py-2 rounded transition-colors hover:bg-rose-500"
+          title={!isDisabled ? 'Ви не можете додати цей варіант товару до кошику, тому що, він відсутній на складі' : 'Додати товар до кошику'}
+          disabled={!isDisabled}
+        className="bg-rose-400 text-white px-4 py-2 rounded transition-colors hover:bg-rose-500 disabled:bg-rose-300 disabled:text-white disabled:border-none disabled:cursor-not-allowed"
         onClick={onClick}
       >
         Добавить в корзину

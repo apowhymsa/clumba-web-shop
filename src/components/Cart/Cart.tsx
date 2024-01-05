@@ -32,7 +32,7 @@ const Cart = (props: Props) => {
     const router = useRouter()
 
     return (<ModalContainer isOpen={isOpen} onClose={() => setOpen(false)} headerContent="Кошик"
-                            containerWidthClass="w-[700px]">
+                            containerWidthClass="w-full md:w-[600px]">
             {cart.length <= 0 ? (
                     <p className="px-6 py-6 text-center">У кошику немає товарів 😔</p>
             ) : (<>
@@ -50,8 +50,12 @@ const Cart = (props: Props) => {
                             </p>
                         </div>
                         {cart.map((cartItem, index) => (<div key={index}>
-                                <CartItem cartItem={cartItem} quantityItem={cartItem.quantity}/>
-                                {index < cart.length - 1 ? <hr className="my-2"/> : null}
+                            {cartItem.product && (
+                                <>
+                                    <CartItem cartItem={cartItem} quantityItem={cartItem.quantity}/>
+                                    {index < cart.length - 1 ? <hr className="my-2"/> : null}
+                                </>
+                            )}
                             </div>))}
                     </div>
                     <div className="flex items-center justify-between gap-x-10 px-6 py-3 border-t">

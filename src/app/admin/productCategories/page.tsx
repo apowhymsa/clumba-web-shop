@@ -51,7 +51,7 @@ const Page = () => {
 
     const {data, isLoading} = useQuery({
         queryKey: ['productCategories'], queryFn: async () => {
-            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=100`, {
+            const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=1000&page=1`, {
                 headers: {
                     'Content-Type': 'application/json',
                 }, withCredentials: true
@@ -59,7 +59,7 @@ const Page = () => {
 
             console.log('data', data)
 
-            addProductCategory(data);
+            addProductCategory(data.categories);
 
             return data;
         }

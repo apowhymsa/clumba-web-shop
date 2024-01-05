@@ -13,14 +13,33 @@ type Props = {
 };
 
 const CartItem = ({quantityItem, cartItem, inCheckout = false}: Props) => {
+    const [canIncrement, setCanIncrement] = useState(false);
     const [quantity, setQuantity] = useState(quantityItem);
     const debouncedQuantity = useDebounce<number>(quantity, 500);
     const dispatch = useAppDispatch();
     const cart = useAppSelector(state => state.cartReducer).cart;
 
     // useEffect(() => {
-    //     setQuantity(quantityItem);
-    // }, [quantityItem]);
+    //     console.log('quantity', cartItem.quantity);
+    // }, []);
+
+    useEffect(() => {
+        console.log('quantity', quantity);
+        const setMaxCount = () => {
+            let max = 0;
+            const itemQuantity = cartItem.quantity;
+            const itemVariantID = cartItem.variant._id;
+
+            const cartItemVariant = cartItem.product.variants.find((variant: any) => variant._id === itemVariantID);
+
+            if (cartItemVariant) {
+                console.log(!!cartItemVariant.ingredients.findIndex((ing: any) => Number(ing.ingredient.variantID.count) < (Number(ing.count) * Number(Number(quantity) + 1))));
+                setCanIncrement(!!cartItemVariant.ingredients.findIndex((ing: any) => Number(ing.ingredient.variantID.count) < (Number(ing.count) * Number(Number(quantity) + 1))));
+            }
+        }
+
+        setMaxCount();
+    }, [quantity]);
 
     console.log('cart item render')
 
@@ -96,7 +115,7 @@ const CartItem = ({quantityItem, cartItem, inCheckout = false}: Props) => {
             {inCheckout ? (<div>
                 <span>Цена: {`${cartItem.quantity} ед. x ${!cartItem.variant.discount.state ? cartItem.variant.price : Number(cartItem.variant.price) - (Number(cartItem.variant.price) * Number(cartItem.variant.discount.percent)) / 100} грн = ${!cartItem.variant.discount.state ? cartItem.quantity * Number(cartItem.variant.price) : cartItem.quantity * (Number(cartItem.variant.price) - (Number(cartItem.variant.price) * Number(cartItem.variant.discount.percent)) / 100)}`} грн</span>
                 </div>
-                ) : (<div className="item-quantity-edit flex gap-x-4 w-fit">
+                ) : (<div className="item-quantity-edit flex gap-x-4 w-fit items-center">
                 <button
                     className="flex items-center justify-center bg-rose-400 transition-colors hover:bg-rose-500 w-7 h-7 rounded"
                     onClick={() => {
@@ -105,16 +124,18 @@ const CartItem = ({quantityItem, cartItem, inCheckout = false}: Props) => {
                 >
                     <MinusIcon className="h-6 w-6 text-white"/>
                 </button>
-                <input
-                    value={quantity}
-                    onChange={(event) => Number(event.target.value) > 100 ? setQuantity(100) : Number(event.target.value) < 1 ? setQuantity(1) : setQuantity(Number(event.target.value))}
-                    min={1}
-                    max={100}
-                    type="number"
-                    className="block flex-1 rounded-md border-gray-300 shadow-sm focus:border-rose-400 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 h-7 text-sm"
-                />
+                <span className="text-[14px] leading-none w-[20px] text-center">{quantity}</span>
+                {/*<input*/}
+                {/*    value={quantity}*/}
+                {/*    onChange={(event) => Number(event.target.value) > 100 ? setQuantity(100) : Number(event.target.value) < 1 ? setQuantity(1) : setQuantity(Number(event.target.value))}*/}
+                {/*    min={1}*/}
+                {/*    max={100}*/}
+                {/*    type="number"*/}
+                {/*    className="block flex-1 rounded-md border-gray-300 shadow-sm focus:border-rose-400 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500 h-7 text-sm"*/}
+                {/*/>*/}
                 <button
-                    className="flex items-center justify-center bg-rose-400 transition-colors hover:bg-rose-500 w-7 h-7 rounded"
+                    disabled={!canIncrement}
+                    className="flex items-center justify-center bg-rose-400 transition-colors hover:bg-rose-500 w-7 h-7 rounded disabled:bg-rose-300 disabled:text-white disabled:border-none disabled:cursor-not-allowed"
                     onClick={() => {
                         quantity < 100 && setQuantity((prev) => prev + 1);
                     }}
