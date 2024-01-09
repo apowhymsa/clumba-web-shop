@@ -1,0 +1,16 @@
+.edit-mode-alert {
+  display: none;
+}
+
+.codex-editor__redactor {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.codex-editor__redactor > div {
+  border: 1px solid rgb(209, 213, 219 / 1) !important;
+  @apply rounded-md shadow-sm border-gray-800;
+  //padding-left: 60px;
+  min-height: 40px;
+}

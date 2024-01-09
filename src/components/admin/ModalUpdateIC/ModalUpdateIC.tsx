@@ -30,7 +30,13 @@ const ModalUpdateIC = (props: Props) => {
             const getIngredientCategory = async () => {
                 try {
                     setLoading(true);
-                    const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`);
+                    const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true',
+                            'Access-Control-Allow-Origin': '*'
+                        }, withCredentials: true
+                    });
                     setIngredientCategory({_id: response.data._id, title: response.data.title});
                     console.log(response.data)
                 } catch (err: unknown) {
@@ -72,6 +78,8 @@ const ModalUpdateIC = (props: Props) => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             }
 

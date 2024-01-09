@@ -3,13 +3,15 @@
 import {EDITOR_JS_TOOLS} from "@/utils/EDITOR_JS_TOOLS";
 import { createReactEditorJS } from "react-editor-js";
 import {Dispatch, FC, SetStateAction, useCallback, useRef} from "react";
+import './Editor.scss';
 
 type Props = {
     data: any;
     setData: Dispatch<SetStateAction<any>>;
+    title: string;
 }
 const Editor: FC<Props> = (props) => {
-    const {setData, data} = props;
+    const {setData, data, title} = props;
     const editorCore = useRef<any>(null);
     const ReactEditorJS = createReactEditorJS();
 
@@ -34,7 +36,6 @@ const Editor: FC<Props> = (props) => {
 
     return (
         <div className="editor-container">
-            <h4 className="edit-mode-alert">! Edit Mode Enabled</h4>
             <ReactEditorJS
                 onInitialize={handleInitialize}
                 tools={EDITOR_JS_TOOLS}

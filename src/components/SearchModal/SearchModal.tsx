@@ -28,7 +28,13 @@ const SearchModal = (props: Props) => {
 
     useEffect(() => {
         const searchProducts = async (searchValue: string) => {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}`);
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
+                }, withCredentials: true
+            });
             setFilteredProducts(response.data);
         }
         if (debouncedSearchValue.trim().length <= 0) {

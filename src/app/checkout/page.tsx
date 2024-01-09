@@ -156,8 +156,9 @@ const Checkout = () => {
             }, {
                 headers: {
                     "Content-Type": "application/json",
-                    "Access-Control-Allow-Origin": "*"
-                }
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
+                }, withCredentials: true
             })
                 .then((data) => {
                     console.log(data.data, data.status)
@@ -174,7 +175,13 @@ const Checkout = () => {
     }
 
     const getUserInfo = async (userAuthId: string) => {
-        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userAuthId}`);
+        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userAuthId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*'
+            }, withCredentials: true
+        });
 
         setUser(response.data);
     }

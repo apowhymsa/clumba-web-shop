@@ -46,7 +46,13 @@ const Page = ({params}: { params: { slug: string } }) => {
     // 2fb168
     useEffect(() => {
         const getRecomendations = async (categoryID: string) => {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${categoryID}`);
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${categoryID}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
+                }, withCredentials: true
+            });
             const products: Product[] = await response.data.products;
             setRecommendations(products);
         }
@@ -56,6 +62,8 @@ const Page = ({params}: { params: { slug: string } }) => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             }
 
@@ -71,7 +79,13 @@ const Page = ({params}: { params: { slug: string } }) => {
         }
 
         const getProduct = async () => {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${params.slug}`)
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${params.slug}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
+                }, withCredentials: true
+            })
             const productObject: Product = await response.data
             setProduct(productObject);
 
@@ -205,6 +219,8 @@ const Page = ({params}: { params: { slug: string } }) => {
             </div>
 
             <ProductOverviewMobile
+                product={product?.variants[variant]}
+                comments={comments}
                 productId={product?._id}
                 classNameContainer={'product-additional-info-mobile w-full my-4'}
                 setTab={setTab}

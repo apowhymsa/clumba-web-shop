@@ -66,6 +66,8 @@ const Page = () => {
             const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/orders`, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             })
 

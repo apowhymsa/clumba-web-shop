@@ -78,7 +78,13 @@ const Page = () => {
 
             if (id) {
                try {
-                   const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${id}`);
+                   const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${id}`, {
+                       headers: {
+                           'Content-Type': 'application/json',
+                           'ngrok-skip-browser-warning': 'true',
+                           'Access-Control-Allow-Origin': '*'
+                       }, withCredentials: true
+                   });
 
                    console.log(response.data);
 
@@ -110,6 +116,8 @@ const Page = () => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             }
             const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=1000&page=1`, requestConfig);
@@ -170,6 +178,8 @@ const Page = () => {
         const requestConfig: AxiosRequestConfig = {
             headers: {
                 'Content-Type': requestBody.isNewImage ? 'multipart/form-data' : 'application/json',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*'
             }, withCredentials: true
         }
 

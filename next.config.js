@@ -1,7 +1,11 @@
 /** @type {import('next').NextConfig} */
+
+const ADMIN_ENDPOINT_BACKEND = 'https://326b-178-213-1-232.ngrok-free.app'
+const DOMAIN = '326b-178-213-1-232.ngrok-free.app';
+
 const nextConfig = {
   images: {
-    domains: ['localhost', 'clumba-web-shop.vercel.app', 'i.pravatar.cc', 'd9zyg9-3001.csb.app'],
+    domains: ['localhost', 'clumba-web-shop.vercel.app', 'i.pravatar.cc', 'd9zyg9-3001.csb.app', DOMAIN],
     remotePatterns: [
       {
         protocol: "https",
@@ -38,7 +42,7 @@ const nextConfig = {
     // ADMIN_ENDPOINT_BACKEND: 'https://flowers-shop-backend.onrender.com'
     // ADMIN_ENDPOINT_BACKEND: 'http://localhost:3001'
     // ADMIN_ENDPOINT_BACKEND: 'http://16.171.242.251:3001'
-    ADMIN_ENDPOINT_BACKEND: 'https://d9zyg9-3001.csb.app'
+    ADMIN_ENDPOINT_BACKEND: ADMIN_ENDPOINT_BACKEND
   },
   async headers() {
     return [

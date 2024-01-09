@@ -94,7 +94,13 @@ const OrderHistory = () => {
 
             if (userID) {
                 try {
-                    const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/userOrders/${userID}`);
+                    const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/userOrders/${userID}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'ngrok-skip-browser-warning': 'true',
+                            'Access-Control-Allow-Origin': '*'
+                        }, withCredentials: true
+                    });
                     setOrders(response.data);
                 } catch (err) {
                     console.log(err);

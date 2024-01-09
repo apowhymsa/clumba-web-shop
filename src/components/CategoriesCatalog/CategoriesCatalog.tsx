@@ -31,7 +31,13 @@ const CategoriesCatalog: FC<Props> = (props) => {
 
     const getMoreProductsCategories = async (page: number) => {
         try {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=3&page=${page}`);
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=3&page=${page}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
+                }, withCredentials: true
+            });
             dispatch(addCategories(response.data));
         } catch (err) {
             console.log(err);

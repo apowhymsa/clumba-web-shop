@@ -66,6 +66,8 @@ const Page = () => {
             const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredients`, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             })
 
@@ -82,6 +84,8 @@ const Page = () => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 },
                 withCredentials: true
             }

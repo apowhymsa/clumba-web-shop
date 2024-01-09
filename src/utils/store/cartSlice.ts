@@ -20,6 +20,8 @@ export const getUserCart = createAsyncThunk('cart/getUserCart', async (userID: s
     const requestConfig: AxiosRequestConfig = {
         headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+            'Access-Control-Allow-Origin': '*'
         }, withCredentials: true
     }
     const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userID}`, requestConfig);
@@ -32,6 +34,8 @@ export const updateUserCart = createAsyncThunk('cart/updateUserCart', async (use
     const requestConfig: AxiosRequestConfig = {
         headers: {
             'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+            'Access-Control-Allow-Origin': '*'
         }, withCredentials: true
     }
 

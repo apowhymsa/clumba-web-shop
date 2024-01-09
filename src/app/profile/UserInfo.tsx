@@ -26,7 +26,13 @@ const UserInfo = () => {
         if (userID) {
             const getUserInfo = async () => {
                 setLoading(true);
-                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userID}`);
+                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userID}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                        'Access-Control-Allow-Origin': '*'
+                    }, withCredentials: true
+                });
 
                 setValue('email', response.data.email);
                 setValue('fullName', response.data.personals.fullName);
@@ -50,6 +56,8 @@ const UserInfo = () => {
         const requestConfig: AxiosRequestConfig = {
             headers: {
                 'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*'
             },
             withCredentials: true
         }

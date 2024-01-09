@@ -6,31 +6,30 @@ import {addDoc, collection, doc, getDoc, onSnapshot} from "@firebase/firestore";
 import {db} from "@/utils/firebase/firebase";
 import ReactStars from "react-rating-stars-component";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
-import {setComments} from "@/utils/store/commentsSlice";
+import {addComment, Comment, setComments} from "@/utils/store/commentsSlice";
+import clsx from "clsx";
+import {IVariantProduct} from "@/types";
+import axios, {AxiosRequestConfig} from "axios";
 
 type Props = {
   classNameContainer: string;
   setTab: Dispatch<SetStateAction<number>>;
   tab: number;
   productId: string | undefined;
+  product: IVariantProduct | undefined;
+  comments: Comment[]
 };
 
 const ProductOverviewMobile = (props: Props) => {
   const {info, error} = useToast();
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
-  const comments = useAppSelector(state => state.commentsReducer).comments;
   const dispatch = useAppDispatch();
-  const { tab, setTab, classNameContainer, productId } = props;
+  const { tab, setTab, classNameContainer, productId, product, comments } = props;
   const addCommentHandler = async () => {
     const userId = localStorage.getItem("authUserId");
 
     if (userId) {
-      const commentsRef = collection(db, 'comments');
-
-      const userRef = doc(db, 'users', userId!.toString());
-      const user = await getDoc(userRef);
-
       let today = new Date();
       let dd = String(today.getDate()).padStart(2, '0');
       let mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -40,31 +39,31 @@ const ProductOverviewMobile = (props: Props) => {
 
       const ms = new Date().getTime();
 
-      const commentObj = {
-        productId: productId,
+      const requestBody = {
+        productID: productId,
         rating: rating,
         commentText: comment,
         publishingDate: date,
         dateInMs: ms,
-        userName: user.data()?.name,
-        userPhoto: user.data()?.profilePhoto
+        userID: userId
       }
 
-      addDoc(commentsRef, {
-        ...commentObj
-      })
-          .then(() => {
-            info('Отзыв успешно опубликован 😍');
-            setRating(0);
-            setComment('');
-          })
-          .catch(() => {
-            info('Ошибка публикации отзыва 😢');
-          })
+      const requestConfig: AxiosRequestConfig = {
+        headers: {
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+          'Access-Control-Allow-Origin': '*'
+        }, withCredentials: true
+      }
+
+      console.log(requestBody);
+      const response = await axios.put(`${process.env.ADMIN_ENDPOINT_BACKEND}/comment`, requestBody, requestConfig);
+
+      dispatch(addComment(response.data));
+      info('Дякуємо за ваш відгук 😊')
     } else {
       error('Войдите в аккаунт для публикации отзыва 😳');
     }
-
   };
 
   useEffect(() => {
@@ -75,30 +74,21 @@ const ProductOverviewMobile = (props: Props) => {
     <div className={classNameContainer}>
       <div className="flex flex-col gap-y-3 w-full">
         <div className="flex gap-x-3 border-b border-b-gray-10 w-full">
-          <ul className="flex gap-x-5 w-full">
-            <li
-              onClick={() => setTab(1)}
-              className={
-                tab === 1
-                  ? "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 hover:text-rose-400 relative text-rose-400  after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-rose-400"
-                  : "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 text-black hover:text-rose-500"
-              }
-            >
-              Информация для покупателя
-            </li>
-            <li
-              onClick={() => setTab(2)}
-              className={
-                tab === 2
-                  ? "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 hover:text-rose-400 relative text-rose-400  after:absolute after:left-0 after:bottom-0 after:h-0.5 after:w-full after:bg-rose-400"
-                  : "transition-colors inline-flex cursor-pointer items-center gap-2 px-1 py-3 text-black hover:text-rose-500"
-              }
-            >
-              Отзывы
-            </li>
-          </ul>
+          <div role="tablist" className="tabs tabs-boxed flex-1">
+            <span onClick={() => setTab(1)} role="tab" className={clsx("tab", tab === 1 && "bg-rose-400 text-white")}>Інформація для клієнта</span>
+            <span onClick={() => setTab(2)} role="tab" className={clsx("tab", tab === 2 && "bg-rose-400 text-white")}>Відгуки</span>
+          </div>
         </div>
-        {tab === 1 && <div>Info</div>}
+        {tab === 1 && <div>
+          <p>Склад товару:</p>
+          <ul>
+            {
+              product?.ingredients.map((currentIng: any, index) => (
+                  <li key={index}>Назва: {currentIng.ingredient.id.title} - Тип: {currentIng.ingredient.variantID.vType} - {currentIng.count} шт.</li>
+              ))
+            }
+          </ul>
+        </div>}
         {tab === 2 && (
           <div className="flex flex-col gap-y-4 max-h-[300px] overflow-y-auto px-1 py-2">
             <div className="max-w-full">

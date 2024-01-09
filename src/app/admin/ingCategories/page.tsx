@@ -34,9 +34,17 @@ const Page = () => {
 
     const {data, isLoading} = useQuery({
         queryKey: ['ingredientCategories'], queryFn: async () => {
+            const requestConfig: AxiosRequestConfig = {
+                headers: {
+                    'Content-Type': 'application/json',
+                }, withCredentials: true
+            }
+
             const {data} = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategories`, {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             })
 

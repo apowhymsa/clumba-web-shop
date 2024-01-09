@@ -71,20 +71,22 @@ const SwiperProducts = (props: Props) => {
             {/*{!isLoading && (products.length > 4 ? (*/}
             {/*    */}
             {/*) : null)}*/}
-        <>
+        {products.length > 4 && (
+            <>
                     <span
                         onClick={() => swiper?.slidePrev()}
                         className="cursor-pointer top-1/2 -left-[30px] z-20 swiper-button-prev flex justify-center items-center rounded absolute w-10 h-10 bg-rose-400 transition-colors hover:bg-rose-500"
                     >
                         <ArrowSmallLeftIcon className="h-6 w-6 text-white"/>
                     </span>
-            <span
-                onClick={() => swiper?.slideNext()}
-                className="cursor-pointer swiper-button-next flex justify-center items-center rounded absolute w-10 h-10 bg-rose-400 transition-colors hover:bg-rose-500 top-1/2 -right-[30px] z-20"
-            >
+                <span
+                    onClick={() => swiper?.slideNext()}
+                    className="cursor-pointer swiper-button-next flex justify-center items-center rounded absolute w-10 h-10 bg-rose-400 transition-colors hover:bg-rose-500 top-1/2 -right-[30px] z-20"
+                >
                         <ArrowSmallRightIcon className="h-6 w-6 text-white"/>
                     </span>
-        </>
+            </>
+        )}
         </div>);
 };
 

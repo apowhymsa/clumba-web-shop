@@ -34,7 +34,13 @@ const Products = (props: Props) => {
         const sortF = sort === '1' ? 'asc' : sort === '2' ? 'desc' : sort === '3' ? 'desc' : 'desc';
         const priceF = price.join('-');
         const categoriesF = categories.length > 0 ? categories : 'all';
-        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=${page}&sort=${sortF}&price=${priceF}&categories=${categoriesF}`);
+        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=${page}&sort=${sortF}&price=${priceF}&categories=${categoriesF}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*'
+            }, withCredentials: true
+        });
 
         dispatch(addProducts(response.data.products));
     }

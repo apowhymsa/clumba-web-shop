@@ -22,9 +22,15 @@ const Page = ({params}: { params: { slug: string } }) => {
         const getOrder = async () => {
             setLoading(true);
             try {
-                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/order/${params.slug}`)
+                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/order/${params.slug}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                        'Access-Control-Allow-Origin': '*'
+                    }, withCredentials: true
+                })
                 setOrder(response.data);
-                console.log('ORDER', response.data);
+                console.log('ORDER', response);
 
                 const ids = response.data.products.map((product: any, index: number) => {
                     return {productID: product.product_id._id, variantID: product.productVariant.id };
@@ -37,6 +43,8 @@ const Page = ({params}: { params: { slug: string } }) => {
                 const requestConfig: AxiosRequestConfig = {
                     headers: {
                         'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                        'Access-Control-Allow-Origin': '*'
                     }, withCredentials: true
                 }
 
@@ -91,6 +99,8 @@ const Page = ({params}: { params: { slug: string } }) => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             }
 

@@ -31,7 +31,13 @@ const ModalUpdatePC = (props: Props) => {
         const getProductCategory = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`);
+                const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategory/${id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'ngrok-skip-browser-warning': 'true',
+                        'Access-Control-Allow-Origin': '*'
+                    }, withCredentials: true
+                });
                 setProductCategory({_id: response.data._id, title: response.data.title, image: response.data.image});
                 setProdImage({
                     url: `${process.env.ADMIN_ENDPOINT_BACKEND}/images/${response.data.image}`,
@@ -81,6 +87,8 @@ const ModalUpdatePC = (props: Props) => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': requestBody.isNewImage ? 'multipart/form-data' : 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 },
                 withCredentials: true
             }

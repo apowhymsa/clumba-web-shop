@@ -62,7 +62,13 @@ const ProductsComponent = (props: Props) => {
             const sort = sortFilter === '1' ? 'asc' : sortFilter === '2' ? 'desc' : sortFilter === '3' ? 'desc' : 'desc';
             const price = priceFilter.join('-');
             const categories = categoriesFilter.length > 0 ? categoriesFilter : 'all';
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`)
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
+                }, withCredentials: true
+            })
 
             console.log(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`);
             dispatch(setProducts(response.data.products));

@@ -48,6 +48,8 @@ const ModalCreatePC = (props: Props) => {
         const requestConfig: AxiosRequestConfig = {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*'
             },
             withCredentials: true
         }

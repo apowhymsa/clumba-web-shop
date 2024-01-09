@@ -75,6 +75,8 @@ const Page = () => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*'
                 }, withCredentials: true
             }
             const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=1000&page=1`, requestConfig);
@@ -119,6 +121,8 @@ const Page = () => {
         const requestConfig: AxiosRequestConfig = {
             headers: {
                 'Content-Type': 'multipart/form-data',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*'
             }, withCredentials: true
         }
 

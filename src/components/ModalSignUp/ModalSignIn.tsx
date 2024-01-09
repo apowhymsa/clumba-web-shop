@@ -44,6 +44,8 @@ const ModalSignIn = (props: Props) => {
     const requestConfig: AxiosRequestConfig = {
       headers: {
         'Content-Type': 'application/json',
+        'ngrok-skip-browser-warning': 'true',
+        'Access-Control-Allow-Origin': '*'
       },
       withCredentials: true
     }
