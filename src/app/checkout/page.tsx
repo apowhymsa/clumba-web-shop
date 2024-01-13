@@ -61,6 +61,8 @@ const Checkout = () => {
 
             Promise.all([getUserInfo(userAuthId)])
                 .then(() => setloading(false));
+        } else {
+            setloading(false);
         }
     }, []);
 

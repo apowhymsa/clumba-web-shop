@@ -40,8 +40,10 @@ const ProductItem = ({product, isButtonVisible = true}: Props) => {
 
             setAvailableProduct((current) => [...current, {
                 variantID: index,
-                value: !!variant.ingredients.findIndex(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))
+                value: !(!!variant.ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))
             }])
+
+            console.log('!!', !!variant.ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))
         });
     }, []);
 
@@ -49,7 +51,7 @@ const ProductItem = ({product, isButtonVisible = true}: Props) => {
         const currentState = [...isAvailableProduct];
         currentState[variant] = {
             variantID: variant,
-            value: !!product?.variants[variant].ingredients.findIndex(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))
+            value: !(!!product?.variants[variant].ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))
         }
 
         console.log(currentState);

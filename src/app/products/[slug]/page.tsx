@@ -94,7 +94,7 @@ const Page = ({params}: { params: { slug: string } }) => {
             productObject.variants.map((variant, index) => {
                 setAvailableProduct((current) => [...current, {
                     variantID: index,
-                    value: !!variant.ingredients.findIndex(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))
+                    value: !(!!variant.ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))
                 }])
             });
 
@@ -112,7 +112,7 @@ const Page = ({params}: { params: { slug: string } }) => {
 
     useEffect(() => {
         const currentState = [...isAvailableProduct];
-        currentState[variant] = {variantID: variant, value: !!product?.variants[variant].ingredients.findIndex(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))}
+        currentState[variant] = {variantID: variant, value: !(!!product?.variants[variant].ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))}
 
         console.log(currentState);
         setAvailableProduct([...currentState])

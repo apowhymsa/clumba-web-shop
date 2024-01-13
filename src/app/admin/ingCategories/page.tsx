@@ -69,12 +69,17 @@ const Page = () => {
                 const response = await axios.delete(`${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`, requestConfig);
                 deleteIngredientCategory(response.data._id);
                 info('Запис було успішно видалено');
+                console.log(id);
             } catch (err: unknown) {
                 const errorObject = err as AxiosError;
 
                 switch (errorObject.response?.status) {
                     case 403: {
                         error('Не отриманно необхідних даних для видалення запису, оновіть сторінку та повторіть спробу');
+                        break;
+                    }
+                    case 409: {
+                        error('Видалення неможливе, тому що, ця категорія вже використовується у створеному інгредієнті');
                         break;
                     }
                     default: error(`${errorObject.message} - ${errorObject.name}`)

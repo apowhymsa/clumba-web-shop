@@ -15,15 +15,17 @@ const getNewProducts = async () => {
 };
 
 const getPopularProducts = async () => {
-    const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=all`, {
+    const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=all`, {
         headers: {
             'Content-Type': 'application/json',
             'ngrok-skip-browser-warning': 'true',
-                'Access-Control-Allow-Origin': '*'
-        }, withCredentials: true
+            'Access-Control-Allow-Origin': '*',
+            credentials: 'include'
+        },
+        cache: 'no-store'
     });
 
-    return response.data;
+    return await response.json();
 };
 
 const getProductsCategories = async () => {

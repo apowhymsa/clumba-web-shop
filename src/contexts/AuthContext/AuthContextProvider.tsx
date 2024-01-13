@@ -18,7 +18,7 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!!cookies[0]['USER-AUTH']) setLogged(true);
+    if (!!cookies.find(item => 'USER-AUTH' in item)) setLogged(true);
   }, []);
 
   useEffect(() => {
