@@ -44,7 +44,7 @@ const CategoriesFilter = (props: Props) => {
             {categories.categories.map((category, index) => (
                 <div
                   key={index}
-                  className="flex items-center gap-x-2 flex-0"
+                  className="flex items-center gap-x-2 flex-0 max-w-full break-words"
                 >
                   <input
                     onChange={onChangeFilterCategoriesHandler}
@@ -78,12 +78,6 @@ const CategoriesFilter = (props: Props) => {
           </div>
         </div>
       </div>
-      {/*<span*/}
-      {/*  className="categories-filter-close"*/}
-      {/*  onClick={() => setVisible(false)}*/}
-      {/*>*/}
-      {/*  <XMarkIcon className="h-6 w-6 text-gray-400" />*/}
-      {/*</span>*/}
     </div>
   );
 };

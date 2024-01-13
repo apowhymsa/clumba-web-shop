@@ -1,6 +1,6 @@
 'use client'
 
-import {BaseSyntheticEvent, SyntheticEvent, useEffect, useRef, useState} from "react";
+import {BaseSyntheticEvent, SyntheticEvent, useContext, useEffect, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
 import {useForm} from "react-hook-form";
 import CartItem from "@/components/Cart/CartItem/CartItem";
@@ -12,6 +12,9 @@ import axios from "axios";
 import {Autocomplete, useLoadScript} from "@react-google-maps/api";
 import {getGeocode, getLatLng} from "use-places-autocomplete";
 import Loader from "@/components/Loader/Loader";
+import {AuthContext} from "@/contexts/AuthContext/AuthContext";
+import useToast from "@/hooks/useToast";
+import {useRouter} from "next/navigation";
 
 interface IPaymentData {
     name: string;
@@ -34,6 +37,9 @@ const Checkout = () => {
     const dispatch = useAppDispatch();
     const [searchResult, setSearchResult] = useState<any>(null);
     const autocompleteRef = useRef();
+    const {isLogged} = useContext(AuthContext);
+    const {error, info} = useToast();
+    const router = useRouter();
     const [deliveryType, setDeliveryType] = useState(1);
     const [openPayment, setOpenPayment] = useState<string>('');
     const {
@@ -56,14 +62,19 @@ const Checkout = () => {
 
         const userAuthId = localStorage.getItem("authUserId");
 
+        if (!isLogged) {
+            info('Для оформлення замовлення потрібно увійти в обліковий запис');
+            return router.push('/');
+        }
+
         if (userAuthId) {
             console.log("auth", userAuthId);
 
             Promise.all([getUserInfo(userAuthId)])
                 .then(() => setloading(false));
-        } else {
-            setloading(false);
         }
+
+        setloading(false);
     }, []);
 
     const onLoad = (autocomplete: any) => {

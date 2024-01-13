@@ -28,14 +28,18 @@ const SearchModal = (props: Props) => {
 
     useEffect(() => {
         const searchProducts = async (searchValue: string) => {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}`, {
+            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': 'true',
-                    'Access-Control-Allow-Origin': '*'
-                }, withCredentials: true
+                    'Access-Control-Allow-Origin': '*',
+                    credentials: 'include'
+                },
+                cache: 'no-store'
             });
-            setFilteredProducts(response.data);
+
+            const foundProducts = await response.json();
+            setFilteredProducts(foundProducts);
         }
         if (debouncedSearchValue.trim().length <= 0) {
             setFilteredProducts([]);

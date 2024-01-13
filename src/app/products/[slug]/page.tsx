@@ -46,14 +46,17 @@ const Page = ({params}: { params: { slug: string } }) => {
     // 2fb168
     useEffect(() => {
         const getRecomendations = async (categoryID: string) => {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${categoryID}`, {
+            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${categoryID}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': 'true',
-                    'Access-Control-Allow-Origin': '*'
-                }, withCredentials: true
+                    'Access-Control-Allow-Origin': '*',
+                    credentials: 'include'
+                },
+                cache: 'no-store'
             });
-            const products: Product[] = await response.data.products;
+            const temp = await response.json();
+            const products: Product[] = temp.products;
             setRecommendations(products);
         }
         const getComments = async () => {
@@ -79,14 +82,16 @@ const Page = ({params}: { params: { slug: string } }) => {
         }
 
         const getProduct = async () => {
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${params.slug}`, {
+            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/product/${params.slug}`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': 'true',
-                    'Access-Control-Allow-Origin': '*'
-                }, withCredentials: true
+                    'Access-Control-Allow-Origin': '*',
+                    credentials: 'include'
+                },
+                cache: 'no-store'
             })
-            const productObject: Product = await response.data
+            const productObject: Product = await response.json();
             setProduct(productObject);
 
             setAvailableProduct([]);

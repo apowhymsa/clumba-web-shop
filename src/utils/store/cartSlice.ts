@@ -27,7 +27,7 @@ export const getUserCart = createAsyncThunk('cart/getUserCart', async (userID: s
     const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userID}`, requestConfig);
     const {cart} = response.data;
 
-    return cart;
+    return cart.filter((cartItem: any) => cartItem.product != null);
 })
 
 export const updateUserCart = createAsyncThunk('cart/updateUserCart', async (userID: string, {getState}) => {
@@ -114,6 +114,8 @@ export const cartSlice = createSlice({
         },
     }, extraReducers: (builder) => {
         builder.addCase(getUserCart.fulfilled,(state, action) => {
+
+            console.log('PAYLOAD', action.payload);
             const resultCart = (action.payload as any[]).map((cartItem: any) => {
                 const quantity = cartItem.quantity;
                 const itemVariantID = cartItem.variant._id;
