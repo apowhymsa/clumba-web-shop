@@ -188,21 +188,29 @@ const Page = ({params}: { params: { slug: string } }) => {
                                     <div key={index} className={clsx("flex flex-col gap-y-2", index < order.products.length -1 && "border-b border-rose-400 pb-2")}>
                                         <div className="flex gap-x-4">
                                             <div className="w-[120px] h-[120px]">
-                                                <Image src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${item.product_id.image}`}
-                                                       alt="Product Image"
-                                                       width={0}
-                                                       height={0}
-                                                       sizes="100vw"
-                                                       style={{
-                                                           width: "120px",
-                                                           height: "auto",
-                                                           objectFit: "cover",
-                                                           borderRadius: "8px",
-                                                           objectPosition: "center center",
-                                                           aspectRatio: "1 / 1",
-                                                       }}
-                                                       priority
-                                                />
+                                                {/*<Image src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${item.product_id.image}`}*/}
+                                                {/*       alt="Product Image"*/}
+                                                {/*       width={0}*/}
+                                                {/*       height={0}*/}
+                                                {/*       sizes="100vw"*/}
+                                                {/*       style={{*/}
+                                                {/*           width: "120px",*/}
+                                                {/*           height: "auto",*/}
+                                                {/*           objectFit: "cover",*/}
+                                                {/*           borderRadius: "8px",*/}
+                                                {/*           objectPosition: "center center",*/}
+                                                {/*           aspectRatio: "1 / 1",*/}
+                                                {/*       }}*/}
+                                                {/*       priority*/}
+                                                {/*/>*/}
+                                                <img style={{
+                                                    width: "120px",
+                                                    height: "auto",
+                                                    objectFit: "cover",
+                                                    borderRadius: "8px",
+                                                    objectPosition: "center center",
+                                                    aspectRatio: "1 / 1",
+                                                }} src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${item.product_id.image}`} alt="Image" />
                                             </div>
                                             <div className="flex flex-col justify-center gap-y-2">
                                                 <p>Назва: {item.product_id.title}</p>

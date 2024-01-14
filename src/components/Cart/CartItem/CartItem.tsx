@@ -1,6 +1,6 @@
 import Image from "next/image";
 import {MinusIcon, PlusIcon, TrashIcon} from "@heroicons/react/24/outline";
-import {memo, useEffect, useState} from "react";
+import React, {memo, useEffect, useState} from "react";
 import {Product} from "@/types";
 import {Cart, deleteItem, updateQuantity, updateUserCart} from "@/utils/store/cartSlice";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
@@ -69,21 +69,29 @@ const CartItem = ({quantityItem, cartItem, inCheckout = false}: Props) => {
         {/*  <TrashIcon className="h-5 w-5 text-black transition-colors hover:text-rose-400 "/>*/}
         {/*</span>*/}
 
-        <Image src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${cartItem.product.image}`}
-               alt="Product Image"
-               width={0}
-               height={0}
-               sizes="100vw"
-               style={{
-                   width: "100px",
-                   height: "auto",
-                   objectFit: "cover",
-                   borderRadius: "8px",
-                   objectPosition: "center center",
-                   aspectRatio: "1 / 1",
-               }}
-               priority
-        />
+        {/*<Image src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${cartItem.product.image}`}*/}
+        {/*       alt="Product Image"*/}
+        {/*       width={0}*/}
+        {/*       height={0}*/}
+        {/*       sizes="100vw"*/}
+        {/*       style={{*/}
+        {/*           width: "100px",*/}
+        {/*           height: "auto",*/}
+        {/*           objectFit: "cover",*/}
+        {/*           borderRadius: "8px",*/}
+        {/*           objectPosition: "center center",*/}
+        {/*           aspectRatio: "1 / 1",*/}
+        {/*       }}*/}
+        {/*       priority*/}
+        {/*/>*/}
+        <img src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${cartItem.product.image}`} alt="Image" style={{
+            width: '100%',
+            height: 'auto',
+            objectFit: 'cover',
+            borderRadius: '8px',
+            objectPosition: 'center center',
+            aspectRatio: '1 / 1',
+        }}/>
         <div className="flex flex-col flex-1 justify-between gap-y-2">
             <div className="item-description flex justify-between items-center">
                 <span className="text-[15px] overflow-ellipsis max-w-[175px] overflow-hidden whitespace-nowrap"

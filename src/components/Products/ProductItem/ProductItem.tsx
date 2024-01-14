@@ -72,29 +72,37 @@ const ProductItem = ({product, isButtonVisible = true}: Props) => {
             <span className="text-white text-[14px]">-{product.variants[variant].discount.percent} %</span>
         </div>)}
         <Link className="product-image" href={`/products/${product._id}`}>
-            <Image
-                // src={
-                //   product.photo_origin
-                //     ? `https://poster-shop.joinposter.com${product.photo_origin}`
-                //     : "/flower_image.jpg"
-                // }
-                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
-                alt="Product Image"
-                width={0}
-                height={0}
-                sizes="100vw"
-                style={{
-                    width: "100%",
-                    height: "auto",
-                    objectFit: "cover",
-                    borderRadius: "8px",
-                    objectPosition: "center center",
-                    aspectRatio: "1 / 1",
-                }}
-                placeholder="blur"
-                blurDataURL="/flower_image.jpg"
-                priority
-            />
+            {/*<Image*/}
+            {/*    // src={*/}
+            {/*    //   product.photo_origin*/}
+            {/*    //     ? `https://poster-shop.joinposter.com${product.photo_origin}`*/}
+            {/*    //     : "/flower_image.jpg"*/}
+            {/*    // }*/}
+            {/*    src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}*/}
+            {/*    alt="Product Image"*/}
+            {/*    width={0}*/}
+            {/*    height={0}*/}
+            {/*    sizes="100vw"*/}
+            {/*    style={{*/}
+            {/*        width: "100%",*/}
+            {/*        height: "auto",*/}
+            {/*        objectFit: "cover",*/}
+            {/*        borderRadius: "8px",*/}
+            {/*        objectPosition: "center center",*/}
+            {/*        aspectRatio: "1 / 1",*/}
+            {/*    }}*/}
+            {/*    placeholder="blur"*/}
+            {/*    blurDataURL="/flower_image.jpg"*/}
+            {/*    priority*/}
+            {/*/>*/}
+            <img src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`} alt="Image" style={{
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                objectPosition: 'center center',
+                aspectRatio: '1 / 1',
+            }}/>
         </Link>
         <div className="product-description">
             <Link

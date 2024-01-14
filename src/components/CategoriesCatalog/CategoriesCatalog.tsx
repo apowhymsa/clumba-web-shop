@@ -50,29 +50,37 @@ const CategoriesCatalog: FC<Props> = (props) => {
                           key={category._id}
                           className="product-category-item-container flex flex-col">
                         <div className="product-category-image overflow-hidden">
-                            <Image
-                                // src={
-                                //   product.photo_origin
-                                //     ? `https://poster-shop.joinposter.com${product.photo_origin}`
-                                //     : "/flower_image.jpg"
-                                // }
-                                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${category.image}`}
-                                alt={category.title}
-                                width={0}
-                                height={0}
-                                sizes="100vw"
-                                style={{
-                                    width: "100%",
-                                    height: "auto",
-                                    objectFit: "cover",
-                                    borderRadius: "8px 8px 0px 0px",
-                                    objectPosition: "center center",
-                                    aspectRatio: "1 / 1",
-                                }}
-                                placeholder="blur"
-                                blurDataURL="/flower_image.jpg"
-                                priority
-                            />
+                            {/*<Image*/}
+                            {/*    // src={*/}
+                            {/*    //   product.photo_origin*/}
+                            {/*    //     ? `https://poster-shop.joinposter.com${product.photo_origin}`*/}
+                            {/*    //     : "/flower_image.jpg"*/}
+                            {/*    // }*/}
+                            {/*    src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${category.image}`}*/}
+                            {/*    alt={category.title}*/}
+                            {/*    width={0}*/}
+                            {/*    height={0}*/}
+                            {/*    sizes="100vw"*/}
+                            {/*    style={{*/}
+                            {/*        width: "100%",*/}
+                            {/*        height: "auto",*/}
+                            {/*        objectFit: "cover",*/}
+                            {/*        borderRadius: "8px 8px 0px 0px",*/}
+                            {/*        objectPosition: "center center",*/}
+                            {/*        aspectRatio: "1 / 1",*/}
+                            {/*    }}*/}
+                            {/*    placeholder="blur"*/}
+                            {/*    blurDataURL="/flower_image.jpg"*/}
+                            {/*    priority*/}
+                            {/*/>*/}
+                            <img src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${category.image}`} alt="Image" style={{
+                                width: '100%',
+                                height: 'auto',
+                                objectFit: 'cover',
+                                borderRadius: '8px',
+                                objectPosition: 'center center',
+                                aspectRatio: '1 / 1',
+                            }}/>
                         </div>
                         <span
                             className="flex text-center border py-2 rounded-b-[8px] bg-[#e5e7eb] bg-opacity-20 font-semibold flex-1 items-center justify-center">

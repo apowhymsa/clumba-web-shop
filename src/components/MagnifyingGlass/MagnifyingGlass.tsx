@@ -43,23 +43,31 @@ const MagnifyingGlass: React.FC<MagnifyingGlassProps> = ({ imageUrl }) => {
             onMouseLeave={handleMouseLeave}
             onMouseMove={handleMouseMove}
         >
-            <Image
-                // src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product?.image}`}
-                src={imageUrl}
-                alt='Product Image'
-                width={0}
-                height={0}
-                sizes='100vw'
-                style={{
-                    width: '100%',
-                    height: 'auto',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    objectPosition: 'center center',
-                    aspectRatio: '1 / 1',
-                }}
-                priority
-            />
+            {/*<Image*/}
+            {/*    // src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product?.image}`}*/}
+            {/*    src={imageUrl}*/}
+            {/*    alt='Product Image'*/}
+            {/*    width={0}*/}
+            {/*    height={0}*/}
+            {/*    sizes='100vw'*/}
+            {/*    style={{*/}
+            {/*        width: '100%',*/}
+            {/*        height: 'auto',*/}
+            {/*        objectFit: 'cover',*/}
+            {/*        borderRadius: '8px',*/}
+            {/*        objectPosition: 'center center',*/}
+            {/*        aspectRatio: '1 / 1',*/}
+            {/*    }}*/}
+            {/*    priority*/}
+            {/*/>*/}
+            <img src={imageUrl} alt="Image" style={{
+                width: '100%',
+                height: 'auto',
+                objectFit: 'cover',
+                borderRadius: '8px',
+                objectPosition: 'center center',
+                aspectRatio: '1 / 1',
+            }}/>
         </div>
     );
 };
