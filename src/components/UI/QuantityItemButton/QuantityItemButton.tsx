@@ -39,8 +39,8 @@ const QuantityItemButton = (props: Props) => {
       {/*  </button>*/}
       {/*</div>*/}
       <button
-          title={!isDisabled ? 'Ви не можете додати цей варіант товару до кошику, тому що, він відсутній на складі' : 'Додати товар до кошику'}
-          disabled={!isDisabled}
+          title={isDisabled ? 'Ви не можете додати цей варіант товару до кошику, тому що, він відсутній на складі' : 'Додати товар до кошику'}
+          disabled={isDisabled}
         className="bg-rose-400 text-white px-4 py-2 rounded transition-colors hover:bg-rose-500 disabled:bg-rose-300 disabled:text-white disabled:border-none disabled:cursor-not-allowed"
         onClick={onClick}
       >

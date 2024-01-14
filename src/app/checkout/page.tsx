@@ -29,6 +29,7 @@ const Checkout = () => {
     });
 
     const [deliveryAmount, setDeliveryAmount] = useState(0);
+    const [deliveryPrice, setDeliveryPrice] = useState(0);
     const [isLoading, setloading] = useState(true);
     const [isCompleteRequest, setCompleteRequest] = useState(true);
     const cart = useAppSelector(state => state.cartReducer).cart;
@@ -41,6 +42,7 @@ const Checkout = () => {
     const {error, info} = useToast();
     const router = useRouter();
     const [deliveryType, setDeliveryType] = useState(1);
+    const [deliveryTime, setDeliveryTime] = useState(1);
     const [openPayment, setOpenPayment] = useState<string>('');
     const {
         register,
@@ -56,6 +58,27 @@ const Checkout = () => {
         }
     }, [openPayment]);
 
+    const getDeliveryPrice = async () => {
+        try {
+            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/deliveryPrice`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'ngrok-skip-browser-warning': 'true',
+                    'Access-Control-Allow-Origin': '*',
+                    credentials: 'include'
+                },
+                cache: 'no-store'
+            })
+
+            const data = await response.json();
+
+            console.info('delivery price', data);
+            setDeliveryPrice(data[0]?.price || 12);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
 
     useEffect(() => {
         setloading(true);
@@ -70,11 +93,11 @@ const Checkout = () => {
         if (userAuthId) {
             console.log("auth", userAuthId);
 
-            Promise.all([getUserInfo(userAuthId)])
+            Promise.all([getDeliveryPrice(), getUserInfo(userAuthId)])
                 .then(() => setloading(false));
+        } else {
+            setloading(false);
         }
-
-        setloading(false);
     }, []);
 
     const onLoad = (autocomplete: any) => {
@@ -132,7 +155,7 @@ const Checkout = () => {
 
             getDistance(shopLat, shopLng, lat, lng).then((response: any) => {
                 console.log('res', response);
-                const dAmount = Math.ceil(response.rows[0].elements[0].distance.value / 1000) * 12
+                const dAmount = Math.ceil(response.rows[0].elements[0].distance.value / 1000) * Number(deliveryPrice)
                 console.log(dAmount);
                 setDeliveryAmount(dAmount);
             });
@@ -202,6 +225,11 @@ const Checkout = () => {
     function handleChangeRadio(e: SyntheticEvent<HTMLInputElement>) {
         const target = e.target as HTMLInputElement;
         setDeliveryType(Number(target.value))
+    }
+
+    function handleDeliveryTimeChangeRadio(e: SyntheticEvent<HTMLInputElement>) {
+        const target = e.target as HTMLInputElement;
+        setDeliveryTime(Number(target.value));
     }
 
     if (isLoading || !isLoaded) {
@@ -276,6 +304,29 @@ const Checkout = () => {
                                 <p className="mt-1 text-sm text-red-500">{errors.phone.message}</p>
                             ) : null}
                         </div>
+                        <hr/>
+                        <div>
+                            <div className="flex flex-col gap-y-2">
+                                <div className="flex items-center space-x-2">
+                                    <input onChange={handleDeliveryTimeChangeRadio} value="1" type="radio" id="deliverytime1" checked={deliveryTime === 1} name="deliverytime" className="h-4 w-4 rounded-full border-gray-300 text-rose-400 shadow-sm focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:text-gray-400" />
+                                    <label htmlFor="deliverytime1" className="text-sm font-medium text-gray-700">Залишити довільну дату та час доставки</label>
+                                </div>
+                                <div className="flex space-x-2">
+                                    <div className="flex h-5 items-center">
+                                        <input onChange={handleDeliveryTimeChangeRadio} value="2" type="radio" id="deliverytime2" checked={deliveryTime === 2} name="deliverytime" className="h-4 w-4 rounded-full border-gray-300 text-rose-400 shadow-sm focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:text-gray-400" />
+                                    </div>
+                                    <label htmlFor="deliverytime2" className="text-sm">
+                                        Вказати конкретну дату та час доставки
+                                    </label>
+                                </div>
+                            </div>
+                            {deliveryTime === 2 && (
+                                <>
+                                    Time - В розробці
+                                </>
+                            )}
+                        </div>
+                        <hr/>
                         <div>
                             <div className="flex flex-col gap-y-2 mb-4">
                                 <div className="flex items-center space-x-2">
@@ -330,7 +381,7 @@ const Checkout = () => {
                                         <p className="mt-1 text-sm text-red-500">{errors.shippingAddress.message}</p>
                                     ) : null}
                                     {deliveryAmount > 0 && (
-                                        <span className="block text-[15px] w-full text-right pt-4 underline">Розрахункова вартість доставки: <span className="font-semibold text-[16px]">{deliveryAmount} ₴</span></span>
+                                        <span className="block text-[15px] w-full text-right pt-4 underline">Розрахункова вартість доставки: <span className="font-semibold text-[16px]">{deliveryAmount} ₴ ({deliveryPrice} грн за км.)</span></span>
                                     )}
                                 </>
                             )}

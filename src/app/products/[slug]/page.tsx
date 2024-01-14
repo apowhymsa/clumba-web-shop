@@ -31,7 +31,7 @@ import {setComments} from "@/utils/store/commentsSlice";
 const Page = ({params}: { params: { slug: string } }) => {
     const [variant, setVariant] = useState(0);
     const {error, info} = useToast();
-    const [isAvailableProduct, setAvailableProduct] = useState<any[]>([]);
+    const [isNotAvailableProduct, setNotAvailableProduct] = useState<any[]>([]);
     const {isLoading, isLogged} = useContext(AuthContext)
     const products = useAppSelector(state => state.productsReducer).products
     const [recommendations, setRecommendations] = useState<Product[]>();
@@ -94,33 +94,30 @@ const Page = ({params}: { params: { slug: string } }) => {
             const productObject: Product = await response.json();
             setProduct(productObject);
 
-            setAvailableProduct([]);
+            setNotAvailableProduct([]);
 
             productObject.variants.map((variant, index) => {
-                setAvailableProduct((current) => [...current, {
+                // ПОИСК ОДНОГО ИНГРЕДИЕНТА КОТОРОГО МЕНЬШЕ НА СКЛАДЕ ЧЕМ НУЖНО ДЛЯ СОЗДАНИЯ
+                setNotAvailableProduct((current) => [...current, {
                     variantID: index,
-                    value: !(!!variant.ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))
+                    value: !!(variant.ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))
                 }])
             });
 
             // setAvailableProduct({variantID: 0, value:!!productObject?.variants[0].ingredients.findIndex(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))})
-            console.log(productObject);
+            console.log('productObject', productObject);
             await getRecomendations(productObject.categoryID._id);
         }
 
         Promise.all([getProduct(), getComments()]).finally(() => setLoading(false))
-    }, [])
+    }, []);
 
     useEffect(() => {
-        console.log('isAvailableProduct', isAvailableProduct)
-    }, [isAvailableProduct]);
-
-    useEffect(() => {
-        const currentState = [...isAvailableProduct];
-        currentState[variant] = {variantID: variant, value: !(!!product?.variants[variant].ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count)))}
+        const currentState = [...isNotAvailableProduct];
+        currentState[variant] = {variantID: variant, value: !!product?.variants[variant].ingredients.find(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))}
 
         console.log(currentState);
-        setAvailableProduct([...currentState])
+        setNotAvailableProduct([...currentState])
         // setAvailableProduct({variantID: 0, value:!!product?.variants[variant].ingredients.findIndex(ing => Number(ing.ingredient.variantID.count) < Number(ing.count))})
     }, [variant]);
 
@@ -176,7 +173,7 @@ const Page = ({params}: { params: { slug: string } }) => {
                             </div>
 
                         </div>
-                        {loading ? (<Skeleton/>) : <span className={clsx(isAvailableProduct[variant].value ? 'text-[#2fb168] text-[14px] font-semibold' : 'text-[14px] text-[#f87171] font-semibold')}>{isAvailableProduct[variant].value ? 'Варіант товару є в наявності' : 'Варіанту товару немає в наявності'}</span>}
+                        {loading ? (<Skeleton/>) : <span className={clsx(isNotAvailableProduct[variant].value ? 'text-[14px] text-[#f87171] font-semibold' : 'text-[#2fb168] text-[14px] font-semibold')}>{isNotAvailableProduct[variant].value ? 'Варіанту товару немає в наявності' : 'Варіант товару є в наявності'}</span>}
                         <hr className="my-2"/>
                         <div className="flex flex-col gap-y-2">
                             <div className="flex gap-x-2 text-[14px]">
@@ -185,13 +182,13 @@ const Page = ({params}: { params: { slug: string } }) => {
                             </div>
                             <div className="flex gap-x-4">
                         {product?.variants.map((pvariant, index) => (
-                            <span key={index} className={clsx(variant === index ? `${isAvailableProduct[index].value === true ? 'bg-rose-400' : 'bg-rose-300'} text-white` : 'bg-gray-200', 'flex items-center justify-center px-2 py-2 leading-none rounded cursor-pointer text-[14px]', isAvailableProduct[index].value === false && 'line-through')} onClick={() => setVariant(index)}>{pvariant.title}</span>
+                            <span key={index} className={clsx(variant === index ? isNotAvailableProduct[index]?.value ? 'bg-rose-300 text-white' : 'bg-rose-400 text-white' : 'text-black bg-gray-200', 'flex items-center justify-center px-2 py-2 leading-none rounded cursor-pointer text-[14px]', isNotAvailableProduct[index]?.value && 'line-through')} onClick={() => setVariant(index)}>{pvariant.title}</span>
                         ))}
                             </div>
                         </div>
                         <hr className="my-2"/>
                         {loading ? (<Skeleton/>) : (<QuantityItemButton
-                            isDisabled={isAvailableProduct[variant].value}
+                                isDisabled={isNotAvailableProduct[variant].value}
                                 quantity={quantity}
                                 setQuantity={setQuantity}
                                 onClick={async () => {

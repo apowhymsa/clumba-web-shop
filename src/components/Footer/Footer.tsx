@@ -15,7 +15,7 @@ const Footer = () => {
             <Link href="/">Главная</Link>
           </li>
           <li>
-            <Link href="/products?sort=1">Товары</Link>
+            <Link href="/products?limit=15&page=1&sort=1&price=0-10000&category=all">Товары</Link>
           </li>
           <li>
             <Link href="/about-us">О нас</Link>

@@ -14,6 +14,20 @@ type Props = {
 
 const ModalContainer = ({onClose, children, headerContent, containerWidthClass, isOpen}: Props) => {
     const [isVisible, setVisible] = useState(false);
+    const [scroll, setScroll] = useState(0);
+
+    useEffect(() => {
+        function handleScroll() {
+            const scrolledPixels = window.scrollY;
+            setScroll(scrolledPixels);
+        }
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
     useEffect(() => {
         isOpen ? document.body.style.overflow = 'hidden' : document.body.style.overflow = 'visible';
@@ -26,7 +40,9 @@ const ModalContainer = ({onClose, children, headerContent, containerWidthClass, 
             classNames="modal-container"
             unmountOnExit
         >
-            <div className="absolute w-screen h-screen bg-black bg-opacity-50 top-0 left-0 z-50 backdrop-blur-sm"
+            <div style={{
+                top: `${scroll}px`
+            }} className="absolute w-screen min-h-screen bg-black bg-opacity-50 left-0 z-50 backdrop-blur-sm"
                  onMouseDown={onClose}
             >
                 <div
