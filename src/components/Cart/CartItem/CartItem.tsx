@@ -84,14 +84,17 @@ const CartItem = ({quantityItem, cartItem, inCheckout = false}: Props) => {
         {/*       }}*/}
         {/*       priority*/}
         {/*/>*/}
-        <img src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${cartItem.product.image}`} alt="Image" style={{
-            width: '100%',
-            height: 'auto',
-            objectFit: 'cover',
-            borderRadius: '8px',
-            objectPosition: 'center center',
-            aspectRatio: '1 / 1',
-        }}/>
+       <div className="w-[100px] h-[100px]">
+           <img src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${cartItem.product.image}`} alt="Image" style={{
+               width: '100%',
+               height: 'auto',
+               objectFit: 'cover',
+               borderRadius: '8px',
+               objectPosition: 'center center',
+               aspectRatio: '1 / 1',
+               margin: 0
+           }}/>
+       </div>
         <div className="flex flex-col flex-1 justify-between gap-y-2">
             <div className="item-description flex justify-between items-center">
                 <span className="text-[15px] overflow-ellipsis max-w-[175px] overflow-hidden whitespace-nowrap"

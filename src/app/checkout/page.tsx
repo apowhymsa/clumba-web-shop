@@ -15,6 +15,8 @@ import Loader from "@/components/Loader/Loader";
 import {AuthContext} from "@/contexts/AuthContext/AuthContext";
 import useToast from "@/hooks/useToast";
 import {useRouter} from "next/navigation";
+import CustomDateTimePicker from "@/components/CustomDateTimePicker/CustomDateTimePicker";
+import {Dayjs} from "dayjs";
 
 interface IPaymentData {
     name: string;
@@ -27,7 +29,7 @@ const Checkout = () => {
         googleMapsApiKey: process.env.GOOGLE_API_KEY!,
         libraries: ['places', 'geocoding']
     });
-
+    const [selectedDateTime, setSelectedDateTime] = useState<Dayjs | null>(null);
     const [deliveryAmount, setDeliveryAmount] = useState(0);
     const [deliveryPrice, setDeliveryPrice] = useState(0);
     const [isLoading, setloading] = useState(true);
@@ -181,6 +183,7 @@ const Checkout = () => {
                         return {product_id: cartItem.product._id, productVariant: {title: cartItem.variant.title, id: cartItem.variant._id}, count: Number(cartItem.quantity)};
                     }),
                     shippingAddress: deliveryType === 1 ? 'Самовывоз' : data.shippingAddress,
+                    deliveryTime: deliveryTime === 1 ? 'Довільна дата та час' : selectedDateTime?.toDate().toLocaleString(),
                     name: data.name
                 }
             }
@@ -321,9 +324,9 @@ const Checkout = () => {
                                 </div>
                             </div>
                             {deliveryTime === 2 && (
-                                <>
-                                    Time - В розробці
-                                </>
+                                <div className="mt-4">
+                                    <CustomDateTimePicker selectedDateTime={selectedDateTime} setSelectedDateTime={setSelectedDateTime}/>
+                                </div>
                             )}
                         </div>
                         <hr/>

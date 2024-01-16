@@ -15,6 +15,7 @@ export type Order = {
     phoneNumber: string;
     userFullName: string;
     shippingAddress: string;
+    deliveryTime: string,
     products: Product[];
     payment: {
         status: boolean,

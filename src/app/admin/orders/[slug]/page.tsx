@@ -142,6 +142,7 @@ const Page = ({params}: { params: { slug: string } }) => {
                                 <p className="text-[15px] border-b border-rose-400 pb-1.5"><span className="font-semibold uppercase">Статус оплати:</span> {order.payment.status === true ? <span className="text-green-600">Оплачено</span> : 'Не оплачено'}</p>
                                 <p className="text-[15px] border-b border-rose-400 pb-1.5"><span className="font-semibold uppercase">Дата та час створення:</span> {formatDate(order.createdAt)}</p>
                                 <p className="text-[15px] border-b border-rose-400 pb-1.5"><span className="font-semibold uppercase">Ціна замовлення:</span> {order.payment.amount}&#8372;</p>
+                                <p className="text-[15px] border-b border-rose-400 pb-1.5"><span className="font-semibold uppercase">Вказані дата та час доставки:</span> {order.deliveryTime}</p>
                             </div>
                         </div>
                         <div className="flex flex-col gap-y-2">
