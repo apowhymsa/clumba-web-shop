@@ -15,6 +15,8 @@ import {useProductCategoriesStore} from "@/utils/zustand-store/productCategories
 import Image from "next/image";
 import {processImage} from "@/utils/processImage";
 import Loader from "@/components/Loader/Loader";
+import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
+import {AnimatePresence} from "framer-motion";
 
 type ProductCategory = {
     _id: string; title: string; image: string;
@@ -114,19 +116,32 @@ const Page = () => {
 
 
     return (
-        <div className="flex-1 p-6 text-[14px]">
-            <div className="border-b pb-4">
-                <button
-                    onClick={() => setOpenCreateModal(!isOpenCreateModal)}
-                    className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-8 rounded px-4 transition-colors">
-                    <span>Додати новий запис</span>
-                    <PlusIcon className="w-5 h-5 text-white"/>
-                </button>
+        <>
+            <div className="flex-1 p-6 text-[14px]">
+                <div className="border-b pb-4">
+                    <button
+                        onClick={() => setOpenCreateModal(!isOpenCreateModal)}
+                        className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-8 rounded px-4 transition-colors">
+                        <span>Додати новий запис</span>
+                        <PlusIcon className="w-5 h-5 text-white"/>
+                    </button>
+                </div>
+                <BasicTable data={productCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
+                {isOpenCreateModal ? <ModalCreatePC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/> : null}
+                {isOpenUpdateModal?.isOpen ? <ModalUpdatePC isOpen={isOpenUpdateModal?.isOpen} onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
             </div>
-            <BasicTable data={productCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
-            {isOpenCreateModal ? <ModalCreatePC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/> : null}
-            {isOpenUpdateModal?.isOpen ? <ModalUpdatePC isOpen={isOpenUpdateModal?.isOpen} onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} id={isOpenUpdateModal.id}/> : null}
-        </div>
+            <AnimatePresence onExitComplete={() => document.body.style.overflow = 'visible'}>
+                {isOpenCreateModal && (
+                    <ModalContainer onClose={() => setOpenCreateModal(false)} isOpen={isOpenCreateModal}>
+                        <ModalCreatePC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/>
+                    </ModalContainer>)}
+                {isOpenUpdateModal?.isOpen && (
+                    <ModalContainer onClose={() => setOpenUpdateModal({isOpen: false, id: ''})} isOpen={isOpenUpdateModal?.isOpen}>
+                        <ModalUpdatePC isOpen={isOpenUpdateModal?.isOpen} onClose={() => setOpenUpdateModal({isOpen: false, id: ''})}
+                                       id={isOpenUpdateModal.id} />
+                    </ModalContainer>)}
+            </AnimatePresence>
+        </>
     )
 }
 

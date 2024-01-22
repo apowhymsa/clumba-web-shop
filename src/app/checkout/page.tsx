@@ -40,7 +40,7 @@ const Checkout = () => {
     const dispatch = useAppDispatch();
     const [searchResult, setSearchResult] = useState<any>(null);
     const autocompleteRef = useRef();
-    const {isLogged} = useContext(AuthContext);
+    const {isLogged, isLoading: isLoadingAuth} = useContext(AuthContext);
     const {error, info} = useToast();
     const router = useRouter();
     const [deliveryType, setDeliveryType] = useState(1);
@@ -81,26 +81,45 @@ const Checkout = () => {
         }
     }
 
-
     useEffect(() => {
         setloading(true);
+        if (!isLoadingAuth) {
+            if (!isLogged) {
+                info('Для оформлення замовлення потрібно увійти в обліковий запис');
+                return router.push('/');
+            } else {
+                const userAuthId = localStorage.getItem("authUserId");
 
-        const userAuthId = localStorage.getItem("authUserId");
-
-        if (!isLogged) {
-            info('Для оформлення замовлення потрібно увійти в обліковий запис');
-            return router.push('/');
-        }
-
-        if (userAuthId) {
-            console.log("auth", userAuthId);
-
-            Promise.all([getDeliveryPrice(), getUserInfo(userAuthId)])
-                .then(() => setloading(false));
+                if (userAuthId) {
+                    Promise.all([getDeliveryPrice(), getUserInfo(userAuthId)])
+                        .then(() => setloading(false));
+                }
+            }
         } else {
             setloading(false);
         }
-    }, []);
+    }, [isLogged, isLoadingAuth]);
+
+
+    // useEffect(() => {
+    //     setloading(true);
+    //
+    //     const userAuthId = localStorage.getItem("authUserId");
+    //
+    //     if (!isLogged) {
+    //         info('Для оформлення замовлення потрібно увійти в обліковий запис');
+    //         return router.push('/');
+    //     }
+    //
+    //     if (userAuthId) {
+    //         console.log("auth", userAuthId);
+    //
+    //         Promise.all([getDeliveryPrice(), getUserInfo(userAuthId)])
+    //             .then(() => setloading(false));
+    //     } else {
+    //         setloading(false);
+    //     }
+    // }, []);
 
     const onLoad = (autocomplete: any) => {
         setSearchResult(autocomplete);
@@ -409,9 +428,7 @@ const Checkout = () => {
                     </div>
                 </div>
             </>
-        ) : (
-            <div>Нет доступа</div>
-        )}
+        ) : null}
     </div>
 }
 

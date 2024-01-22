@@ -5,10 +5,10 @@ import {useForm} from "react-hook-form";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import useToast from "@/hooks/useToast";
 import Loader from "@/components/Loader/Loader";
+import {XMarkIcon} from "@heroicons/react/24/outline";
 
 type Props = {
-    onClose: () => void;
-    isOpen: boolean;
+    onClose: () => void; isOpen: boolean;
 }
 
 const ModalDeliveryPrice = (props: Props) => {
@@ -18,7 +18,7 @@ const ModalDeliveryPrice = (props: Props) => {
     const {info, error} = useToast();
     const {
         register, handleSubmit, formState: {errors},
-    } = useForm<{id: string, price: string}>();
+    } = useForm<{ id: string, price: string }>();
 
     useEffect(() => {
         const getDeliveryPrice = () => {
@@ -29,13 +29,11 @@ const ModalDeliveryPrice = (props: Props) => {
                     'ngrok-skip-browser-warning': 'true',
                     'Access-Control-Allow-Origin': '*',
                     credentials: 'include'
-                },
-                cache: 'no-store'
+                }, cache: 'no-store'
             }).then((response) => response.json())
                 .then(data => {
                     setDeliveryPrice({
-                        id: data[0]._id,
-                        price: data[0].price
+                        id: data[0]._id, price: data[0].price
                     })
                 })
                 .catch(err => console.log(err))
@@ -51,10 +49,9 @@ const ModalDeliveryPrice = (props: Props) => {
         console.log('deliveryPrice', deliveryPrice)
     }, [deliveryPrice]);
 
-    const handlerChangeDeliveryPrice = async (data: {id: string, price: string}) => {
+    const handlerChangeDeliveryPrice = async (data: { id: string, price: string }) => {
         const requestBody = {
-            id: deliveryPrice.id,
-            price: data.price
+            id: deliveryPrice.id, price: data.price
         }
 
         console.log(requestBody);
@@ -64,8 +61,7 @@ const ModalDeliveryPrice = (props: Props) => {
                 'Content-Type': 'application/json',
                 'ngrok-skip-browser-warning': 'true',
                 'Access-Control-Allow-Origin': '*'
-            },
-            withCredentials: true
+            }, withCredentials: true
         }
 
         try {
@@ -82,7 +78,8 @@ const ModalDeliveryPrice = (props: Props) => {
                     error('Неотримано необхідних даних для редагування ціни доставки, оновіть сторінку та спробуйте ще');
                     break;
                 }
-                default: error(`${errorObject.message} - ${errorObject.name}`)
+                default:
+                    error(`${errorObject.message} - ${errorObject.name}`)
             }
         }
     }
@@ -91,39 +88,47 @@ const ModalDeliveryPrice = (props: Props) => {
         return <Loader/>
     }
 
-    return (
-        <ModalContainer onClose={onClose} isOpen={isOpen} headerContent="Редагування ціни доставки">
-            <form
-                className="default-section flex flex-col gap-y-5 px-6 py-4"
-                onSubmit={handleSubmit(handlerChangeDeliveryPrice)}
-            >
-                <div className="text-[14px]">
-                    <label
-                        htmlFor="categoryName"
-                        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.price ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
-                    >
-                        Назва категорії інгредієнтів
-                    </label>
-                    <div className="relative">
-                        <input
-                            defaultValue={deliveryPrice?.price}
-                            type="number"
-                            className={`block w-full h-8 rounded-md shadow-sm pl-4 ${errors.price ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                            {...register("price", {
-                                required: {
-                                    value: true, message: "Поле обов'язкове для заповнення",
-                                }
-                            })}
-                        />
-                    </div>
-                    {errors.price ? (
-                        <p className="mt-1 text-sm text-red-500">{errors.price.message}</p>) : null}
+    return (<>
+            <div className="flex items-center justify-between px-6 py-3 border-b">
+                <div className="font-bold text-lg">Оновлення ціни доставки</div>
+                <div
+                    className="btn-close-modal flex cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
+                    onClick={onClose}
+                >
+                    <XMarkIcon className="h-6 w-6 text-black"/>
                 </div>
+            </div>
+            <div className="px-6 py-4">
+                <form
+                    className="default-section flex flex-col gap-y-5"
+                    onSubmit={handleSubmit(handlerChangeDeliveryPrice)}
+                >
+                    <div className="text-[14px]">
+                        <label
+                            htmlFor="categoryName"
+                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.price ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                        >
+                            Ціна доставки
+                        </label>
+                        <div className="relative">
+                            <input
+                                defaultValue={deliveryPrice?.price}
+                                type="number"
+                                className={`block w-full h-8 rounded-md shadow-sm pl-4 ${errors.price ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                {...register("price", {
+                                    required: {
+                                        value: true, message: "Поле обов'язкове для заповнення",
+                                    }
+                                })}
+                            />
+                        </div>
+                        {errors.price ? (<p className="mt-1 text-sm text-red-500">{errors.price.message}</p>) : null}
+                    </div>
 
-                <Button type='submit' variant='primary' content='Редагувати' isLoading={false}/>
-            </form>
-        </ModalContainer>
-    )
+                    <Button type='submit' variant='primary' content='Редагувати' isLoading={false}/>
+                </form>
+            </div>
+        </>)
 }
 
 export default ModalDeliveryPrice;

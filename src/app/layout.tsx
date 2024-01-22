@@ -18,6 +18,7 @@ import axios from "axios";
 import {setProducts} from "@/utils/store/productSlice";
 import {useAppDispatch} from "@/utils/store/hooks";
 import {QueryClient} from "@tanstack/react-query";
+import ScrollTopButton from "@/components/ScrollTopButton/ScrollTopButton";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -71,6 +72,7 @@ export default function RootLayout({
               </NavigationContextProvider>
               </QueryClientProvider>
           )}
+          <ScrollTopButton/>
         </Providers>
       </body>
     </html>

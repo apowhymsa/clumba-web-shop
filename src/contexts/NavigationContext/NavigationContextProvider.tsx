@@ -33,6 +33,8 @@ const NavigationContextProvider = ({
         break;
       }
     }
+
+    if (route.includes('/products')) setNavigation([false, true, false]);
   }, [route]);
 
   return (

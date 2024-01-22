@@ -16,8 +16,7 @@ type FormValues = {
 }
 
 type Props = {
-    onClose: () => void;
-    isOpen: boolean;
+    onClose: () => void; isOpen: boolean;
 }
 
 const ModalCreateIC = (props: Props) => {
@@ -50,8 +49,7 @@ const ModalCreateIC = (props: Props) => {
                 'Content-Type': 'application/json',
                 'ngrok-skip-browser-warning': 'true',
                 'Access-Control-Allow-Origin': '*'
-            },
-            withCredentials: true
+            }, withCredentials: true
         }
 
         try {
@@ -69,14 +67,26 @@ const ModalCreateIC = (props: Props) => {
                     error('Вже існує категорія інгредієнтів з такою назвою');
                     break;
                 }
-                default: error(`${errorObject.message} - ${errorObject.name}`)
+                default:
+                    error(`${errorObject.message} - ${errorObject.name}`)
             }
         }
     }
 
-    return (<ModalContainer onClose={onClose} isOpen={isOpen} headerContent="Створення категорії інгредієнтів">
+    return (
+        <>
+            <div className="flex items-center justify-between px-6 py-3 border-b">
+                <div className="font-bold text-lg">Створення категорії інгредієнтів</div>
+                <div
+                    className="btn-close-modal flex cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
+                    onClick={onClose}
+                >
+                    <XMarkIcon className="h-6 w-6 text-black"/>
+                </div>
+            </div>
+            <div className="px-6 py-4">
                 <form
-                    className="default-section flex flex-col gap-y-5 px-6 py-4"
+                    className="default-section flex flex-col gap-y-5"
                     onSubmit={handleSubmit(createIngredientCategory)}
                 >
                     <div className="text-[14px]">
@@ -102,7 +112,9 @@ const ModalCreateIC = (props: Props) => {
 
                     <Button type='submit' variant='primary' content='Створити' isLoading={false}/>
                 </form>
-        </ModalContainer>)
+            </div>
+        </>
+    )
 }
 
 export default ModalCreateIC;

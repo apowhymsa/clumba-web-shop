@@ -11,6 +11,8 @@ import useToast from "@/hooks/useToast";
 import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
 import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
 import Loader from "@/components/Loader/Loader";
+import {AnimatePresence} from "framer-motion";
+import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
 
 type IngredientCategory = {
     _id: string; title: string;
@@ -61,8 +63,7 @@ const Page = () => {
             const requestConfig: AxiosRequestConfig = {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                withCredentials: true
+                }, withCredentials: true
             }
 
             try {
@@ -82,7 +83,8 @@ const Page = () => {
                         error('Видалення неможливе, тому що, ця категорія вже використовується у створеному інгредієнті');
                         break;
                     }
-                    default: error(`${errorObject.message} - ${errorObject.name}`)
+                    default:
+                        error(`${errorObject.message} - ${errorObject.name}`)
                 }
             }
         }
@@ -97,21 +99,30 @@ const Page = () => {
         return <Loader/>
     }
 
-    return (
-        <div className="flex-1 p-6 text-[14px]">
-            <div className="border-b pb-4">
-                <button
-                    onClick={() => setOpenCreateModal(!isOpenCreateModal)}
-                    className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-8 rounded px-4 transition-colors">
-                    <span>Додати новий запис</span>
-                    <PlusIcon className="w-5 h-5 text-white"/>
-                </button>
+    return (<>
+            <div className="flex-1 p-6 text-[14px]">
+                <div className="border-b pb-4">
+                    <button
+                        onClick={() => setOpenCreateModal(!isOpenCreateModal)}
+                        className="flex items-center justify-center gap-x-2 bg-blue-600 hover:bg-blue-800 text-white h-8 rounded px-4 transition-colors">
+                        <span>Додати новий запис</span>
+                        <PlusIcon className="w-5 h-5 text-white"/>
+                    </button>
+                </div>
+                <BasicTable data={ingredientCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
             </div>
-            <BasicTable data={ingredientCategories} columns={columns} onDelete={onDelete} onUpdate={onUpdate}/>
-            {isOpenCreateModal && <ModalCreateIC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/>}
-            {isOpenUpdateModal && <ModalUpdateIC isOpen={isOpenUpdateModal} onClose={() => setOpenUpdateModal(false)} id={updatingID}/>}
-        </div>
-    )
+            <AnimatePresence onExitComplete={() => document.body.style.overflow = 'visible'}>
+                {isOpenCreateModal && (
+                    <ModalContainer onClose={() => setOpenCreateModal(false)} isOpen={isOpenCreateModal}>
+                        <ModalCreateIC isOpen={isOpenCreateModal} onClose={() => setOpenCreateModal(false)}/>
+                    </ModalContainer>)}
+                {isOpenUpdateModal && (
+                    <ModalContainer onClose={() => setOpenUpdateModal(false)} isOpen={isOpenUpdateModal}>
+                        <ModalUpdateIC isOpen={isOpenUpdateModal} onClose={() => setOpenUpdateModal(false)}
+                                       id={updatingID}/>
+                    </ModalContainer>)}
+            </AnimatePresence>
+        </>)
 }
 
 export default Page;

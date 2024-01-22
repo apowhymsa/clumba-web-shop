@@ -34,7 +34,7 @@ const Products = (props: Props) => {
         const sortF = sort === '1' ? 'asc' : sort === '2' ? 'desc' : sort === '3' ? 'desc' : 'desc';
         const priceF = price.join('-');
         const categoriesF = categories.length > 0 ? categories : 'all';
-        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=${page}&sort=${sortF}&price=${priceF}&categories=${categoriesF}`, {
+        const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=${page}&sort=${sortF}&price=${priceF}&categories=${categoriesF}&onlyVisible=true`, {
             headers: {
                 'Content-Type': 'application/json',
                 'ngrok-skip-browser-warning': 'true',
@@ -63,7 +63,7 @@ const Products = (props: Props) => {
             <ProductItemSkeleton/>
         </>))) : products.length <= 0 ? (<div>Нет товаров по применённым фильтрам</div>) : (<>
             <div className={clsx("products-container", products.length === totalProductsAmount && "pb-12")}>
-                {products.map((product) => (<ProductItem key={product._id} product={product}/>))}
+                {products.map((product) => <ProductItem key={product._id} product={product}/>)}
             </div>
             {products.length < totalProductsAmount && (isLoadingNextProductsPage ? (
                 <div className="my-6">

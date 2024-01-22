@@ -37,6 +37,7 @@ interface FormValues {
     title: string;
     categoryID: string;
     price: string;
+    isNotVisible: boolean;
     variants: IVariant[];
 }
 
@@ -50,6 +51,7 @@ const Page = () => {
     const [pc, setPc] = useState<any[]>([]);
     const router = useRouter();
     const {error, info} = useToast();
+    const [isNotVisibleProduct, setNotVisibleProduct] = useState(false);
     const {
         control, setValue, register, handleSubmit, formState, reset, formState: {errors},
     } = useForm<FormValues>({
@@ -169,6 +171,7 @@ const Page = () => {
             image: img,
             title: data.title,
             categoryID: category,
+            isNotVisible: isNotVisibleProduct,
             variants: normalizeIngredients,
             isNewImage: data.image.length !== 0
         }
@@ -240,6 +243,18 @@ const Page = () => {
                         />
                     </div>
                     {errors.title ? (<p className="mt-1 text-sm text-red-500">{errors.title.message}</p>) : null}
+                </div>
+                <div className="flex flex-2 items-center space-x-3 my-2">
+                    <label htmlFor='isNotVisible' className="relative inline-flex cursor-pointer items-center">
+                        <input defaultChecked={product.isNotVisible} {...register('isNotVisible')}
+                               onChange={(e) => {
+                                   setNotVisibleProduct(e.target.checked);
+                               }}
+                               type="checkbox" id='isNotVisible' className="peer sr-only h-8 text-sm"/>
+                        <div
+                            className="h-6 w-11 rounded-full bg-gray-100 after:absolute after:top-0.5 after:left-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow after:transition-all after:content-[''] hover:bg-gray-200 peer-checked:bg-rose-400 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4 peer-focus:ring-blue-200 peer-disabled:cursor-not-allowed peer-disabled:bg-gray-100 peer-disabled:after:bg-gray-50"></div>
+                    </label>
+                    <span className="w-fit block text-sm font-bold text-gray-700">Не відображати товар на сайті</span>
                 </div>
                 <div>
                     <label

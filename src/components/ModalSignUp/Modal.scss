@@ -1,0 +1,21 @@
+.modal-container-enter {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+
+.modal-container-enter-active {
+  opacity: 1;
+  transform: translateY(0%);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.modal-container-exit {
+  opacity: 1;
+  transform: translateY(0%);
+}
+
+.modal-container-exit-active {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 300ms, transform 300ms;
+}

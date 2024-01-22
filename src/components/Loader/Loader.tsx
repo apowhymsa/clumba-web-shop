@@ -1,6 +1,15 @@
-const Loader = () => {
+import {FC} from "react";
+import {clsx} from "clsx";
+
+type Props = {
+    variant?: 'primary' | 'secondary'
+}
+
+const Loader: FC<Props> = (props) => {
+    const {variant = 'primary'} = props;
+
     return <div className="w-full h-full flex justify-center items-center">
-        <span className="loading loading-spinner text-rose-400"></span>
+        <span className={clsx("loading loading-spinner", variant === 'primary' ? 'text-rose-400' : 'text-white')}></span>
     </div>
 }
 

@@ -18,6 +18,7 @@ interface Product {
     image: any;
     title: string;
     categoryID: any;
+    isNotVisible: boolean;
     price: string;
     discount: {
         state: boolean, percent: string
@@ -53,6 +54,7 @@ export const useProductsStore = create<Store>()((set, get) => ({
                         categoryID: values.categoryID,
                         variants: values.variants,
                         discount: values.discount,
+                        isNotVisible: values.isNotVisible,
                         price: values.price
                     }
                 }

@@ -7,6 +7,7 @@ import React, {useEffect, useState} from "react";
 import axios, {AxiosError, AxiosRequestConfig} from "axios";
 import {useIngredientCategoriesStore} from "@/utils/zustand-store/ingredientCategories";
 import Loader from "@/components/Loader/Loader";
+import {XMarkIcon} from "@heroicons/react/24/outline";
 
 type FormValues = {
     categoryName: string;
@@ -105,39 +106,52 @@ const ModalUpdateIC = (props: Props) => {
         }
     }
 
-    return (<ModalContainer isOpen={isOpen} onClose={onClose} headerContent="Редагування категорії інгредієнтів">
-        <form
-            className="default-section flex flex-col gap-y-5 px-6 py-4"
-            onSubmit={handleSubmit(updateIngredientCategory)}
-        >
-            {isLoading || !ingredientCategory ? (<Loader/>) : (<>
-                    <div>
-                        <label
-                            htmlFor="categoryName"
-                            className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.categoryName ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
-                        >
-                            Назва категорії інгредієнтів
-                        </label>
-                        <div className="relative">
-                            <input
-                                className={`block w-full h-8 rounded-md text-[14px] shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                                {...register("categoryName", {
-                                    required: {
-                                        value: true, message: "Поле обов'язкове для заповнення",
-                                    }
-                                })}
-                                value={ingredientCategory.title}
-                                onChange={(e) => setIngredientCategory({_id: id, title: e.target.value})}
-                            />
+    return (
+        <>
+            <div className="flex items-center justify-between px-6 py-3 border-b">
+                <div className="font-bold text-lg">Редагування категорії інгредієнтів</div>
+                <div
+                    className="btn-close-modal flex cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
+                    onClick={onClose}
+                >
+                    <XMarkIcon className="h-6 w-6 text-black"/>
+                </div>
+            </div>
+            <div className="px-6 py-4">
+                <form
+                    className="default-section flex flex-col gap-y-5"
+                    onSubmit={handleSubmit(updateIngredientCategory)}
+                >
+                    {isLoading || !ingredientCategory ? (<Loader/>) : (<>
+                        <div>
+                            <label
+                                htmlFor="categoryName"
+                                className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${errors.categoryName ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null}`}
+                            >
+                                Назва категорії інгредієнтів
+                            </label>
+                            <div className="relative">
+                                <input
+                                    className={`block w-full h-8 rounded-md text-[14px] shadow-sm pl-4 ${errors.categoryName ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200" : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"}  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
+                                    {...register("categoryName", {
+                                        required: {
+                                            value: true, message: "Поле обов'язкове для заповнення",
+                                        }
+                                    })}
+                                    value={ingredientCategory.title}
+                                    onChange={(e) => setIngredientCategory({_id: id, title: e.target.value})}
+                                />
+                            </div>
+                            {errors.categoryName ? (
+                                <p className="mt-1 text-sm text-red-500">{errors.categoryName.message}</p>) : null}
                         </div>
-                        {errors.categoryName ? (
-                            <p className="mt-1 text-sm text-red-500">{errors.categoryName.message}</p>) : null}
-                    </div>
 
-                    <Button type='submit' variant='primary' content='Оновити' isLoading={false}/>
-                </>)}
-        </form>
-    </ModalContainer>)
+                        <Button type='submit' variant='primary' content='Оновити' isLoading={false}/>
+                    </>)}
+                </form>
+            </div>
+        </>
+    )
 }
 
 export default ModalUpdateIC;

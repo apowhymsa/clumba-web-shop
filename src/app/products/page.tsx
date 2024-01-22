@@ -3,7 +3,7 @@ import ProductsComponent from "@/components/ProductsComponent";
 import axios from "axios";
 
 const getProducts = async (category: string) => {
-  const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${category}`, {
+  const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${category}&onlyVisible=true`, {
     headers: {
       'Content-Type': 'application/json',
       'ngrok-skip-browser-warning': 'true',

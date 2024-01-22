@@ -4,14 +4,11 @@ import useDebounce from "@/hooks/useDebounce";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
 import {Product} from "@/types";
 import {FindProductItem} from "@/components/SearchModal/FindProductItem";
-import {collection, onSnapshot} from "@firebase/firestore";
-import {db} from "@/utils/firebase/firebase";
-import {setComments} from "@/utils/store/commentsSlice";
-import axios from "axios";
+import {motion} from 'framer-motion'
+import clsx from "clsx";
 
 type Props = {
-    onClose: () => void;
-    isOpen: boolean;
+    onClose: () => void; isOpen: boolean;
 }
 
 const SearchModal = (props: Props) => {
@@ -23,19 +20,14 @@ const SearchModal = (props: Props) => {
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
 
     useEffect(() => {
-        isOpen ? document.body.style.overflow = 'hidden' : document.body.style.overflow = 'visible';
-    }, [isOpen]);
-
-    useEffect(() => {
         const searchProducts = async (searchValue: string) => {
-            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}`, {
+            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products-includes?includes=${searchValue}&onlyVisible=true`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': 'true',
                     'Access-Control-Allow-Origin': '*',
                     credentials: 'include'
-                },
-                cache: 'no-store'
+                }, cache: 'no-store'
             });
 
             const foundProducts = await response.json();
@@ -52,12 +44,7 @@ const SearchModal = (props: Props) => {
         return null;
     }
 
-    return <div className="absolute w-screen h-screen bg-black bg-opacity-50 top-0 left-0 z-50 backdrop-blur-sm"
-                onClick={() => {
-                    setSearchValue('');
-                    onClose();
-                }}>
-        <div onClick={(e) => e.stopPropagation()} className="bg-white py-6 px-20">
+    return (<div className="px-6 py-4">
             <div className="relative flex items-center gap-x-6">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2.5">
                     <MagnifyingGlassIcon className="h-5 w-5 text-gray-500"/>
@@ -69,25 +56,19 @@ const SearchModal = (props: Props) => {
                        onChange={(event) => setSearchValue(event.target.value)}
                 />
                 <span onClick={() => {
-                    setSearchValue('');
                     onClose();
-                }} className="transition-colors hover:text-rose-400 cursor-pointer">Отмена</span>
+                }} className="transition-colors hover:text-rose-400 cursor-pointer">Закрити</span>
             </div>
             <div>
-                <h2 className="text-lg font-medium leading-10">Результаты
-                    поиска {filteredProducts.length > 0 && `(${filteredProducts.length})`}</h2>
+                <h2 className="text-lg font-medium leading-10">Результати
+                    пошуку {filteredProducts.length > 0 && `(${filteredProducts.length})`}</h2>
                 <div className="grid grid-cols-2 max-h-[300px] overflow-y-auto gap-x-4">
                     {filteredProducts.length === 0 ? (
-                        <span>Товаров не найдено</span>
-                    ) : (
-                        filteredProducts.map(findProduct => (
-                            <FindProductItem key={findProduct._id} product={findProduct} onClose={onClose}/>
-                        ))
-                    )}
+                        <span>Товарів не знайдено</span>) : (filteredProducts.map(findProduct => (
+                        <FindProductItem key={findProduct._id} product={findProduct} onClose={onClose}/>)))}
                 </div>
             </div>
-        </div>
-    </div>
+        </div>)
 }
 
 export {SearchModal};

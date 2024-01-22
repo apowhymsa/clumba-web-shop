@@ -27,6 +27,7 @@ interface FormValues {
     title: string;
     categoryID: string;
     price: string;
+    isNotVisible: boolean;
     variants: IVariant[];
 }
 

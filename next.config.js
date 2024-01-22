@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 
-const ADMIN_ENDPOINT_BACKEND = 'https://9880-178-213-4-41.ngrok-free.app'
-const DOMAIN = '9880-178-213-4-41.ngrok-free.app';
+const ADMIN_ENDPOINT_BACKEND = 'https://203a-178-213-6-10.ngrok-free.app'
+const DOMAIN = '203a-178-213-6-10.ngrok-free.app';
 
 const nextConfig = {
   images: {

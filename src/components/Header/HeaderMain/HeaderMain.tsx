@@ -3,14 +3,11 @@
 import "./HeaderMain.scss";
 import Link from "next/link";
 import {
-    Bars3Icon,
-    MagnifyingGlassIcon,
-    ShoppingCartIcon,
-    UserIcon,
+    Bars3Icon, MagnifyingGlassIcon, ShoppingCartIcon, UserIcon,
 } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import HeaderNav from "@/components/Header/HeaderMain/HeaderNav/HeaderNav";
-import {useContext, useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {createPortal} from "react-dom";
 import HeaderBurgerContent from "@/components/Header/HeaderBurgerContent/HeaderBurgerContent";
 import {is} from "immutable";
@@ -21,16 +18,28 @@ import {doc, getDoc} from "@firebase/firestore";
 import {setCart} from "@/utils/store/cartSlice";
 import {useRouter} from "next/navigation";
 import {AuthContext} from "@/contexts/AuthContext/AuthContext";
+import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
+import ModalSignIn from "@/components/ModalSignUp/ModalSignIn";
+import {AnimatePresence, useMotionValueEvent, useScroll} from "framer-motion";
+import ModalSignUpStep1 from "@/components/ModalSignUp/ModalSignUpStep1";
+import ModalSignUpStep2 from "@/components/ModalSignUp/ModalSignUpStep2";
 
 const HeaderMain = () => {
     const router = useRouter();
-    const { isLoading, isLogged, setLogged, setLoading } = useContext(AuthContext);
+    const {isLoading, isLogged, setLogged, setLoading} = useContext(AuthContext);
     const [isOpenSearchModal, setOpenSearchModal] = useState(false);
     const [isVisible, setVisible] = useState(false);
     const burgerContentRef = useRef<HTMLDivElement>(null);
     const [isOpenCart, setOpenCart] = useState(false);
     const cart = useAppSelector(state => state.cartReducer).cart;
     const dispatch = useAppDispatch();
+    const {scrollY} = useScroll();
+    const [scrollValue, setScrollValue] = useState(0);
+
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        console.log("Page scroll: ", latest)
+        setScrollValue(latest);
+    });
 
     const handlerBurgerVisible = () => {
         setVisible((prev) => !prev);
@@ -54,7 +63,7 @@ const HeaderMain = () => {
         }
     }, [isOpenSearchModal]);
 
-    return (
+    return (<>
         <div className="header-main">
             <div className="header-main-mobile-left">
                 <Bars3Icon
@@ -91,38 +100,36 @@ const HeaderMain = () => {
             <HeaderNav/>
             <div className="header-buttons">
                 <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" onClick={() => setOpenSearchModal(true)}/>
-                <SearchModal onClose={() => setOpenSearchModal(false)} isOpen={isOpenSearchModal}/>
-                {isLogged && (
-                    <UserIcon
-                        onClick={() => router.push('/profile')}
-                        className="h-6 w-6 text-gray-400"
-                    />
-                )}
+                {isLogged && (<UserIcon
+                    onClick={() => router.push('/profile')}
+                    className="h-6 w-6 text-gray-400"
+                />)}
                 <span className="header-main-divider"></span>
                 <div className="relative">
                     <ShoppingCartIcon
-                        className={[
-                            "transition-colors cart-icon h-6 w-6 text-gray-400 cursor-pointer hover:text-rose-400",
-                            isOpenCart && "text-rose-400",
-                        ].join(" ")}
+                        className={["transition-colors cart-icon h-6 w-6 text-gray-400 cursor-pointer hover:text-rose-400", isOpenCart && "text-rose-400",].join(" ")}
                         onClick={() => setOpenCart((prev) => !prev)}
                     />
-                    {cart.length > 0 ? (
-                        <span
-                            className="pointer-events-none absolute flex items-center justify-center text-xs -top-2 -right-2 w-5 h-5 bg-rose-400 text-white rounded-full">
+                    {cart.length > 0 ? (<span
+                        className="pointer-events-none absolute flex items-center justify-center text-xs -top-2 -right-2 w-5 h-5 bg-rose-400 text-white rounded-full">
                 <span className="h-[13px]">{cart.length}</span>
-            </span>
-                    ) : null}
+            </span>) : null}
                 </div>
-                {/*{createPortal(*/}
-                {/*    <Cart isOpen={isOpenCart} setOpen={setOpenCart}/>,*/}
-                {/*    document.body,*/}
-                {/*)}*/}
-                <Cart isOpen={isOpenCart} setOpen={setOpenCart}/>
-                {/*{true ? <Cart isOpen={isOpenCart} setOpen={setOpenCart}/> : null}*/}
             </div>
         </div>
-    );
+        <AnimatePresence onExitComplete={() => document.body.style.overflow = 'visible'} mode="wait">
+            {isOpenCart && (
+                <ModalContainer onClose={() => setOpenCart(false)} isOpen={isOpenCart}>
+                    <Cart setOpen={setOpenCart}/>
+                </ModalContainer>
+            )}
+            {isOpenSearchModal && (
+                <ModalContainer onClose={() => setOpenSearchModal(false)} isOpen={isOpenCart} isSearch>
+                    <SearchModal onClose={() => setOpenSearchModal(false)} isOpen={isOpenSearchModal}/>
+                </ModalContainer>
+            )}
+        </AnimatePresence>
+    </>)
 };
 
 export default HeaderMain;

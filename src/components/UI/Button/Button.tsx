@@ -26,7 +26,7 @@ const Button: FC<Props> = (props) => {
             disabled={isLoading}
             className={className}
         >
-            {isLoading ? "Обробка..." : content}
+            {content}
         </button>
     )
 }

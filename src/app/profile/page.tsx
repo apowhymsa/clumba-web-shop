@@ -12,19 +12,18 @@ import useToast from "@/hooks/useToast";
 
 const Page = () => {
     const [checked, setChecked] = useState([true, false]);
-    const [isLoading, setLoading] = useState(true);
-    const {isLogged} = useContext(AuthContext);
+    const {isLogged, isLoading} = useContext(AuthContext);
     const {error, info} = useToast();
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLogged) {
-            info('Для доступу в профіль потрібно увійти в обліковий запис');
-            return router.push('/');
-        } else {
-            setLoading(false);
+        if (!isLoading) {
+            if (!isLogged) {
+                info('Для доступу в профіль потрібно увійти в обліковий запис');
+                return router.push('/');
+            }
         }
-    }, []);
+    }, [isLogged, isLoading]);
 
     if (isLoading) {
         return <Loader/>

@@ -7,7 +7,7 @@ import Products from "@/components/Products/Products";
 import React, {useCallback, useEffect, useState} from "react";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
-import {filterProducts, setProducts} from "@/utils/store/productSlice";
+import {setProducts} from "@/utils/store/productSlice";
 import axios from "axios";
 import {Category, Product} from "@/types";
 import {setCategories} from "@/utils/store/categoriesSlice";
@@ -62,7 +62,7 @@ const ProductsComponent = (props: Props) => {
             const sort = sortFilter === '1' ? 'asc' : sortFilter === '2' ? 'desc' : sortFilter === '3' ? 'desc' : 'desc';
             const price = priceFilter.join('-');
             const categories = categoriesFilter.length > 0 ? categoriesFilter : 'all';
-            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`, {
+            const response = await axios.get(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}&onlyVisible=true`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': 'true',
@@ -70,7 +70,7 @@ const ProductsComponent = (props: Props) => {
                 }, withCredentials: true
             })
 
-            console.log(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=${sort}&price=${price}&categories=${categories}`);
+            console.log('FILTER SENT');
             dispatch(setProducts(response.data.products));
             setTotalCount(response.data.productsCount);
         }

@@ -113,7 +113,7 @@ export interface Product {
   title: string;
   categoryID: any;
   variants: IVariantProduct[];
-  isAvailable?: boolean;
+  isNotVisible?: boolean;
 }
 
 export type Category = {

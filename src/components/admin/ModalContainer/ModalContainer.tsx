@@ -1,4 +1,5 @@
 import React, {ReactElement, ReactNode, useEffect, useState} from "react";
+import {AnimatePresence, motion, useMotionValueEvent, useScroll} from 'framer-motion';
 import {XMarkIcon} from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import {CSSTransition} from "react-transition-group";
@@ -10,61 +11,42 @@ type Props = {
     headerContent?: string;
     containerWidthClass?: string;
     isOpen: boolean;
+    isSearch?: boolean;
 }
 
-const ModalContainer = ({onClose, children, headerContent, containerWidthClass, isOpen}: Props) => {
-    const [isVisible, setVisible] = useState(false);
-    const [scroll, setScroll] = useState(0);
+const ModalContainer = ({onClose, children, headerContent, containerWidthClass, isOpen, isSearch = false}: Props) => {
+    const {scrollY} = useScroll();
 
-    useEffect(() => {
-        function handleScroll() {
-            const scrolledPixels = window.scrollY;
-            setScroll(scrolledPixels);
-        }
+    const [scrollValue, setScrollValue] = useState(0);
 
-        window.addEventListener('scroll', handleScroll);
+    useMotionValueEvent(scrollY, "change", (latest) => {
+        console.log("Page scroll: ", latest)
+        setScrollValue(latest);
+    });
 
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, []);
-
-    useEffect(() => {
-        isOpen ? document.body.style.overflow = 'hidden' : document.body.style.overflow = 'visible';
-    }, [isOpen]);
-
-    return (
-        <CSSTransition
-            in={isOpen}
-            timeout={300}
-            classNames="modal-container"
-            unmountOnExit
-        >
-            <div style={{
-                top: `${scroll}px`
-            }} className="absolute w-screen min-h-screen bg-black bg-opacity-50 left-0 z-50 backdrop-blur-sm"
-                 onMouseDown={onClose}
+    return (<div className="absolute" style={{top: `${scrollValue}px`}}>
+            <motion.div
+                initial={{opacity: 0}}
+                animate={{opacity: 1}}
+                exit={{opacity: 0}}
+                onAnimationStart={() => document.body.style.overflow = 'hidden'}
+                className="absolute w-screen min-h-screen bg-black bg-opacity-50 left-0 z-50 backdrop-blur-sm"
+                onMouseDown={onClose}
             >
-                <div
-                    className={clsx(containerWidthClass ? containerWidthClass : "w-[500px]", "absolute top-1/2 left-1/2 bg-white h-fit -translate-x-1/2 -translate-y-1/2 rounded")}
+                <motion.div
+                    initial={{left: '-100%'}}
+                    animate={{left: isSearch ? 0 : '50%'}}
+                    exit={{left: '-100%'}}
+                    transition={{duration: 0.5, type: 'spring'}}
+                    className={clsx(isSearch ? 'w-full top-0 rounded-bl rounded-br' : 'w-[500px] top-1/2 -translate-x-1/2 -translate-y-1/2  rounded', containerWidthClass ? containerWidthClass : "absolute bg-white h-fit")}
                     onMouseDown={(e) => e.stopPropagation()}
                 >
-                        <div className="flex items-center justify-between px-6 py-3 border-b">
-                            <div className="font-bold text-lg">{headerContent}</div>
-                            <div
-                                className="btn-close-modal flex cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
-                                onClick={onClose}
-                            >
-                                <XMarkIcon className="h-6 w-6 text-black"/>
-                            </div>
-                        </div>
-                        <div>
-                            {children}
-                        </div>
-                </div>
-            </div>
-        </CSSTransition>
-    );
+                    <div>
+                        {children}
+                    </div>
+                </motion.div>
+            </motion.div>
+        </div>);
 }
 
 export default ModalContainer;

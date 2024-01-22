@@ -9,29 +9,11 @@ type Props = {
 
 const FindProductItem = (props: Props) => {
     const {product, onClose} = props;
+
     return <Link onClick={onClose}
                  className="flex gap-x-4 px-4 h-auto w-full py-4 border-b items-center active:bg-gray-200 transition-colors hover:bg-gray-100"
                  href={`/products/${product._id}`}>
         <div className="h-20 w-20">
-            {/*<Image*/}
-            {/*    src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}*/}
-            {/*    // src="/flower_image.jpg"*/}
-            {/*    alt="Product Image"*/}
-            {/*    width={0}*/}
-            {/*    height={0}*/}
-            {/*    sizes="100vw"*/}
-            {/*    style={{*/}
-            {/*        width: "100%",*/}
-            {/*        height: "auto",*/}
-            {/*        objectFit: "cover",*/}
-            {/*        borderRadius: "8px",*/}
-            {/*        objectPosition: "center center",*/}
-            {/*        aspectRatio: "1 / 1",*/}
-            {/*    }}*/}
-            {/*    placeholder="blur"*/}
-            {/*    blurDataURL="/flower_image.jpg"*/}
-            {/*    priority*/}
-            {/*/>*/}
             <img src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`} alt="Image" style={{
                 width: '100%',
                 height: 'auto',

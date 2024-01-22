@@ -1,19 +1,31 @@
 'use client';
 
 import Link from "next/link";
-import {ArrowRightIcon, PresentationChartLineIcon, RocketLaunchIcon} from "@heroicons/react/24/outline";
+import {
+    ArrowRightIcon,
+    BuildingStorefrontIcon, CreditCardIcon, FaceSmileIcon,
+    PresentationChartLineIcon,
+    RocketLaunchIcon
+} from "@heroicons/react/24/outline";
 import SwiperProducts from "@/components/SwiperProducts/SwiperProducts";
 import React, {useEffect, useState} from "react";
 import {Product} from "@/types";
 import {setProducts} from "@/utils/store/productSlice";
 import {useAppDispatch, useAppSelector} from "@/utils/store/hooks";
 import CategoriesCatalog from "@/components/CategoriesCatalog/CategoriesCatalog";
+import {motion} from 'framer-motion';
 
 type Props = {
     productsData: any;
     isLoadingData: boolean;
     productsCategories: any;
 }
+
+const animateIcon = {
+    initial: { rotate: 0 },
+    animate: { rotate: 360 },
+}
+
 const HomeComponent = (props: Props) => {
     const {isLoadingData, productsData, productsCategories} = props;
     const [isLoading, setLoading] = useState(isLoadingData);
@@ -26,14 +38,14 @@ const HomeComponent = (props: Props) => {
         setLoading(false);
     }, []);
 
-    return <div>
+    return <motion.div>
         <div className="page-top">
             {/*<h1 className="font-bold text-4xl text-white relative z-10">Цветы</h1>*/}
             <h3 className="my-[24px] font-bold text-gray-50 text-2xl relative z-10">
                 Мы не просто создаем букеты — мы создаем эмоции
             </h3>
         </div>
-        <div className="products-popular px-10 my-7 items-center">
+        <motion.div initial={{opacity: 0}} whileInView={{opacity: 1}} transition={{duration: 1}} className="products-popular px-10 my-7 items-center">
             <div className="mb-7 flex justify-between">
                 <h3 className="text-2xl font-medium">Популярные товары</h3>
                 <Link
@@ -63,17 +75,16 @@ const HomeComponent = (props: Props) => {
                 }}
                 products={productsData.popularProducts.products}
             />
-        </div>
+        </motion.div>
         <div className="flex gap-x-16 px-10 justify-center bg-[#e5e7eb] py-10 bg-opacity-50">
-            <div className="flex gap-x-3 items-center transition-colors hover:text-rose-400">
-                <RocketLaunchIcon className="w-8 h-8 text-black"/>
+            <motion.div initial="initial" animate="initial" whileHover="animate" className="flex gap-x-3 items-center cursor-default">
+                <motion.span transition={{type: 'spring', stiffness: 50}} variants={animateIcon}><RocketLaunchIcon className="w-8 h-8 text-black"/></motion.span>
                 <span>Швидка доставка квітів</span>
-            </div>
-            {/*<span className="w-[1px] h-full bg-[#e5e7eb]">123</span>*/}
-            <div className="flex gap-x-3 items-center transition-colors hover:text-rose-400">
-                <PresentationChartLineIcon className="w-8 h-8 text-black"/>
+            </motion.div>
+            <motion.div initial="initial" animate="initial" whileHover="animate" className="flex gap-x-3 items-center cursor-default">
+                <motion.span transition={{type: 'spring', stiffness: 50}} variants={animateIcon}><BuildingStorefrontIcon className="w-8 h-8 text-black"/></motion.span>
                 <span>Великий вибір свіжих і красивих квітів</span>
-            </div>
+            </motion.div>
         </div>
         <div className="px-10 my-7">
             <div className="mb-7 flex justify-between">
@@ -82,17 +93,16 @@ const HomeComponent = (props: Props) => {
             <CategoriesCatalog categories={productsCategories}/>
         </div>
         <div className="flex gap-x-16 px-10 justify-center bg-[#e5e7eb] py-10 bg-opacity-50">
-            <div className="flex gap-x-3 items-center transition-colors hover:text-rose-400">
-                <RocketLaunchIcon className="w-8 h-8 text-black"/>
+            <motion.div initial="initial" animate="initial" whileHover="animate" className="flex gap-x-3 items-center cursor-default">
+                <motion.span transition={{type: 'spring', stiffness: 50}} variants={animateIcon}><CreditCardIcon className="w-8 h-8 text-black"/></motion.span>
                 <span>Зручні способи оплати</span>
-            </div>
-            {/*<span className="w-[1px] h-full bg-[#e5e7eb]">123</span>*/}
-            <div className="flex gap-x-3 items-center transition-colors hover:text-rose-400">
-                <PresentationChartLineIcon className="w-8 h-8 text-black"/>
+            </motion.div>
+            <motion.div initial="initial" animate="initial" whileHover="animate" className="flex gap-x-3 items-center cursor-default">
+                <motion.span transition={{type: 'spring', stiffness: 50}} variants={animateIcon}><FaceSmileIcon className="w-8 h-8 text-black"/></motion.span>
                 <span>Креативні та доброзичливі флористи</span>
-            </div>
+            </motion.div>
         </div>
-        <div className="products-new px-10 my-7 items-center">
+        <motion.div initial={{opacity: 0}} whileInView={{opacity: 1}} transition={{duration: 1}} className="products-new px-10 my-7 items-center">
             <div className="mb-7 flex justify-between">
                 <h3 className="text-2xl font-medium">Новые товары</h3>
                 <Link
@@ -122,8 +132,8 @@ const HomeComponent = (props: Props) => {
                 }}
                 products={productsData.newProducts.products}
             />
-        </div>
-    </div>
+        </motion.div>
+    </motion.div>
 }
 
 export default HomeComponent;

@@ -9,6 +9,7 @@ import Link from "next/link";
 import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
 import Button from "@/components/UI/Button/Button";
 import ModalDeliveryPrice from "@/components/admin/ModalDeliveryPrice/ModalDeliveryPrice";
+import {AnimatePresence} from "framer-motion";
 
 const NavMenu = () => {
     const [isOpenDeliveryModal, setOpenDeliveryModal] = useState(false);
@@ -71,7 +72,13 @@ const NavMenu = () => {
                 </Link>
             </li>
         </ul>
-        <ModalDeliveryPrice onClose={() => setOpenDeliveryModal(false)} isOpen={isOpenDeliveryModal} />
+        <AnimatePresence onExitComplete={() => document.body.style.overflow = 'visible'}>
+            {isOpenDeliveryModal && (
+                <ModalContainer onClose={() => setOpenDeliveryModal(false)} isOpen={isOpenDeliveryModal}>
+                    <ModalDeliveryPrice onClose={() => setOpenDeliveryModal(false)} isOpen={isOpenDeliveryModal} />
+                </ModalContainer>
+            )}
+        </AnimatePresence>
     </>
 }
 

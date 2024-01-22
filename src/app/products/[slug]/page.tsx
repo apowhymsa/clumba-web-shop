@@ -46,7 +46,7 @@ const Page = ({params}: { params: { slug: string } }) => {
     // 2fb168
     useEffect(() => {
         const getRecomendations = async (categoryID: string) => {
-            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${categoryID}`, {
+            const response = await fetch(`${process.env.ADMIN_ENDPOINT_BACKEND}/products?limit=15&page=1&sort=asc&price=0-10000&categories=${categoryID}&onlyVisible=true`, {
                 headers: {
                     'Content-Type': 'application/json',
                     'ngrok-skip-browser-warning': 'true',
