@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import "./globals.css";
 import type { Metadata } from "next";
@@ -11,22 +11,22 @@ import AuthContextProvider from "@/contexts/AuthContext/AuthContextProvider";
 import ModalAuth from "@/components/ModalSignUp/ModalAuth";
 import ModalContextProvider from "@/contexts/ModalContext/ModalContextProvider";
 import { ToastContainer } from "react-toastify";
-import {usePathname} from "next/navigation";
-import {useEffect, useLayoutEffect, useState} from "react";
-import {QueryClientProvider, useQuery} from "@tanstack/react-query";
-import axios from "axios";
-import {setProducts} from "@/utils/store/productSlice";
-import {useAppDispatch} from "@/utils/store/hooks";
-import {QueryClient} from "@tanstack/react-query";
+import { usePathname } from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { QueryClientProvider, useQuery } from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
+import "@/utils/i18n";
 import ScrollTopButton from "@/components/ScrollTopButton/ScrollTopButton";
+import { useTranslation } from "next-i18next";
+import Loader from "@/components/Loader/Loader";
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       refetchOnWindowFocus: false,
-      refetchOnMount: false
-    }
-  }
+      refetchOnMount: false,
+    },
+  },
 });
 
 const comfarta = Comfortaa({ subsets: ["cyrillic"] });
@@ -37,32 +37,70 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [isAdminRoute, setAdminRoute] = useState(pathname.startsWith('/admin'));
+  const { t, i18n } = useTranslation();
+  const [isAdminRoute, setAdminRoute] = useState(pathname.startsWith("/admin"));
+  const [isLoading, setLoading] = useState(true);
 
   // useLayoutEffect(() => {
   //   console.log(pathname);
   //   pathname.startsWith('/admin') && setAdminRoute(true);
   // }, [pathname]);
 
+  useEffect(() => {
+    setLoading(true);
+
+    const defaultLng = localStorage.getItem("selectedLng");
+
+    if (defaultLng) {
+      i18n.changeLanguage(defaultLng);
+    } else {
+      i18n.changeLanguage("uk");
+    }
+
+    setLoading(false);
+  }, []);
+
   return (
     <html lang="en">
       <body className={[comfarta.className].join(" ")} data-theme="light">
         <Providers>
           {isAdminRoute ? (
-              <>
-                <main id="main" className="flex-1">
-                  {children}
-                </main>
-                <ToastContainer />
-              </>
+            <>
+              <main id="main" className="flex-1">
+                {children}
+                <div className="portal-container"></div>
+              </main>
+              <ToastContainer />
+            </>
+          ) : isLoading ? (
+            <div className="w-full h-screen">
+              <Loader />
+            </div>
           ) : (
-              <QueryClientProvider client={queryClient}>
+            <QueryClientProvider client={queryClient}>
               <NavigationContextProvider>
                 <AuthContextProvider>
                   <ModalContextProvider>
                     <Header />
                     <main id="main" className="flex-1">
+                      <button
+                        onClick={() => {
+                          localStorage.setItem("selectedLng", "en");
+                          i18n.changeLanguage("en");
+                        }}
+                      >
+                        EN
+                      </button>
+                      <button
+                        onClick={() => {
+                          localStorage.setItem("selectedLng", "uk");
+                          i18n.changeLanguage("uk");
+                        }}
+                      >
+                        UK
+                      </button>
                       {children}
+                      <div className="portal-container"></div>
                     </main>
                     <Footer />
                     <ModalAuth />
@@ -70,9 +108,9 @@ export default function RootLayout({
                   </ModalContextProvider>
                 </AuthContextProvider>
               </NavigationContextProvider>
-              </QueryClientProvider>
+            </QueryClientProvider>
           )}
-          <ScrollTopButton/>
+          <ScrollTopButton />
         </Providers>
       </body>
     </html>

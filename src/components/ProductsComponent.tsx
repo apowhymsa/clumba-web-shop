@@ -32,6 +32,7 @@ const ProductsComponent = (props: Props) => {
     const [isLoading, setLoading] = useState(isLoadingData);
     const [page, setPage] = useState(1);
     const [totalCount, setTotalCount] = useState(productsData.productsCount);
+    const [isClear, setClear] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams()!;
@@ -56,6 +57,16 @@ const ProductsComponent = (props: Props) => {
         dispatch(setCategories(categoriesData));
         setTotalCount(productsData.productsCount);
     }, []);
+
+    useEffect(() => {
+        if (isClear) {
+            setSortFilter("1");
+            setCategoriesFilter([]);
+            setPriceFilter([0, 10000])
+            setFilterVisible(false);
+            setClear(false);
+        }
+    }, [isClear]);
 
     useEffect(() => {
         const getProductsByFilters = async () => {
@@ -85,7 +96,7 @@ const ProductsComponent = (props: Props) => {
     }, [pathname]);
 
     useEffect(() => {
-        router.push(
+        router.replace(
             `${pathname}?${createQueryString(
                 "category",
                 categoriesFilter.length > 0 ? categoriesFilter.join(",") : 'all',
@@ -97,13 +108,13 @@ const ProductsComponent = (props: Props) => {
     }, [categoriesFilter]);
 
     useEffect(() => {
-        router.push(`${pathname}?${createQueryString("sort", sortFilter)}`, {
+        router.replace(`${pathname}?${createQueryString("sort", sortFilter)}`, {
             scroll: false,
         });
     }, [sortFilter]);
 
     useEffect(() => {
-        router.push(
+        router.replace(
             `${pathname}?${createQueryString("price", priceFilter.join("-"))}`,
             {
                 scroll: false,
@@ -174,10 +185,7 @@ const ProductsComponent = (props: Props) => {
                     className="text-gray-500 transition-colors hover:text-rose-400"
                     role="button"
                     onClick={() => {
-                        setSortFilter("1");
-                        setCategoriesFilter([]);
-                        setPriceFilter([0, 10000]);
-                        setFilterVisible(false);
+                        setClear(true);
                     }}
                 >
             Очистить всё
@@ -186,7 +194,7 @@ const ProductsComponent = (props: Props) => {
             <div>
                 <SortSelect
                     onChangeHandler={onChangeSortHandler}
-                    defaultValue={Number(sortFilter)}
+                    defaultValue={sortFilter}
                 />
             </div>
         </aside>

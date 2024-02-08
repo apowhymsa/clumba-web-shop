@@ -1,97 +1,126 @@
 "use client";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import BasicTable from "@/components/admin/BasicTable/BasicTable";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { createColumnHelper } from "@tanstack/react-table";
-import { PlusIcon } from "@heroicons/react/24/outline";
-import ModalCreateIC from "@/components/admin/ModalCreateIC/ModalCreateIC";
-import { AxiosError, AxiosRequestConfig } from "axios";
-import useToast from "@/hooks/useToast";
-import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
-import { useIngredientCategoriesStore } from "@/utils/zustand-store/ingredientCategories";
-import Loader from "@/components/Loader/Loader";
-import { AnimatePresence } from "framer-motion";
-import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
-import { useRouter } from "next/navigation";
 
-type IngredientCategory = {
-  _id: string;
-  title: string;
+import { PlusIcon } from "@heroicons/react/24/outline";
+import BasicTable from "@/components/admin/BasicTable/BasicTable";
+import { createColumnHelper } from "@tanstack/react-table";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import { useEffect, useState } from "react";
+import Loader from "@/components/Loader/Loader";
+import ModalContainer from "@/components/admin/ModalContainer/ModalContainer";
+import ModalCreateIC from "@/components/admin/ModalCreateIC/ModalCreateIC";
+import ModalUpdateIC from "@/components/admin/ModalUpdateIC/ModalUpdateIC";
+import { AnimatePresence } from "framer-motion";
+import useToast from "@/hooks/useToast";
+import ModalCreateUser from "@/components/admin/ModalCreateUser/ModalCreateUser";
+import ModalUpdateUser from "@/components/admin/ModalUpdateUser/ModalUpdateUser";
+import { useUsersStore } from "@/utils/zustand-store/users";
+
+type UserPersonals = {
+  fullName: string;
+  phoneNumber: string;
 };
 
-const columnHelper = createColumnHelper<IngredientCategory>();
+type UserPromo = {
+  ordersSummary: string | number;
+  bonuses: string | number;
+  bonusesPercent: string | number;
+};
+
+type User = {
+  _id: string;
+  email: string;
+  personals: UserPersonals;
+  promo: UserPromo;
+};
+
+const columnHelper = createColumnHelper<User>();
 
 const columns = [
   columnHelper.accessor("_id", {
-    header: "№ товару",
+    header: "№",
     cell: (data) => data.getValue(),
     enableGlobalFilter: false,
   }),
-  columnHelper.accessor("title", {
-    header: "Назва",
+  columnHelper.accessor("email", {
+    header: "Email",
     cell: (data) => data.getValue(),
+  }),
+  columnHelper.accessor("personals.fullName", {
+    header: "Ім`я та прізвище",
+    cell: (data) => data.getValue(),
+  }),
+  columnHelper.accessor("personals.phoneNumber", {
+    header: "Номер телефону",
+    cell: (data) => data.getValue(),
+  }),
+  columnHelper.accessor("promo.ordersSummary", {
+    header: "Сума покупок",
+    cell: (data) => <span>{data.getValue()}₴</span>,
+    enableGlobalFilter: false,
+  }),
+  columnHelper.accessor("promo.bonuses", {
+    header: "Бонуси",
+    cell: (data) => data.getValue(),
+    enableGlobalFilter: false,
   }),
 ];
 
+export const dynamic = "force-dynamic";
 const Page = () => {
-  const {
-    addIngredientCategory,
-    ingredientCategories,
-    deleteIngredientCategory,
-  } = useIngredientCategoriesStore();
+  const queryClient = useQueryClient();
+  const { addUser, users, deleteUser } = useUsersStore();
+  const [isLoading, setLoading] = useState(true);
   const [isOpenCreateModal, setOpenCreateModal] = useState(false);
   const [isOpenUpdateModal, setOpenUpdateModal] = useState(false);
   const [updatingID, setUpdatingID] = useState("");
-  const [isLoading, setLoading] = useState(true);
   const { error, info } = useToast();
 
   useEffect(() => {
-    const getICData = async () => {
+    async function getUsers() {
       setLoading(true);
-      try {
-        const response = await fetch(
-          `${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategories`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "true",
-              "Access-Control-Allow-Origin": "*",
-              credentials: "include",
-            },
-            cache: "no-store",
-          }
-        );
+      const response = await fetch(
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/users`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+            "Access-Control-Allow-Origin": "*",
+            credentials: "include",
+          },
+          cache: "no-store",
+        }
+      );
 
-        const data = await response.json();
-        addIngredientCategory(data);
-      } catch {
-        error("Помилка завантаження дани, оновіть сторінку");
-      }
-    };
+      const data = await response.json();
+      addUser(data);
+    }
 
-    Promise.all([getICData()]).finally(() => setLoading(false));
+    Promise.all([getUsers()]).finally(() => setLoading(false));
   }, []);
 
-  const onDelete = async (id: string) => {
+  async function onDelete(id: string) {
     const confirmDelete = confirm(
-      "Ви дійсно хочете видалити запис з бази даних?"
+      "Ви дійсно хочете видалити запис з бази даних? Замволення користувача також будуть видалені"
     );
 
     if (confirmDelete) {
       const requestConfig: AxiosRequestConfig = {
         headers: {
           "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+          "Access-Control-Allow-Origin": "*",
         },
         withCredentials: true,
       };
 
       try {
-        const response = await axios.delete(
-          `${process.env.ADMIN_ENDPOINT_BACKEND}/ingredientCategory/${id}`,
+        await axios.delete(
+          `${process.env.ADMIN_ENDPOINT_BACKEND}/users/${id}`,
           requestConfig
         );
-        deleteIngredientCategory(id);
+        deleteUser(id);
         info("Запис було успішно видалено");
       } catch (err: unknown) {
         const errorObject = err as AxiosError;
@@ -103,23 +132,16 @@ const Page = () => {
             );
             break;
           }
-          case 409: {
-            error(
-              "Видалення неможливе, тому що, ця категорія вже використовується у створеному інгредієнті"
-            );
-            break;
-          }
           default:
             error(`${errorObject.message} - ${errorObject.name}`);
         }
       }
     }
-  };
-
-  const onUpdate = (id: string) => {
+  }
+  function onUpdate(id: string) {
     setUpdatingID(id);
     setOpenUpdateModal(true);
-  };
+  }
 
   if (isLoading) {
     return <Loader />;
@@ -138,7 +160,7 @@ const Page = () => {
           </button>
         </div>
         <BasicTable
-          data={ingredientCategories}
+          data={users}
           columns={columns}
           onDelete={onDelete}
           onUpdate={onUpdate}
@@ -149,10 +171,11 @@ const Page = () => {
       >
         {isOpenCreateModal && (
           <ModalContainer
+            containerWidthClass="w-[700px]"
             onClose={() => setOpenCreateModal(false)}
             isOpen={isOpenCreateModal}
           >
-            <ModalCreateIC
+            <ModalCreateUser
               isOpen={isOpenCreateModal}
               onClose={() => setOpenCreateModal(false)}
             />
@@ -160,10 +183,11 @@ const Page = () => {
         )}
         {isOpenUpdateModal && (
           <ModalContainer
+            containerWidthClass="w-[700px]"
             onClose={() => setOpenUpdateModal(false)}
             isOpen={isOpenUpdateModal}
           >
-            <ModalUpdateIC
+            <ModalUpdateUser
               isOpen={isOpenUpdateModal}
               onClose={() => setOpenUpdateModal(false)}
               id={updatingID}

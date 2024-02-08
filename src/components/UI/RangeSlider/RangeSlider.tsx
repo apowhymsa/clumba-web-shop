@@ -12,6 +12,11 @@ type Props = {
 const RangeSlider = (props: Props) => {
   const { onAfterChange, defaultValue } = props;
   const [value, setValue] = useState(defaultValue || [0, 10000]);
+
+    useEffect(() => {
+        console.log('new value', defaultValue);
+        setValue(defaultValue);
+    }, [defaultValue]);
   return (
     <div className="relative h-[44px]">
       <ReactSlider
@@ -21,7 +26,7 @@ const RangeSlider = (props: Props) => {
         min={0}
         onAfterChange={onAfterChange}
         max={10000}
-        value={value}
+        value={defaultValue}
         onChange={(value) => setValue(value)}
         ariaLabel={["Минимальная цена", "Максимальная цена"]}
         ariaValuetext={(state) => `Thumb value ${state.valueNow}`}

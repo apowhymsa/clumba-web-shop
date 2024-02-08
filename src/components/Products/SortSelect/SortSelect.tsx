@@ -5,20 +5,23 @@ import Select, { SingleValue } from "react-select";
 const options = [
   { value: "1", label: "Популярные", disabled: true },
   { value: "2", label: "Новые", disabled: true },
-  { value: "3", label: "Цена: Низкая - Высокая", disabled: true },
-  { value: "4", label: "Цена: Высокая - Низкая", disabled: true },
+  // { value: "3", label: "Цена: Низкая - Высокая", disabled: true },
+  // { value: "4", label: "Цена: Высокая - Низкая", disabled: true },
 ];
 
 type Props = {
   onChangeHandler: (
     newValue: SingleValue<{ value: string; label: string }>,
   ) => void;
-  defaultValue: number;
+  defaultValue: string;
 };
 const SortSelect = (props: Props) => {
   const { onChangeHandler, defaultValue } = props;
+
+  console.log('def', defaultValue);
   return (
     <Select
+        isSearchable={false}
       options={options}
       className="w-[245px]"
       onChange={onChangeHandler}
@@ -36,9 +39,10 @@ const SortSelect = (props: Props) => {
         })
       }}
       defaultValue={
-        Number(defaultValue) > 3
-          ? options[0]
-          : options[Number(defaultValue) - 1]
+          options[Number(defaultValue) - 1]
+        // Number(defaultValue) > 3
+        //   ? options[0]
+        //   : options[Number(defaultValue) - 1]
       }
     />
   );
