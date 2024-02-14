@@ -8,6 +8,22 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    // breakpoints
+    screens: {
+      xsm: { max: "599px" },
+      // => @media (max-width: 599px) { ... }
+      sm: "600px",
+      // => @media (min-width: 640px) { ... }
+
+      md: "768px",
+      // => @media (min-width: 768px) { ... }
+
+      lg: "992px",
+      // => @media (min-width: 1024px) { ... }
+
+      xl: "1200px",
+      // => @media (min-width: 1280px) { ... }
+    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -26,10 +42,14 @@ const config: Config = {
     },
     colors: {
       ...colors,
-      "primary": "#fb7185",
+      primary: "#fb7185",
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("@tailwindcss/forms"), require("daisyui")],
+  plugins: [
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/forms"),
+    require("daisyui"),
+  ],
   daisyui: {
     themes: false, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
     darkTheme: "dark", // name of one of the included themes for dark mode

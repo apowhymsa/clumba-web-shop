@@ -22,9 +22,11 @@ import {
   TruckIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
+import { useOrdersStore } from "@/utils/zustand-store/orders";
 
 const NavMenu = () => {
   const [isOpenDeliveryModal, setOpenDeliveryModal] = useState(false);
+  const { notViewedOrders } = useOrdersStore();
   const ref = useRef<HTMLLIElement>(null);
   return (
     <>
@@ -82,7 +84,7 @@ const NavMenu = () => {
             </li>
           </ul>
         </li>
-        <li className="flex items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
+        <li className="relative flex items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
           <Link
             href="/admin/orders"
             className="flex gap-x-4 px-4 flex-1 h-10 items-center"
@@ -91,6 +93,9 @@ const NavMenu = () => {
               <ClipboardDocumentListIcon className="h-4 w-4 text-black" />
             </span>
             <span>Замовлення</span>
+            <span className="text-white pointer-events-none text-[10px] absolute -top-1 -right-2 bg-rose-400 h-7 w-7 rounded-full flex justify-center items-center">
+              {notViewedOrders.length}
+            </span>
           </Link>
         </li>
         <li className="flex items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">

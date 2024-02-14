@@ -5,7 +5,7 @@ import axios from "axios";
 import useToast from "@/hooks/useToast";
 import { Autocomplete } from "@react-google-maps/api";
 import CartItem from "@/components/Cart/CartItem/CartItem";
-import { Order } from "@/utils/zustand-store/orders";
+import { Order, useOrdersStore } from "@/utils/zustand-store/orders";
 import { formatDate } from "@/utils/formatDate";
 import Image from "next/image";
 import clsx from "clsx";
@@ -14,6 +14,7 @@ import Loader from "@/components/Loader/Loader";
 
 const Page = ({ params }: { params: { slug: string } }) => {
   const [order, setOrder] = useState<Order | null>(null);
+  const { setNotViewOrders } = useOrdersStore();
   const [isLoading, setLoading] = useState(true);
   const [orderStatus, setOrderStatus] = useState(1);
   const { error, info } = useToast();

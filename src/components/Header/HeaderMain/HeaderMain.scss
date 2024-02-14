@@ -1,5 +1,5 @@
 //@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
- 
+
 .header-main {
   //font-family: 'Comfortaa', cursive;
   @apply flex justify-between items-center px-10 border-b border-gray-200 h-16;
@@ -41,6 +41,10 @@
     }
   }
 
+  .header-main {
+    @apply px-5;
+  }
+
   .header-main-mobile-left {
     @apply flex flex-1;
   }
@@ -48,6 +52,9 @@
 
 // Mobile
 @media (max-width: 576px) {
+}
+
+@media (max-width: 480px) {
   .header-main-logo {
     @apply hidden;
   }

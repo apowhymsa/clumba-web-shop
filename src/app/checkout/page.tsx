@@ -24,6 +24,7 @@ import useToast from "@/hooks/useToast";
 import { useRouter } from "next/navigation";
 import CustomDateTimePicker from "@/components/CustomDateTimePicker/CustomDateTimePicker";
 import { Dayjs } from "dayjs";
+import { useTranslation } from "next-i18next";
 
 interface IPaymentData {
   name: string;
@@ -57,6 +58,7 @@ const Checkout = () => {
   const [openPayment, setOpenPayment] = useState<string>("");
   const [isCartDiscount, setCartDiscount] = useState(false);
   const [bonuses, setBonuses] = useState(0);
+  const { t, i18n } = useTranslation();
   const {
     register,
     handleSubmit,
@@ -101,7 +103,6 @@ const Checkout = () => {
 
       const data = await response.json();
 
-      console.info("delivery price", data);
       setDeliveryPrice(data[0]?.price || 12);
     } catch (err) {
       console.log(err);
@@ -112,7 +113,11 @@ const Checkout = () => {
     setloading(true);
     if (!isLoadingAuth) {
       if (!isLogged) {
-        info("Для оформлення замовлення потрібно увійти в обліковий запис");
+        info(
+          i18n.language === "uk"
+            ? "Для оформлення замовлення потрібно увійти в обліковий запис"
+            : "To place an order, you need to log in to your account"
+        );
         return router.push("/");
       } else {
         const userAuthId = localStorage.getItem("authUserId");
@@ -164,9 +169,6 @@ const Checkout = () => {
       const formattedAddress = place.formatted_address;
       // console.log(place);
       //console log all results
-      console.log(`Name: ${name}`);
-      console.log(`Business Status: ${status}`);
-      console.log(`Formatted Address: ${formattedAddress}`);
       const results = await getGeocode({ address: formattedAddress });
       const { lat, lng } = await getLatLng(results[0]);
 
@@ -208,7 +210,7 @@ const Checkout = () => {
           deliveryType === 1
             ? cartPrice - bonuses
             : cartPrice - bonuses + deliveryAmount,
-        description: `Оплата товаров: ${cartJoin}`,
+        description: `Оплата товарів: ${cartJoin}`,
         additionalData: {
           userID: userID,
           amountWoDeliveryPrice: cartPrice - bonuses,
@@ -301,10 +303,26 @@ const Checkout = () => {
     <div id="liqpay_checkout" className="shadow mx-24 my-14 p-5">
       {cart.length > 0 ? (
         <>
-          <h2 className="text-xl font-bold border-b py-2">
-            Оформлення замовлення
-          </h2>
-          <div className="flex gap-x-14 justify-center pt-6">
+          <div className="flex justify-between items-center border-b">
+            <h2 className="text-xl font-bold py-2">
+              {i18n.language === "uk" ? "Оформлення замовлення" : "Checkout"}
+            </h2>
+            <h3 className="text-right pb-2">
+              <span>
+                {i18n.language === "uk"
+                  ? "Всього до сплати:"
+                  : "Total to be paid:"}{" "}
+                <span className="font-bold">
+                  {Number(cartPrice) - Number(bonuses)} ₴{" "}
+                  {deliveryAmount > 0 &&
+                    `+ ${deliveryAmount} ₴ ${
+                      i18n.language === "uk" ? "доставка" : "delivery"
+                    }`}
+                </span>
+              </span>
+            </h3>
+          </div>
+          <div className="flex gap-x-14 justify-center pt-6 flex-col lg:flex-row">
             <form
               className="flex-1 flex flex-col gap-y-5"
               onSubmit={handleSubmit(submitHandler)}
@@ -318,7 +336,7 @@ const Checkout = () => {
                       : null
                   }`}
                 >
-                  Ім`я та прізвище
+                  {i18n.language === "uk" ? "Ім`я та прізвище" : "Full name"}
                 </label>
                 <div className="relative">
                   <input
@@ -331,7 +349,10 @@ const Checkout = () => {
                     {...register("name", {
                       required: {
                         value: true,
-                        message: "Поле обязательное для заполнения",
+                        message:
+                          i18n.language === "uk"
+                            ? "Поле обов`язкове для заповнення"
+                            : "Field is required",
                       },
                     })}
                     type="text"
@@ -353,7 +374,7 @@ const Checkout = () => {
                       : null
                   }`}
                 >
-                  Телефон
+                  {i18n.language === "uk" ? "Номер телефону" : "Phone number"}
                 </label>
                 <div className="relative">
                   <input
@@ -366,10 +387,12 @@ const Checkout = () => {
                     {...register("phone", {
                       required: {
                         value: true,
-                        message: "Поле обязательное для заполнения",
+                        message:
+                          i18n.language === "uk"
+                            ? "Поле обов`язкове для заповнення"
+                            : "Field is required",
                       },
                     })}
-                    placeholder="Например: +380686560665"
                     type="tel"
                     name="phone"
                   />
@@ -392,7 +415,9 @@ const Checkout = () => {
                           : null
                       }`}
                     >
-                      Використати бонуси
+                      {i18n.language === "uk"
+                        ? "Використати бонуси"
+                        : "Use bonuses"}
                     </label>
                     <div className="relative">
                       <input
@@ -406,7 +431,9 @@ const Checkout = () => {
                           required: {
                             value: true,
                             message:
-                              "Поле обязательное для заполнения. Укажите 0 если не хотите использовать бонусы",
+                              i18n.language === "uk"
+                                ? "Поле обов`зкове для заповнення. Вкажіть 0 якщо не хочете їх використовувати"
+                                : "The field is required. Specify 0 if you do not want to use them",
                           },
                         })}
                         min={0}
@@ -426,8 +453,14 @@ const Checkout = () => {
                         name="name"
                       />
                       <p className="text-gray-500">
-                        Максимальна кількість: {Number(cartPrice) / 2}. Ваш
-                        баланс: {user && user.promo.bonuses}
+                        {i18n.language === "uk"
+                          ? "Максимальна кількість:"
+                          : "The maximum number:"}{" "}
+                        {Number(cartPrice) / 2}.{" "}
+                        {i18n.language === "uk"
+                          ? "Ваш баланс:"
+                          : "Your balance:"}{" "}
+                        {user && user.promo.bonuses}
                       </p>
                     </div>
                     {errors.bonuses ? (
@@ -455,7 +488,9 @@ const Checkout = () => {
                       htmlFor="deliverytime1"
                       className="text-sm font-medium text-gray-700"
                     >
-                      Залишити довільну дату та час доставки
+                      {i18n.language === "uk"
+                        ? "Залишити довільну дату та час доставки"
+                        : "Leave an arbitrary delivery date and time"}
                     </label>
                   </div>
                   <div className="flex space-x-2">
@@ -471,7 +506,9 @@ const Checkout = () => {
                       />
                     </div>
                     <label htmlFor="deliverytime2" className="text-sm">
-                      Вказати конкретну дату та час доставки
+                      {i18n.language === "uk"
+                        ? "Вказати конкретну дату та час доставки"
+                        : "Specify a specific delivery date and time"}
                     </label>
                   </div>
                 </div>
@@ -501,7 +538,9 @@ const Checkout = () => {
                       htmlFor="delivery1"
                       className="text-sm font-medium text-gray-700"
                     >
-                      Самовивіз з нашого магазину
+                      {i18n.language === "uk"
+                        ? "Самовивіз з нашого магазину"
+                        : "Pickup from our store"}
                     </label>
                   </div>
                   <div className="flex space-x-2">
@@ -518,11 +557,14 @@ const Checkout = () => {
                     </div>
                     <label htmlFor="delivery2" className="text-sm">
                       <div className="font-medium text-gray-700">
-                        Доставка за адресою
+                        {i18n.language === "uk"
+                          ? "Доставка за адресою"
+                          : "Delivery to the address"}
                       </div>
                       <p className="text-gray-500">
-                        Вкажіть коректну адресу, вартість доставки буде
-                        розраховуватись на її основі!
+                        {i18n.language === "uk"
+                          ? "Вкажіть коректну адресу, вартість доставки буде розраховуватись на її основі!"
+                          : "Specify the correct address, the cost of delivery will be calculated based on it!"}
                       </p>
                     </label>
                   </div>
@@ -537,7 +579,9 @@ const Checkout = () => {
                           : null
                       }`}
                     >
-                      Адреса доставки
+                      {i18n.language === "uk"
+                        ? "Адреса доставки"
+                        : "Shipping address"}
                     </label>
                     <div className="relative">
                       <Autocomplete
@@ -556,10 +600,12 @@ const Checkout = () => {
                           {...register("shippingAddress", {
                             required: {
                               value: true,
-                              message: "Поле обязательное для заполнения",
+                              message:
+                                i18n.language === "uk"
+                                  ? "Поле обов`язкове для заповнення"
+                                  : "Field is required",
                             },
                           })}
-                          placeholder="Например: Сичеславская 1/2"
                           type="text"
                           name="shippingAddress"
                         />
@@ -572,9 +618,13 @@ const Checkout = () => {
                     ) : null}
                     {deliveryAmount > 0 && (
                       <span className="block text-[15px] w-full text-right pt-4 underline">
-                        Розрахункова вартість доставки:{" "}
+                        {i18n.language === "uk"
+                          ? "Розрахункова вартість доставки:"
+                          : "Estimated cost of delivery:"}{" "}
                         <span className="font-semibold text-[16px]">
-                          {deliveryAmount} ₴ ({deliveryPrice} грн за км.)
+                          {deliveryAmount} ₴ ({deliveryPrice}{" "}
+                          {i18n.language === "uk" ? "грн за км" : "UAH per km"}
+                          .)
                         </span>
                       </span>
                     )}
@@ -588,14 +638,20 @@ const Checkout = () => {
                     htmlFor="orderComment"
                     className="mb-1 block text-sm text-gray-700 font-bold"
                   >
-                    Додаткова інформація до замовлення
+                    {i18n.language === "uk"
+                      ? "Додаткова інформація до замовлення"
+                      : "Additional information to the order"}
                   </label>
                   <textarea
                     {...register("comment")}
                     id="orderComment"
                     className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
                     rows={3}
-                    placeholder="Введіть коментарій до замовлення, який буде розглянутий нашим флористом"
+                    placeholder={
+                      i18n.language === "uk"
+                        ? "Введіть коментарій до замовлення, який буде розглянутий нашим флористом"
+                        : "Enter a comment to the order, which will be considered by our florist"
+                    }
                   ></textarea>
                 </div>
               </div>
@@ -603,20 +659,17 @@ const Checkout = () => {
                 disabled={!isCompleteRequest}
                 className="border border-rose-400 text-white bg-rose-400 px-4 py-2 rounded transition-colors hover:bg-rose-500"
               >
-                {isCompleteRequest ? "Перейти к оплате" : "Обработка..."}
+                {isCompleteRequest
+                  ? i18n.language === "uk"
+                    ? "Перейти до сплати"
+                    : "Go to payment"
+                  : i18n.language === "uk"
+                  ? "Processing"
+                  : "Обробка..."}
               </button>
             </form>
             <div className="flex-1">
-              <h3 className="text-right border-b pb-2">
-                <span>
-                  Всього до сплати:{" "}
-                  <span className="font-bold">
-                    {Number(cartPrice) - Number(bonuses)} ₴{" "}
-                    {deliveryAmount > 0 && `+ ${deliveryAmount} ₴ доставка`}
-                  </span>
-                </span>
-              </h3>
-              <div className="pt-6 flex flex-col gap-y-6">
+              <div className="pt-6 flex flex-col gap-y-6 max-h-[420px] overflow-y-auto px-2">
                 {cart.map((cartItem, index) => (
                   <CartItem
                     cartItem={cartItem}

@@ -2,7 +2,13 @@
 
 import "./globals.css";
 import type { Metadata } from "next";
-import { Comfortaa, Montserrat, Rubik } from "next/font/google";
+import {
+  Comfortaa,
+  Montserrat,
+  Rubik,
+  Roboto_Condensed,
+  Raleway,
+} from "next/font/google";
 import Header from "@/components/Header/Header";
 import NavigationContextProvider from "@/contexts/NavigationContext/NavigationContextProvider";
 import Providers from "@/utils/store/provider";
@@ -29,7 +35,9 @@ const queryClient = new QueryClient({
   },
 });
 
-const comfarta = Comfortaa({ subsets: ["cyrillic"] });
+const comfarta = Raleway({
+  subsets: ["cyrillic"],
+});
 
 export default function RootLayout({
   children,
@@ -54,6 +62,7 @@ export default function RootLayout({
     if (defaultLng) {
       i18n.changeLanguage(defaultLng);
     } else {
+      localStorage.setItem("selectedLng", "uk");
       i18n.changeLanguage("uk");
     }
 
@@ -83,22 +92,6 @@ export default function RootLayout({
                   <ModalContextProvider>
                     <Header />
                     <main id="main" className="flex-1">
-                      <button
-                        onClick={() => {
-                          localStorage.setItem("selectedLng", "en");
-                          i18n.changeLanguage("en");
-                        }}
-                      >
-                        EN
-                      </button>
-                      <button
-                        onClick={() => {
-                          localStorage.setItem("selectedLng", "uk");
-                          i18n.changeLanguage("uk");
-                        }}
-                      >
-                        UK
-                      </button>
                       {children}
                       <div className="portal-container"></div>
                     </main>

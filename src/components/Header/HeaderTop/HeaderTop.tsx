@@ -14,60 +14,80 @@ import { AuthContext } from "@/contexts/AuthContext/AuthContext";
 import Skeleton from "react-loading-skeleton";
 import { ModalContext } from "@/contexts/ModalContext/ModalContext";
 import useToast from "@/hooks/useToast";
-import axios, {AxiosError, AxiosRequestConfig} from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
+import Image from "next/image";
+import LanguageSwitcher from "@/components/LanguageSwitcher/LanguageSwitcher";
+import { useTranslation } from "next-i18next";
 
 const HeaderTop = () => {
   const { info, error } = useToast();
-  const { isLoading, isLogged, setLogged, setLoading } = useContext(AuthContext);
+  const { isLoading, isLogged, setLogged, setLoading } =
+    useContext(AuthContext);
+  const { t, i18n } = useTranslation();
   const { isOpen, setOpen } = useContext(ModalContext);
 
   const signOutHandler = async () => {
     setLoading(true);
 
     try {
-        const requestConfig: AxiosRequestConfig = {
-            headers: {
-                'Content-Type': 'application/json',
-                'ngrok-skip-browser-warning': 'true',
-                'Access-Control-Allow-Origin': '*'
-            },
-            withCredentials: true
-        }
+      const requestConfig: AxiosRequestConfig = {
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+          "Access-Control-Allow-Origin": "*",
+        },
+        withCredentials: true,
+      };
 
-        const response = await axios.post(`${process.env.ADMIN_ENDPOINT_BACKEND}/auth/logout`, requestConfig);
+      const response = await axios.post(
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/auth/logout`,
+        requestConfig
+      );
 
-        document.cookie = "USER-AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        localStorage.removeItem('authUserId');
-        info('Успішний вихід з облікового запису')
-        setLogged(false);
+      document.cookie =
+        "USER-AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      localStorage.removeItem("authUserId");
+      info("Успішний вихід з облікового запису");
+      setLogged(false);
     } catch (err: unknown) {
-        const errObject = err as AxiosError;
-        console.error(errObject);
-    }
-    finally {
-        setLoading(false);
+      const errObject = err as AxiosError;
+      console.error(errObject);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="header-top">
-      <span className="header-top-lang text flex-1">UA</span>
-      <p className="text flex-none">Магазин квітів &quot;Clumba&quot;</p>
-      <div className="header-top-buttons flex flex-1 justify-end gap-x-3 items-center">
+      <LanguageSwitcher />
+      <p className="text">
+        {i18n.language === "uk"
+          ? `Магазин квітів"Clumba"`
+          : `Flower Shop "Clumba"`}
+      </p>
+      <div className="header-top-buttons">
         {isLoading ? (
           <Skeleton inline className="w-12" />
         ) : isLogged ? (
           <span className="text" role="button" onClick={signOutHandler}>
-            Выйти
+            {(t("Auth", { returnObjects: true }) as any).logout}
           </span>
         ) : (
           <>
-            <span className="text" role="button" onClick={() => setOpen({step: 1, isOpen: true})}>
+            {/* <span
+              className="text"
+              role="button"
+              onClick={() => setOpen({ step: 1, isOpen: true })}
+            >
               Створити
-            </span>
-            <span className="header-top-divider"></span>
-            <span className="text" role="button" onClick={() => setOpen({step: 3, isOpen: true})}>
-              Увійти
+            </span> */}
+            {/* <span className="header-top-divider"></span> */}
+            <span
+              className="text"
+              role="button"
+              onClick={() => setOpen({ step: 3, isOpen: true })}
+            >
+              {(t("Auth", { returnObjects: true }) as any).login}
             </span>
           </>
         )}

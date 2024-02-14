@@ -5,12 +5,11 @@ import { useContext, useMemo } from "react";
 import { NavigationContext } from "@/contexts/NavigationContext/NavigationContext";
 import "./HeaderNav.scss";
 import { useTranslation } from "next-i18next";
+import clsx from "clsx";
 
 const HeaderNav = () => {
   const { t, i18n } = useTranslation();
   const context = useContext(NavigationContext);
-
-  console.log(i18n);
 
   const navClasses = useMemo(
     () => [
@@ -24,15 +23,15 @@ const HeaderNav = () => {
   return (
     <nav className="header-nav">
       <ul>
-        <li className={navClasses[0]}>
+        <li className={clsx(navClasses[0], "font-medium")}>
           <Link href="/">{t("Home")}</Link>
         </li>
-        <li className={navClasses[1]}>
+        <li className={clsx(navClasses[1], "font-medium")}>
           <Link href="/products?limit=15&page=1&sort=1&price=0-10000&category=all">
             {t("ProductCatalog")}
           </Link>
         </li>
-        <li className={navClasses[2]}>
+        <li className={clsx(navClasses[2], "font-medium")}>
           <Link href="/about-us">{t("AboutUs")}</Link>
         </li>
       </ul>

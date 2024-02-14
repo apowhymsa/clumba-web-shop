@@ -42,11 +42,15 @@ const HomeComponent = (props: Props) => {
     setLoading(false);
   }, []);
 
+  useEffect(() => {
+    console.log("lang changed");
+  }, [i18n.language]);
+
   return (
     <motion.div>
       <div className="page-top">
         {/*<h1 className="font-bold text-4xl text-white relative z-10">Цветы</h1>*/}
-        <h3 className="my-[24px] font-bold text-gray-50 text-2xl relative z-10">
+        <h3 className="my-[24px] font-semibold text-gray-50 text-xl relative z-10 sm:text-2xl">
           {t("HomeBanner")}
         </h3>
       </div>
@@ -54,39 +58,40 @@ const HomeComponent = (props: Props) => {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="products-popular px-10 my-7 items-center"
+        className="products-popular px-5 my-7 items-center md:px-10"
       >
-        <div className="mb-7 flex justify-between">
-          <h3 className="text-2xl font-medium">Популярные товары</h3>
-          <Link
-            href="/products?limit=15&page=1&sort=1&price=0-10000&category=all"
-            className="underline text-rose-400 flex gap-x-2 items-center"
-            title="Перейти в каталог товаров"
-          >
-            <span>Перейти в каталог</span>
-            <ArrowRightIcon className="h-5 w-5 text-rose-400" />
-          </Link>
-        </div>
         <SwiperProducts
+          headerText={
+            (t("PopularProducts", { returnObjects: true }) as any).header
+          }
+          headerLinkText={
+            (t("PopularProducts", { returnObjects: true }) as any).next
+          }
+          headerLinkHref={
+            "/products?limit=15&page=1&sort=1&price=0-10000&category=all"
+          }
           isLoading={isLoading}
           breakpoints={{
             320: {
               slidesPerView: 1.3,
             },
             485: {
+              slidesPerView: 1.5,
+            },
+            600: {
               slidesPerView: 2.3,
             },
-            700: {
+            850: {
               slidesPerView: 3.3,
             },
-            1000: {
-              slidesPerView: 4.5,
+            1100: {
+              slidesPerView: 4.3,
             },
           }}
           products={productsData.popularProducts.products}
         />
       </motion.div>
-      <div className="flex gap-x-16 px-10 justify-center bg-[#e5e7eb] py-10 bg-opacity-50">
+      <div className="text-[14px] md:text-[16px] flex flex-col sm:flex-row items-center gap-y-2 gap-x-16 px-5 md:px-10 justify-center bg-[#e5e7eb] py-4 sm:py-8 bg-opacity-50">
         <motion.div
           initial="initial"
           animate="initial"
@@ -97,9 +102,13 @@ const HomeComponent = (props: Props) => {
             transition={{ type: "spring", stiffness: 50 }}
             variants={animateIcon}
           >
-            <RocketLaunchIcon className="w-8 h-8 text-black" />
+            <RocketLaunchIcon className="w-6 h-6 text-black" />
           </motion.span>
-          <span>Швидка доставка квітів</span>
+          <span>
+            {i18n.language === "uk"
+              ? "Швидка доставка квітів"
+              : "Fast flower delivery"}
+          </span>
         </motion.div>
         <motion.div
           initial="initial"
@@ -111,18 +120,24 @@ const HomeComponent = (props: Props) => {
             transition={{ type: "spring", stiffness: 50 }}
             variants={animateIcon}
           >
-            <BuildingStorefrontIcon className="w-8 h-8 text-black" />
+            <BuildingStorefrontIcon className="w-6 h-6 text-black" />
           </motion.span>
-          <span>Великий вибір свіжих і красивих квітів</span>
+          <span>
+            {i18n.language === "uk"
+              ? "Широкий асортимент свіжих і красивих квітів"
+              : "Wide range of fresh and beautiful flowers"}
+          </span>
         </motion.div>
       </div>
-      <div className="px-10 my-7">
+      <div className="px-5 md:px-10 my-7">
         <div className="mb-7 flex justify-between">
-          <h3 className="text-2xl font-medium">Каталог категорій</h3>
+          <h2 className="text-xl lg:text-2xl font-medium">
+            {t("CategoriesCatalog")}
+          </h2>
         </div>
         <CategoriesCatalog categories={productsCategories} />
       </div>
-      <div className="flex gap-x-16 px-10 justify-center bg-[#e5e7eb] py-10 bg-opacity-50">
+      <div className="text-[14px] md:text-[16px] flex flex-col sm:flex-row items-center gap-y-2 gap-x-16 px-5 md:px-10 justify-center bg-[#e5e7eb] py-4 sm:py-8 bg-opacity-50">
         <motion.div
           initial="initial"
           animate="initial"
@@ -133,9 +148,13 @@ const HomeComponent = (props: Props) => {
             transition={{ type: "spring", stiffness: 50 }}
             variants={animateIcon}
           >
-            <CreditCardIcon className="w-8 h-8 text-black" />
+            <CreditCardIcon className="w-6 h-6 text-black" />
           </motion.span>
-          <span>Зручні способи оплати</span>
+          <span>
+            {i18n.language === "uk"
+              ? "Зручні способи оплати"
+              : "Convenient payment options"}
+          </span>
         </motion.div>
         <motion.div
           initial="initial"
@@ -147,42 +166,64 @@ const HomeComponent = (props: Props) => {
             transition={{ type: "spring", stiffness: 50 }}
             variants={animateIcon}
           >
-            <FaceSmileIcon className="w-8 h-8 text-black" />
+            <FaceSmileIcon className="w-6 h-6 text-black" />
           </motion.span>
-          <span>Креативні та доброзичливі флористи</span>
+          <span>
+            {i18n.language === "uk"
+              ? "Креативні та доброзичливі флористи"
+              : "Creative and friendly florists"}
+          </span>
         </motion.div>
       </div>
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="products-new px-10 my-7 items-center"
+        className="products-new px-5 md:px-10 my-7 items-center"
       >
-        <div className="mb-7 flex justify-between">
-          <h3 className="text-2xl font-medium">Новые товары</h3>
+        {/* <div className="mb-7 flex justify-between">
+          <h3 className="text-[18px] sm:text-2xl font-medium">
+            {(t("NewProducts", { returnObjects: true }) as any).header}
+          </h3>
           <Link
             href="/products?limit=15&page=1&sort=2&price=0-10000&category=all"
-            className="underline text-rose-400 flex gap-x-2 items-center"
-            title="Перейти в каталог товаров"
+            className="underline text-rose-400 flex gap-x-2 items-center text-[14px]"
+            title={
+              i18n.language === "uk"
+                ? "Перейти до каталогу товарів"
+                : "Go to the product catalog"
+            }
           >
-            <span>Перейти в каталог</span>
-            <ArrowRightIcon className="h-5 w-5 text-rose-400" />
+            <span>
+              {(t("NewProducts", { returnObjects: true }) as any).next}
+            </span>
+            <ArrowRightIcon className="h-4 w-4 text-rose-400 hidden sm:block" />
           </Link>
-        </div>
+        </div> */}
         <SwiperProducts
+          headerText={(t("NewProducts", { returnObjects: true }) as any).header}
+          headerLinkText={
+            (t("NewProducts", { returnObjects: true }) as any).next
+          }
+          headerLinkHref={
+            "/products?limit=15&page=1&sort=2&price=0-10000&category=all"
+          }
           isLoading={isLoading}
           breakpoints={{
             320: {
               slidesPerView: 1.3,
             },
             485: {
+              slidesPerView: 1.5,
+            },
+            600: {
               slidesPerView: 2.3,
             },
-            700: {
+            850: {
               slidesPerView: 3.3,
             },
-            1000: {
-              slidesPerView: 4.5,
+            1100: {
+              slidesPerView: 4.3,
             },
           }}
           products={productsData.newProducts.products}

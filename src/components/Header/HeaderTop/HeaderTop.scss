@@ -27,13 +27,16 @@
 
 // Tablet
 @media (max-width: 768px) {
-
   .header-top-lang {
     @apply hidden;
   }
 
   .header-top {
-    @apply justify-center gap-x-2;
+    @apply px-5 gap-x-2;
+
+    & > .text {
+      @apply hidden;
+    }
   }
 }
 

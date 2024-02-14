@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Coming+Soon&family=Montserrat&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
-.product-item-wrapper{
-  font-family: 'Comfortaa', cursive;
+@import url("https://fonts.googleapis.com/css2?family=Coming+Soon&family=Montserrat&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa&display=swap");
+.product-item-wrapper {
+  font-family: "Comfortaa", cursive;
+  @apply mb-5;
 }
-
 
 .product-additional-info {
 }
@@ -23,7 +23,7 @@
 // Tablet
 @media (max-width: 900px) {
   .product-additional-info {
-    @apply hidden;
+    // @apply hidden;
   }
 
   .product-item-wrapper,
@@ -60,7 +60,7 @@
 }
 
 // Mobile
-@media (max-width: 576px) {
+@media (max-width: 600px) {
   .product-item-wrapper {
     @apply flex-col gap-y-3;
 

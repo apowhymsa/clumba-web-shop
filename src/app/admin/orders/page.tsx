@@ -71,7 +71,8 @@ const columns = [
 ];
 
 const Page = () => {
-  const { orders, setOrders, addOrder } = useOrdersStore();
+  const { orders, setOrders, addOrder, setNotViewOrders, notViewedOrders } =
+    useOrdersStore();
   const [checked, setChecked] = useState(1);
   const queryClient = useQueryClient();
   const router = useRouter();
@@ -90,7 +91,8 @@ const Page = () => {
         }
       );
 
-      setOrders(data);
+      setOrders(data.orders);
+      setNotViewOrders(data.nowViewedOrders);
 
       return data;
     },
@@ -99,9 +101,8 @@ const Page = () => {
     socket.on("update", async (data) => {
       console.log("Real-time update received:", data);
       // Handle the update as needed
-      console.log(data);
       const response = await axios.get(
-        `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${data._id}`
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${data._id}?ignoreViewed=true`
       );
 
       addOrder(response.data);

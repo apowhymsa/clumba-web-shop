@@ -13,6 +13,7 @@ import { Product } from "@/types";
 import { FindProductItem } from "@/components/SearchModal/FindProductItem";
 import { motion } from "framer-motion";
 import clsx from "clsx";
+import { useTranslation } from "next-i18next";
 
 type Props = {
   onClose: () => void;
@@ -23,6 +24,7 @@ const SearchModal = (props: Props) => {
   const { onClose, isOpen } = props;
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 300);
+  const { t, i18n } = useTranslation();
 
   const products = useAppSelector((state) => state.productsReducer.products);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -66,7 +68,11 @@ const SearchModal = (props: Props) => {
           type="text"
           id="search"
           className="block w-full rounded-md border-gray-300 pl-10 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
-          placeholder="Поиск товара..."
+          placeholder={
+            i18n.language === "uk"
+              ? "Пошук товару..."
+              : "Search for products..."
+          }
           value={searchValue}
           onChange={(event) => setSearchValue(event.target.value)}
         />
@@ -76,17 +82,21 @@ const SearchModal = (props: Props) => {
           }}
           className="transition-colors hover:text-rose-400 cursor-pointer"
         >
-          Закрити
+          {i18n.language === "uk" ? "Закрити" : "Cancel"}
         </span>
       </div>
       <div>
         <h2 className="text-lg font-medium leading-10">
-          Результати пошуку{" "}
+          {i18n.language === "uk" ? "Результати пошуку" : "Search results"}{" "}
           {filteredProducts.length > 0 && `(${filteredProducts.length})`}
         </h2>
-        <div className="grid grid-cols-2 max-h-[300px] overflow-y-auto gap-x-4">
+        <div className="grid grid-cols-1 max-h-[300px] overflow-y-auto gap-x-4 lg:grid-cols-2">
           {filteredProducts.length === 0 ? (
-            <span>Товарів не знайдено</span>
+            <span>
+              {i18n.language === "uk"
+                ? "Товарів не знайдено"
+                : "No products found"}
+            </span>
           ) : (
             filteredProducts.map((findProduct) => (
               <FindProductItem
