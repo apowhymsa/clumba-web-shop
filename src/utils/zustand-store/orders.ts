@@ -32,21 +32,25 @@ export type Order = {
 
 type Store = {
   orders: Order[];
-  notViewedOrders: Order[];
+  notViewedOrders: number;
   setOrders: (orders: Order[]) => void;
   addOrder: (order: Order) => void;
   updateOrder: (id: string, order: Order) => void;
   setNotViewOrders: (orders: Order[]) => void;
+  updateNotViewOrders: () => void;
 };
 
 export const useOrdersStore = create<Store>()((set, get) => ({
   orders: [],
-  notViewedOrders: [],
+  notViewedOrders: 0,
   setOrders: (orders) => {
     set({ orders: orders });
   },
   setNotViewOrders: (orders) => {
-    set({ notViewedOrders: orders });
+    set({ notViewedOrders: orders.length });
+  },
+  updateNotViewOrders: () => {
+    set({ notViewedOrders: get().notViewedOrders + 1 });
   },
   addOrder: (order) => {
     set({ orders: [order, ...get().orders] });

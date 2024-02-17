@@ -9,7 +9,7 @@ body {
 }
 
 .categories-filter-container {
-  @apply w-full h-fit bg-white border-b animate-filterHide border-gray-200 overflow-hidden z-10;
+  @apply w-full h-fit bg-white dark:bg-dark border-b animate-filterHide border-gray-200 dark:border-[#1f2937] overflow-hidden z-10;
 }
 
 .categories-filter-container-active {

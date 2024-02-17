@@ -41,7 +41,7 @@ const CategoriesFilter = (props: Props) => {
     >
       <div className="categories-filter-content">
         <div className="categories">
-          <h3 className="font-medium text-gray-900 mb-4">
+          <h3 className="font-medium text-dark dark:text-light mb-4">
             {i18n.language === "uk" ? "Категорії" : "Categories"}
           </h3>
           <div className="category-grid grid grid-cols-4 gap-5 gap-y-4">
@@ -62,7 +62,10 @@ const CategoriesFilter = (props: Props) => {
                   id={category._id}
                   className="h-4 w-4 rounded checked:text-rose-400 shadow-sm text-rose-400 focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-offset-0 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:text-gray-400"
                 />
-                <label htmlFor={category._id} className="text-sm text-gray-700">
+                <label
+                  htmlFor={category._id}
+                  className="text-sm text-dark dark:text-light"
+                >
                   {category.title}
                 </label>
               </div>
@@ -70,7 +73,7 @@ const CategoriesFilter = (props: Props) => {
           </div>
         </div>
         <div className="prices">
-          <h3 className="font-medium text-gray-900 mb-4">
+          <h3 className="font-medium text-dark dark:text-light mb-4">
             {i18n.language === "uk" ? "Ціна" : "Price"}
           </h3>
           <div className="slider-container w-[400px]">

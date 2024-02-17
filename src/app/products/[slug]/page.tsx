@@ -82,11 +82,15 @@ const Page = ({ params }: { params: { slug: string } }) => {
       );
 
       console.log("comments get", data);
-      const commentsAvg = Math.round(
-        data.reduce((acc: any, value: any) => {
-          return (acc += Number(value.rating));
-        }, 0) / data.length
-      );
+
+      const commentsAvg =
+        data.length > 0
+          ? Math.round(
+              data.reduce((acc: any, value: any) => {
+                return (acc += Number(value.rating));
+              }, 0) / data.length
+            )
+          : 0;
       setCommentsScoreAvg(commentsAvg);
       dispatch(setComments(data));
     };
@@ -132,6 +136,22 @@ const Page = ({ params }: { params: { slug: string } }) => {
   }, []);
 
   useEffect(() => {
+    const calcAvgComments = () => {
+      const commentsAvg =
+        comments.length > 0
+          ? Math.round(
+              comments.reduce((acc: any, value: any) => {
+                return (acc += Number(value.rating));
+              }, 0) / comments.length
+            )
+          : 0;
+      setCommentsScoreAvg(commentsAvg);
+    };
+
+    calcAvgComments();
+  }, [comments]);
+
+  useEffect(() => {
     const currentState = [...isNotAvailableProduct];
     currentState[variant] = {
       variantID: variant,
@@ -147,8 +167,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
   return (
     <>
-      <div className="product-item-wrapper px-5 md:px-10 flex gap-x-6 py-10">
-        <div className="w-[40%] h-auto">
+      <div className="product-item-wrapper px-5 md:px-10 flex gap-x-6 py-5 text-dark dark:text-light">
+        <div className="img-container w-[40%] h-auto min-w-[360px]">
           {loading ? (
             <Skeleton
               style={{
@@ -162,7 +182,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
             />
           ) : (
             <MagnifyingGlass
-              imageUrl={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product?.image}`}
+              // imageUrl={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product?.image}`}
+              imageUrl="https://placedog.net/500"
             />
           )}
         </div>
@@ -171,7 +192,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             {loading ? (
               <Skeleton />
             ) : (
-              <p className="product-item-name font-semibold text-[24px]">
+              <p className="product-item-name font-semibold text-lg md:text-2xl">
                 {product?.title}
               </p>
             )}
@@ -200,7 +221,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                   )}
                 </span>
               )}
-              <span className="price-score-divider h-6 w-[1px] bg-gray-300"></span>
+              <span className="price-score-divider h-6 w-[1px] bg-gray-300 dark:bg-[#1f2937]"></span>
               <div className="flex items-center">
                 {loading ? (
                   <>
@@ -224,7 +245,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                           />
                         )
                       )}
-                    <span className="product-score-count text-[#6b88b5] text-sm ml-2">
+                    <span className="product-score-count text-dark dark:text-light text-sm ml-2">
                       {comments.length}{" "}
                       {i18n.language === "uk" ? "відгуків" : "reviews"}
                     </span>
@@ -251,7 +272,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                   : "The product variant is in stock"}
               </span>
             )}
-            <hr className="my-2" />
+            <hr className="my-2 dark:border-[#1f2937]" />
             <div className="flex flex-col gap-y-2">
               <div className="flex gap-x-2 text-[14px]">
                 <span>{i18n.language === "uk" ? "Варіант:" : "Variant:"}</span>
@@ -279,7 +300,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 ))}
               </div>
             </div>
-            <hr className="my-2" />
+            <hr className="my-2 dark:border-[#1f2937]" />
             {loading ? (
               <Skeleton />
             ) : (
@@ -317,54 +338,60 @@ const Page = ({ params }: { params: { slug: string } }) => {
               />
             )}
           </div>
-          <hr className="my-2" />
-          {loading ? (
-            <Skeleton />
-          ) : (
-            <ProductOverview
-              comments={comments}
-              product={product?.variants[variant]}
-              productId={product?._id}
-              classNameContainer={"product-additional-info w-full"}
-              setTab={setTab}
-              tab={tab}
-            />
-          )}
+          <hr className="my-2 dark:border-[#1f2937]" />
+          <div>
+            <p className="font-medium">
+              {i18n.language === "uk"
+                ? "Склад товару:"
+                : "Product composition:"}
+            </p>
+            <ul>
+              {product?.variants[variant].ingredients.map(
+                (currentIng: any, index) => (
+                  <li key={index} className="text-sm">
+                    {i18n.language === "uk" ? "Назва:" : "Title:"}{" "}
+                    {currentIng.ingredient.id.title} -{" "}
+                    {i18n.language === "uk" ? "Тип:" : "Type:"}{" "}
+                    {currentIng.ingredient.variantID.vType} - {currentIng.count}{" "}
+                    {i18n.language === "uk" ? "шт" : "pcs"}.
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
         </div>
       </div>
-
-      {/* <ProductOverviewMobile
-        product={product?.variants[variant]}
-        comments={comments}
-        productId={product?._id}
-        classNameContainer={"product-additional-info-mobile w-full my-4"}
-        setTab={setTab}
-        tab={tab}
-      /> */}
+      <div className="px-5 md:px-10">
+        <h2 className="text-dark dark:text-light text-xl lg:text-2xl font-medium flex items-center gap-x-2">
+          {i18n.language === "uk" ? "Відгуки про товар" : "Product reviews"} -{" "}
+          <span className="text-sm md:text-base">{product?.title}</span>
+        </h2>
+        {loading ? (
+          <Skeleton />
+        ) : (
+          <ProductOverview
+            commentsAvg={commentsScoreAvg}
+            comments={comments}
+            product={product?.variants[variant]}
+            productId={product?._id}
+            classNameContainer={"product-additional-info w-full"}
+            setTab={setTab}
+            tab={tab}
+          />
+        )}
+      </div>
       <div className="products-recommendation mb-7 px-5 md:px-10">
-        <div className="mb-7 flex justify-between">
-          <h3 className="text-[18px] sm:text-2xl font-medium">
-            {i18n.language == "uk"
-              ? "Також вас можуть зацікавити"
-              : "You may also be interested in"}
-          </h3>
-          <Link
-            href={`/products?limit=15&page=1&sort=1&price=0-10000&category=${product?.categoryID._id}`}
-            className="underline text-rose-400 flex gap-x-2 items-center text-[14px]"
-            title={
-              i18n.language === "uk"
-                ? "Перейти до каталогу товарів"
-                : "Go to the product catalog"
-            }
-          >
-            <span>
-              {i18n.language === "uk" ? "Переглянути більше" : "View more"}
-            </span>
-            <ArrowRightIcon className="h-5 w-5 text-rose-400 hidden sm:block" />
-          </Link>
-        </div>
         <div className="">
           <SwiperProducts
+            headerText={
+              i18n.language == "uk"
+                ? "Також вас можуть зацікавити"
+                : "You may also be interested in"
+            }
+            headerLinkText={
+              i18n.language === "uk" ? "Переглянути більше" : "View more"
+            }
+            headerLinkHref={`/products?limit=15&page=1&sort=1&price=0-10000&category=${product?.categoryID._id}`}
             isLoading={loading}
             breakpoints={{
               320: {

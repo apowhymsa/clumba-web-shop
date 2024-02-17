@@ -25,6 +25,7 @@ import { useRouter } from "next/navigation";
 import CustomDateTimePicker from "@/components/CustomDateTimePicker/CustomDateTimePicker";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "next-i18next";
+import { ThemeContext } from "@/contexts/ThemeContext/ThemeContext";
 
 interface IPaymentData {
   name: string;
@@ -59,6 +60,7 @@ const Checkout = () => {
   const [isCartDiscount, setCartDiscount] = useState(false);
   const [bonuses, setBonuses] = useState(0);
   const { t, i18n } = useTranslation();
+  const { theme } = useContext(ThemeContext);
   const {
     register,
     handleSubmit,
@@ -300,15 +302,15 @@ const Checkout = () => {
   }
 
   return (
-    <div id="liqpay_checkout" className="shadow mx-24 my-14 p-5">
+    <div id="liqpay_checkout" className="shadow mx-5 lg:mx-20 my-14 p-5">
       {cart.length > 0 ? (
         <>
-          <div className="flex justify-between items-center border-b">
-            <h2 className="text-xl font-bold py-2">
+          <div className="flex justify-between items-center border-b dark:border-[#1f2937]">
+            <h2 className="text-xl font-bold py-2 text-dark dark:text-light">
               {i18n.language === "uk" ? "Оформлення замовлення" : "Checkout"}
             </h2>
             <h3 className="text-right pb-2">
-              <span>
+              <span className="text-dark dark:text-light">
                 {i18n.language === "uk"
                   ? "Всього до сплати:"
                   : "Total to be paid:"}{" "}
@@ -330,7 +332,7 @@ const Checkout = () => {
               <div>
                 <label
                   htmlFor="name"
-                  className={`mb-1 block text-sm font-bold text-gray-700 ${
+                  className={`mb-1 block text-sm font-bold text-dark dark:text-light ${
                     errors.name
                       ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                       : null
@@ -341,7 +343,7 @@ const Checkout = () => {
                 <div className="relative">
                   <input
                     defaultValue={user.personals.fullName}
-                    className={`block w-full rounded-md shadow-sm ${
+                    className={`block w-full rounded-md shadow-sm text-dark dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                       errors.name
                         ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                         : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
@@ -368,7 +370,7 @@ const Checkout = () => {
               <div>
                 <label
                   htmlFor="phone"
-                  className={`mb-1 block text-sm font-bold text-gray-700 ${
+                  className={`mb-1 block text-sm font-bold text-dark dark:text-light ${
                     errors.phone
                       ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                       : null
@@ -379,7 +381,7 @@ const Checkout = () => {
                 <div className="relative">
                   <input
                     defaultValue={user.personals.phoneNumber}
-                    className={`block w-full rounded-md shadow-sm ${
+                    className={`block w-full rounded-md shadow-sm text-dark dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                       errors.phone
                         ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                         : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
@@ -403,13 +405,13 @@ const Checkout = () => {
                   </p>
                 ) : null}
               </div>
-              {!isCartDiscount && <hr />}
+              {!isCartDiscount && <hr className="dark:border-[#1f2937]" />}
               <div className="text-[14px]">
                 {!isCartDiscount && (
                   <div>
                     <label
                       htmlFor="name"
-                      className={`mb-1 block text-sm font-bold text-gray-700 ${
+                      className={`mb-1 block text-sm font-bold text-dark dark:text-light ${
                         errors.name
                           ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                           : null
@@ -422,7 +424,7 @@ const Checkout = () => {
                     <div className="relative">
                       <input
                         defaultValue={0}
-                        className={`block w-full rounded-md shadow-sm ${
+                        className={`block w-full rounded-md text-dark shadow-sm dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                           errors.bonuses
                             ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                             : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
@@ -456,11 +458,16 @@ const Checkout = () => {
                         {i18n.language === "uk"
                           ? "Максимальна кількість:"
                           : "The maximum number:"}{" "}
-                        {Number(cartPrice) / 2}.{" "}
+                        <span className="font-bold">
+                          {Number(cartPrice) / 2}
+                        </span>
+                        .{" "}
                         {i18n.language === "uk"
                           ? "Ваш баланс:"
                           : "Your balance:"}{" "}
-                        {user && user.promo.bonuses}
+                        <span className="font-bold">
+                          {user && user.promo.bonuses}
+                        </span>
                       </p>
                     </div>
                     {errors.bonuses ? (
@@ -471,7 +478,7 @@ const Checkout = () => {
                   </div>
                 )}
               </div>
-              <hr />
+              <hr className="dark:border-[#1f2937]" />
               <div>
                 <div className="flex flex-col gap-y-2">
                   <div className="flex items-center space-x-2">
@@ -486,7 +493,7 @@ const Checkout = () => {
                     />
                     <label
                       htmlFor="deliverytime1"
-                      className="text-sm font-medium text-gray-700"
+                      className="text-sm font-medium text-dark dark:text-light"
                     >
                       {i18n.language === "uk"
                         ? "Залишити довільну дату та час доставки"
@@ -505,7 +512,10 @@ const Checkout = () => {
                         className="h-4 w-4 rounded-full border-gray-300 text-rose-400 shadow-sm focus:border-rose-300 focus:ring focus:ring-rose-200 focus:ring-opacity-50 focus:ring-offset-0 disabled:cursor-not-allowed disabled:text-gray-400"
                       />
                     </div>
-                    <label htmlFor="deliverytime2" className="text-sm">
+                    <label
+                      htmlFor="deliverytime2"
+                      className="text-sm font-medium text-dark dark:text-light"
+                    >
                       {i18n.language === "uk"
                         ? "Вказати конкретну дату та час доставки"
                         : "Specify a specific delivery date and time"}
@@ -518,10 +528,17 @@ const Checkout = () => {
                       selectedDateTime={selectedDateTime}
                       setSelectedDateTime={setSelectedDateTime}
                     />
+                    <span className="dark:text-light text-sm">
+                      {theme === "dark" &&
+                        selectedDateTime &&
+                        `Обраний час: ${selectedDateTime
+                          ?.toDate()
+                          .toLocaleString()}`}
+                    </span>
                   </div>
                 )}
               </div>
-              <hr />
+              <hr className="dark:border-[#1f2937]" />
               <div>
                 <div className="flex flex-col gap-y-2 mb-4">
                   <div className="flex items-center space-x-2">
@@ -536,7 +553,7 @@ const Checkout = () => {
                     />
                     <label
                       htmlFor="delivery1"
-                      className="text-sm font-medium text-gray-700"
+                      className="text-sm font-medium text-dark dark:text-light"
                     >
                       {i18n.language === "uk"
                         ? "Самовивіз з нашого магазину"
@@ -556,7 +573,7 @@ const Checkout = () => {
                       />
                     </div>
                     <label htmlFor="delivery2" className="text-sm">
-                      <div className="font-medium text-gray-700">
+                      <div className="font-medium text-dark dark:text-light">
                         {i18n.language === "uk"
                           ? "Доставка за адресою"
                           : "Delivery to the address"}
@@ -573,7 +590,7 @@ const Checkout = () => {
                   <>
                     <label
                       htmlFor="shippingAddress"
-                      className={`mb-1 block text-sm font-bold text-gray-700 ${
+                      className={`mb-1 block text-sm font-bold text-dark dark:text-light ${
                         errors.shippingAddress
                           ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                           : null
@@ -592,7 +609,7 @@ const Checkout = () => {
                         }}
                       >
                         <input
-                          className={`block w-full rounded-md shadow-sm ${
+                          className={`block w-full rounded-md text-dark shadow-sm dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                             errors.shippingAddress
                               ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                               : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
@@ -617,7 +634,7 @@ const Checkout = () => {
                       </p>
                     ) : null}
                     {deliveryAmount > 0 && (
-                      <span className="block text-[15px] w-full text-right pt-4 underline">
+                      <span className="block text-[15px] w-full text-right pt-4 underline text-dark dark:text-light">
                         {i18n.language === "uk"
                           ? "Розрахункова вартість доставки:"
                           : "Estimated cost of delivery:"}{" "}
@@ -631,12 +648,12 @@ const Checkout = () => {
                   </>
                 )}
               </div>
-              <hr />
+              <hr className="dark:border-[#1f2937]" />
               <div className="w-full">
                 <div>
                   <label
                     htmlFor="orderComment"
-                    className="mb-1 block text-sm text-gray-700 font-bold"
+                    className="mb-1 block text-sm text-dark dark:text-light font-bold"
                   >
                     {i18n.language === "uk"
                       ? "Додаткова інформація до замовлення"
@@ -645,7 +662,7 @@ const Checkout = () => {
                   <textarea
                     {...register("comment")}
                     id="orderComment"
-                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
+                    className="block w-full rounded-md border-gray-300 text-dark dark:text-light dark:bg-[#1f2937] dark:border-dark shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
                     rows={3}
                     placeholder={
                       i18n.language === "uk"

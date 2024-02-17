@@ -2,7 +2,7 @@
 
 .header-main {
   //font-family: 'Comfortaa', cursive;
-  @apply flex justify-between items-center px-10 border-b border-gray-200 h-16;
+  @apply flex justify-between items-center px-10 border-b border-gray-200 dark:border-[#1f2937] h-16;
 }
 
 .header-main-divider {
@@ -31,6 +31,9 @@
 
 // Laptop
 @media (max-width: 992px) {
+  .header-main-mobile-left {
+    @apply flex flex-1;
+  }
 }
 
 // Tablet
@@ -43,10 +46,6 @@
 
   .header-main {
     @apply px-5;
-  }
-
-  .header-main-mobile-left {
-    @apply flex flex-1;
   }
 }
 

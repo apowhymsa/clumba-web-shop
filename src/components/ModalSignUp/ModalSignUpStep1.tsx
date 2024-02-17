@@ -72,15 +72,15 @@ const ModalSignUpStep1 = (props: Props) => {
 
   return (
     <>
-      <div className="flex items-center justify-between px-6 py-3 border-b">
-        <div className="font-bold text-lg">
+      <div className="flex items-center justify-between px-6 py-3 border-b dark:border-[#1f2937] dark:text-light">
+        <div className="font-semibold text-lg">
           {(t("Auth", { returnObjects: true }) as any).RegisterForm.header}
         </div>
         <div
           className="btn-close-modal flex cursor-pointer transition-transform hover:rotate-180 items-center justify-center"
           onClick={onClose}
         >
-          <XMarkIcon className="h-6 w-6 text-black" />
+          <XMarkIcon className="h-6 w-6 text-black dark:text-gray-300" />
         </div>
       </div>
       <div className="px-6 py-4">
@@ -161,7 +161,7 @@ const ModalSignUpStep1 = (props: Props) => {
             isLoading={isLoading}
           />
         </form>
-        <span className="flex justify-end items-center gap-x-1 mt-2">
+        <span className="flex justify-end items-center gap-x-1 mt-2 dark:text-light">
           <span>
             {(t("Auth", { returnObjects: true }) as any).RegisterForm.have.text}
           </span>

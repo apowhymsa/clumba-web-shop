@@ -34,7 +34,7 @@ const NavigationContextProvider = ({
       }
     }
 
-    if (route.includes('/products')) setNavigation([false, true, false]);
+    if (route.includes("/products")) setNavigation([false, true, false]);
   }, [route]);
 
   return (

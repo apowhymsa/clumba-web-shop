@@ -28,6 +28,7 @@ type Props = {
   productId: string | undefined;
   product: IVariantProduct | undefined;
   comments: Comment[];
+  commentsAvg: number;
 };
 
 const ProductOverview = (props: Props) => {
@@ -37,8 +38,15 @@ const ProductOverview = (props: Props) => {
   const [comment, setComment] = useState<string>("");
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const { comments, tab, setTab, classNameContainer, productId, product } =
-    props;
+  const {
+    comments,
+    tab,
+    setTab,
+    classNameContainer,
+    productId,
+    product,
+    commentsAvg,
+  } = props;
 
   const addCommentHandler = async () => {
     const userId = localStorage.getItem("authUserId");
@@ -79,6 +87,9 @@ const ProductOverview = (props: Props) => {
       );
 
       dispatch(addComment(response.data));
+
+      setRating(0);
+      setComment("");
       info(
         i18n.language === "uk"
           ? "Дякуємо за ваш відгук 😊"
@@ -94,9 +105,9 @@ const ProductOverview = (props: Props) => {
   };
 
   return (
-    <div className={classNameContainer}>
-      <div className="flex flex-col gap-y-3 w-full">
-        <div className="flex gap-x-3 border-b border-b-gray-10 w-full">
+    <div className={clsx(classNameContainer, "mb-5")}>
+      <div className="flex flex-col gap-y-3 w-full text-dark dark:text-light">
+        {/* <div className="flex gap-x-3 border-b border-b-gray-10 w-full">
           <div role="tablist" className="tabs tabs-boxed flex-1">
             <span
               onClick={() => setTab(1)}
@@ -115,8 +126,8 @@ const ProductOverview = (props: Props) => {
               {i18n.language === "uk" ? "Відгуки" : "Reviews"}
             </span>
           </div>
-        </div>
-        {tab === 1 && (
+        </div> */}
+        {/* {tab === 1 && (
           <div>
             <p>
               {i18n.language === "uk"
@@ -135,22 +146,51 @@ const ProductOverview = (props: Props) => {
               ))}
             </ul>
           </div>
-        )}
-        {tab === 2 && (
-          <div className="flex flex-col gap-y-8 max-h-[300px] overflow-y-auto px-1 py-2">
-            <div className="max-w-full">
-              <div className="relative overflow-hidden rounded-md border border-gray-300 shadow-sm focus-within:border-primary-300 focus-within:ring focus-within:ring-primary-200 focus-within:ring-opacity-50">
+        )} */}
+        <div className="flex flex-col gap-y-8 py-2">
+          <div className="max-w-full">
+            <div className="flex flex-col gap-y-2 py-4 border-b dark:border-[#1f2937]">
+              <div className="flex items-center gap-x-4">
+                <div className="flex">
+                  {Array(5)
+                    .fill(0)
+                    .map((value, index) =>
+                      index <= commentsAvg - 1 ? (
+                        <StarIcon
+                          key={index + 1}
+                          className="text-[#facc15] h-5 w-5"
+                        />
+                      ) : (
+                        <StarIcon
+                          key={index + 2}
+                          className="text-[#f4f4f4] h-5 w-5"
+                        />
+                      )
+                    )}
+                </div>
+                <span className="font-bold">{commentsAvg} / 5</span>
+              </div>
+              <span className="text-sm">
+                {i18n.language === "uk"
+                  ? "Оцінка користувачів (на основі)"
+                  : "User evaluation (based on)"}{" "}
+                - {comments.length}{" "}
+                {i18n.language === "uk" ? "відгуків" : "reviews"}
+              </span>
+            </div>
+            <div className="max-h-[450px] overflow-y-auto px-4">
+              <div className="mt-4 relative overflow-hidden rounded-md border border-gray-300 dark:border-dark shadow-sm focus-within:border-primary-300 focus-within:ring focus-within:ring-primary-200 focus-within:ring-opacity-50">
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   id="example5"
-                  className="block w-full border-0 focus:border-0 focus:ring-0 resize-none"
+                  className="block w-full border-0 focus:border-0 focus:ring-0 resize-none dark:bg-[#1f2937] dark:border-[#1f2937] dark:text-light"
                   rows={3}
                   placeholder={
                     i18n.language === "uk" ? "Ваш коментар" : "Your review text"
                   }
                 ></textarea>
-                <div className="flex w-full items-center justify-between bg-white p-2">
+                <div className="flex w-full items-center justify-between dark:bg-[#1f2937] p-2">
                   <button
                     disabled={rating <= 0}
                     onClick={addCommentHandler}
@@ -179,51 +219,58 @@ const ProductOverview = (props: Props) => {
                   </div>
                 </div>
               </div>
-            </div>
-            {/*border-b pb-8*/}
-            {comments.length <= 0 ? (
-              <div>
-                {i18n.language === "uk"
-                  ? "Цей товар ще немає відгуків 🙄"
-                  : "This product has no reviews yet 🙄"}
-              </div>
-            ) : (
-              comments.map((currentComment) => (
-                <div
-                  key={currentComment.dateInMs}
-                  className="flex gap-x-4 border-b pb-8"
-                >
-                  <div className="flex flex-col gap-y-3">
-                    <div className="flex flex-col">
-                      <span>{currentComment.userID.personals.fullName}</span>
-                      <span className="text-[#6b7290]">
-                        {currentComment.publishingDate}
-                      </span>
-                    </div>
-                    <div className="flex">
-                      {[0, 0, 0, 0, 0].map((value, index) =>
-                        index <= currentComment.rating - 1 ? (
-                          <StarIcon
-                            key={index + 1}
-                            className="text-[#facc15] h-5 w-5"
-                          />
-                        ) : (
-                          <StarIcon
-                            key={index + 2}
-                            className="text-[#f4f4f4] h-5 w-5"
-                          />
-                        )
-                      )}
-                    </div>
-                    <div>
-                      <span>{currentComment.commentText}</span>
+              {/*border-b pb-8*/}
+              {comments.length <= 0 ? (
+                <div className="flex justify-center items-center pt-5">
+                  {i18n.language === "uk"
+                    ? "Цей товар ще немає відгуків 🙄"
+                    : "This product has no reviews yet 🙄"}
+                </div>
+              ) : (
+                comments.map((currentComment) => (
+                  <div
+                    key={currentComment.dateInMs}
+                    className="flex gap-x-4 border-b dark:border-[#1f2937] pb-4 pt-4"
+                  >
+                    <div className="flex flex-col gap-y-2 flex-1">
+                      <div className="flex justify-between">
+                        <span>{currentComment.userID.personals.fullName}</span>
+                        <span className="text-[#6b7290]">
+                          {currentComment.publishingDate}
+                        </span>
+                      </div>
+                      <div className="flex gap-x-2">
+                        <div className="flex">
+                          {[0, 0, 0, 0, 0].map((value, index) =>
+                            index <= currentComment.rating - 1 ? (
+                              <StarIcon
+                                key={index + 1}
+                                className="text-[#facc15] h-4 w-4"
+                              />
+                            ) : (
+                              <StarIcon
+                                key={index + 2}
+                                className="text-[#f4f4f4] h-4 w-4"
+                              />
+                            )
+                          )}
+                        </div>
+                        <span className="text-xs font-medium">
+                          {currentComment.rating} / 5
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-sm lg:text-base">
+                          {currentComment.commentText}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))
-            )}
+                ))
+              )}
+            </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

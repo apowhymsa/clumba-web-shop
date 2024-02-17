@@ -71,7 +71,7 @@ const ModalContainer = ({
             className={clsx(
               isSearch
                 ? "w-full top-0 rounded-bl rounded-br"
-                : "w-[500px] top-1/2 -translate-x-1/2 -translate-y-1/2  rounded absolute",
+                : "top-1/2 -translate-x-1/2 -translate-y-1/2  rounded absolute w-full h-full sm:w-[500px] sm:h-fit",
               "bg-white h-fit",
               containerWidthClass
             )}

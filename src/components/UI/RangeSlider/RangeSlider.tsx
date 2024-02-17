@@ -13,10 +13,10 @@ const RangeSlider = (props: Props) => {
   const { onAfterChange, defaultValue } = props;
   const [value, setValue] = useState(defaultValue || [0, 10000]);
 
-    useEffect(() => {
-        console.log('new value', defaultValue);
-        setValue(defaultValue);
-    }, [defaultValue]);
+  useEffect(() => {
+    console.log("new value", defaultValue);
+    setValue(defaultValue);
+  }, [defaultValue]);
   return (
     <div className="relative h-[44px]">
       <ReactSlider
@@ -33,8 +33,12 @@ const RangeSlider = (props: Props) => {
         renderThumb={(props, state) => <div {...props}></div>}
         minDistance={10}
       />
-      <span className="absolute left-[5px]">{value[0]}</span>
-      <span className="absolute right-[5px]">{value[1]}</span>
+      <span className="absolute left-[5px] text-dark dark:text-light">
+        {value[0]}
+      </span>
+      <span className="absolute right-[5px] text-dark dark:text-light">
+        {value[1]}
+      </span>
     </div>
   );
 };

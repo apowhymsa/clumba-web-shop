@@ -60,12 +60,12 @@ const HeaderTop = () => {
   return (
     <div className="header-top">
       <LanguageSwitcher />
-      <p className="text">
+      <p className="text flex-1 text-center">
         {i18n.language === "uk"
           ? `Магазин квітів"Clumba"`
           : `Flower Shop "Clumba"`}
       </p>
-      <div className="header-top-buttons">
+      <div className="header-top-buttons flex-1 text-right">
         {isLoading ? (
           <Skeleton inline className="w-12" />
         ) : isLogged ? (

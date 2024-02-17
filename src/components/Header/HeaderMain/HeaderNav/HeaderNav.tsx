@@ -23,15 +23,30 @@ const HeaderNav = () => {
   return (
     <nav className="header-nav">
       <ul>
-        <li className={clsx(navClasses[0], "font-medium")}>
+        <li
+          className={clsx(
+            navClasses[0],
+            "font-medium text-dark dark:text-light"
+          )}
+        >
           <Link href="/">{t("Home")}</Link>
         </li>
-        <li className={clsx(navClasses[1], "font-medium")}>
+        <li
+          className={clsx(
+            navClasses[1],
+            "font-medium text-dark dark:text-light"
+          )}
+        >
           <Link href="/products?limit=15&page=1&sort=1&price=0-10000&category=all">
             {t("ProductCatalog")}
           </Link>
         </li>
-        <li className={clsx(navClasses[2], "font-medium")}>
+        <li
+          className={clsx(
+            navClasses[2],
+            "font-medium text-dark dark:text-light"
+          )}
+        >
           <Link href="/about-us">{t("AboutUs")}</Link>
         </li>
       </ul>

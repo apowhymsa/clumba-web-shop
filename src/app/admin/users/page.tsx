@@ -171,7 +171,7 @@ const Page = () => {
       >
         {isOpenCreateModal && (
           <ModalContainer
-            containerWidthClass="w-[700px]"
+            containerWidthClass="w-full h-full sm:h-full sm:w-full md:w-[700px] md:h-fit"
             onClose={() => setOpenCreateModal(false)}
             isOpen={isOpenCreateModal}
           >
@@ -183,7 +183,7 @@ const Page = () => {
         )}
         {isOpenUpdateModal && (
           <ModalContainer
-            containerWidthClass="w-[700px]"
+            containerWidthClass="w-full h-full sm:h-full sm:w-full md:w-[700px] md:h-fit"
             onClose={() => setOpenUpdateModal(false)}
             isOpen={isOpenUpdateModal}
           >

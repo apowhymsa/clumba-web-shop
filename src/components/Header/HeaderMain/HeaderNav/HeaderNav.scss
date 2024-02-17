@@ -4,7 +4,7 @@
     @apply flex gap-x-8;
 
     & > li {
-      @apply cursor-pointer text-[15px] text-gray-700 transition-colors hover:text-rose-400;
+      @apply cursor-pointer text-[15px] text-[#111827] dark:text-white transition-colors hover:text-rose-400 dark:hover:text-rose-400;
     }
   }
 }
@@ -24,13 +24,13 @@
 
 // Tablet
 @media (max-width: 768px) {
-  .header-nav {
-    @apply hidden;
-  }
 }
 
 // Laptop
 @media (max-width: 992px) {
+  .header-nav {
+    @apply hidden;
+  }
 }
 
 // Wide

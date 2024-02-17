@@ -180,7 +180,7 @@ const ProductsComponent = (props: Props) => {
   };
 
   return (
-    <div className="products-page">
+    <div className="products-page text-dark dark:text-light">
       <div className="page-top">
         <h1 className="font-bold text-xl sm:text-2xl text-white relative z-10">
           {i18n.language === "uk" ? "Квіти" : "Flowers"}
@@ -199,11 +199,13 @@ const ProductsComponent = (props: Props) => {
             onClick={() => setFilterVisible((prev) => !prev)}
           >
             <FunnelIcon className="h-5 w-5 text-gray-400" />
-            <span>{i18n.language === "uk" ? "Фільтр" : "Filter"}</span>
+            <span className="text-dark dark:text-light hover:text-rose-400 dark:hover:text-rose-400 transition-colors">
+              {i18n.language === "uk" ? "Фільтр" : "Filter"}
+            </span>
           </div>
           <span className="filter-divider"></span>
           <span
-            className="text-gray-500 transition-colors hover:text-rose-400"
+            className="text-dark dark:text-light hover:text-rose-400 dark:hover:text-rose-400 transition-colors"
             role="button"
             onClick={() => {
               setClear(true);

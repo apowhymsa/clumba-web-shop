@@ -22,7 +22,7 @@ const InputField = (props: InputFieldProps) => {
     <div>
       <label
         htmlFor={inputProps.id}
-        className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${
+        className={`w-fit mb-1 block text-sm font-bold text-dark dark:text-light ${
           error ? 'after:ml-0.5 after:text-red-500 after:content-["*"]' : null
         }`}
       >
@@ -35,7 +35,7 @@ const InputField = (props: InputFieldProps) => {
           </div>
         ) : null}
         <input
-          className={`block w-full rounded-md shadow-sm ${
+          className={`block w-full rounded-md shadow-sm dark:bg-[#1f2937] dark:text-light dark:border-dark ${
             leftIcon ? "pl-10" : "pl-4"
           } ${
             error

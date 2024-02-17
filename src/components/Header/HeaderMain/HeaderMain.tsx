@@ -108,7 +108,7 @@ const HeaderMain = () => {
               className="h-6 w-6 text-gray-400"
             />
           )}
-          <span className="header-main-divider"></span>
+          <span className="header-main-divider dark:bg-[#1f2937]"></span>
           <div className="relative">
             <ShoppingCartIcon
               className={[
@@ -133,6 +133,7 @@ const HeaderMain = () => {
           <ModalContainer
             onClose={() => setOpenCart(false)}
             isOpen={isOpenCart}
+            containerWidthClass="dark:bg-dark"
           >
             <Cart setOpen={setOpenCart} />
           </ModalContainer>
@@ -142,6 +143,7 @@ const HeaderMain = () => {
             onClose={() => setOpenSearchModal(false)}
             isOpen={isOpenCart}
             isSearch
+            containerWidthClass="dark:bg-dark"
           >
             <SearchModal
               onClose={() => setOpenSearchModal(false)}

@@ -10,7 +10,7 @@ const resources = {
     translation: {
       Home: "Home",
       ProductCatalog: "Products catalog",
-      AboutUs: "About us",
+      AboutUs: "Information for the client",
       HomeBanner: "We don't just create bouquets - we create emotions",
       PopularProducts: {
         header: "Popular products",
@@ -72,7 +72,7 @@ const resources = {
     translation: {
       Home: "Головна",
       ProductCatalog: "Каталог товарів",
-      AboutUs: "Про нас",
+      AboutUs: "Інформація для клієнта",
       HomeBanner: "Ми не просто створюємо букети - ми створюємо емоції",
       PopularProducts: {
         header: "Популярні товари",

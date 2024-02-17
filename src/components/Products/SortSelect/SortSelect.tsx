@@ -1,7 +1,8 @@
 "use client";
 
+import { ThemeContext } from "@/contexts/ThemeContext/ThemeContext";
 import { useTranslation } from "next-i18next";
-import { useMemo } from "react";
+import { useContext, useMemo } from "react";
 import Select, { SingleValue } from "react-select";
 
 type Props = {
@@ -12,6 +13,7 @@ type Props = {
 };
 const SortSelect = (props: Props) => {
   const { onChangeHandler, defaultValue } = props;
+  const { theme } = useContext(ThemeContext);
   const { i18n, t } = useTranslation();
 
   const options = [
@@ -31,17 +33,31 @@ const SortSelect = (props: Props) => {
     <Select
       isSearchable={false}
       options={options}
-      className="w-[245px]"
+      className="w-[245px] filter-select"
       onChange={onChangeHandler}
       styles={{
+        container: (base, state) => ({
+          ...base,
+          color: theme === "light" ? "#1f2937 !important" : "white !important",
+        }),
+        singleValue: (base, props) => ({
+          ...base,
+          color: theme === "light" ? "#1f2937 !important" : "white !important",
+        }),
         control: (base, state) => ({
           ...base,
+          backgroundColor: theme === "light" ? "white" : "#1f2937",
+          color: theme === "light" ? "#1f2937 !important" : "white !important",
           outline: state.isFocused
             ? "1px solid #fb7185 !important"
-            : base.outline,
+            : theme === "light"
+            ? "1px solid #e5e7eb !important"
+            : "1px solid #111827 !important",
           border: state.isFocused
             ? "1px solid #fb7185 !important"
-            : base.border,
+            : theme === "light"
+            ? "1px solid #e5e7eb !important"
+            : "1px solid #111827 !important",
         }),
         option: (base, state) => ({
           ...base,
@@ -49,8 +65,15 @@ const SortSelect = (props: Props) => {
             ? "#fda4af"
             : state.isSelected
             ? "#fb7185"
-            : base.backgroundColor,
-          color: state.isFocused || state.isSelected ? "white" : "black",
+            : theme === "light"
+            ? base.backgroundColor
+            : "#1f2937",
+          color:
+            state.isFocused || state.isSelected
+              ? theme === "light"
+                ? "#1f2937 !important"
+                : "white !important"
+              : base.color,
         }),
       }}
       defaultValue={

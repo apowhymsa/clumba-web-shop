@@ -6,7 +6,7 @@
 }
 
 .page-filters {
-  @apply flex justify-between items-center py-4 px-10 border border-gray-200;
+  @apply flex justify-between items-center py-4 px-10 border border-gray-200 dark:border-[#1f2937];
 
   & > :first-child {
     @apply flex items-center gap-6;
@@ -14,7 +14,7 @@
 }
 
 .filter-divider {
-  @apply h-5 w-[1px] bg-gray-300;
+  @apply h-5 w-[1px] bg-gray-300 dark:bg-[#1f2937];
 }
 
 // Wide

@@ -107,7 +107,7 @@ const Products = (props: Props) => {
               </div>
             ) : (
               <div
-                className="flex items-center justify-center my-6 gap-x-3 cursor-pointer"
+                className="flex items-center justify-center my-6 gap-x-3 cursor-pointer more-products"
                 title={
                   i18n.language === "uk"
                     ? "Показати більше товарів"

@@ -3,13 +3,13 @@
 }
 
 .product-item {
-  @apply flex flex-col h-full gap-y-3 p-4 border border-gray-200 transition-shadow hover:rounded hover:shadow;
+  @apply flex flex-col h-full gap-y-3 p-4 border border-gray-200 dark:border-[#1f2937] transition-shadow hover:rounded hover:shadow;
   & > .product-image {
     @apply transition-opacity cursor-pointer;
   }
 
   & > .product-image:hover {
-    @apply opacity-70;
+    @apply opacity-70 dark:opacity-90;
   }
 }
 
@@ -40,6 +40,15 @@
   //width: 50px;
   //overflow: hidden;
   //text-overflow: ellipsis;
+}
+
+.more-products > svg {
+  transition: transform 0.3s ease-in-out;
+}
+.more-products:hover {
+  & > svg {
+    transform: rotate(180deg);
+  }
 }
 
 .product-name,

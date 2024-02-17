@@ -125,8 +125,8 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
         {/*    priority*/}
         {/*/>*/}
         <img
-          // src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
-          src="https://placedog.net/500"
+          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
+          // src="https://placedog.net/500"
           alt="Image"
           style={{
             width: "100%",
@@ -164,7 +164,7 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
             ? "В наявності"
             : "Available"}
         </span>
-        <hr className="my-2 w-full" />
+        <hr className="my-2 w-full dark:border-[#1f2937]" />
         <div className="flex gap-x-2 flex-wrap gap-y-2 justify-center">
           {product?.variants.map((pVariant, index) => (
             <>
@@ -174,9 +174,9 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
                   "text-[12px]",
                   variant === index
                     ? isNotAvailableProduct[index]?.value
-                      ? "bg-rose-300 text-white"
-                      : "bg-rose-400 text-white"
-                    : "text-black bg-gray-200",
+                      ? "dark:bg-rose-300/90 bg-rose-300 text-white"
+                      : "dark:bg-rose-500/90 bg-rose-400 text-white"
+                    : "text-dark bg-gray-200 dark:bg-gray-300",
                   "flex items-center justify-center px-2 py-2 leading-none rounded cursor-pointer text-[14px]",
                   isNotAvailableProduct[index]?.value && "line-through"
                 )}
@@ -187,7 +187,7 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
             </>
           ))}
         </div>
-        <hr className="my-2 w-full" />
+        <hr className="my-2 w-full dark:border-[#1f2937]" />
         <span className="product-price w-full inline-block text-center">
           {product.variants[variant].discount.state ? (
             <span className="flex gap-x-4">

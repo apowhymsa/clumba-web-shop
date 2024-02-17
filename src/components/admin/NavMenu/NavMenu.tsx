@@ -94,7 +94,7 @@ const NavMenu = () => {
             </span>
             <span>Замовлення</span>
             <span className="text-white pointer-events-none text-[10px] absolute -top-1 -right-2 bg-rose-400 h-7 w-7 rounded-full flex justify-center items-center">
-              {notViewedOrders.length}
+              {notViewedOrders}
             </span>
           </Link>
         </li>

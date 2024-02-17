@@ -59,7 +59,7 @@ const SearchModal = (props: Props) => {
   }
 
   return (
-    <div className="px-6 py-4">
+    <div className="px-6 py-4 dark:text-light">
       <div className="relative flex items-center gap-x-6">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center px-2.5">
           <MagnifyingGlassIcon className="h-5 w-5 text-gray-500" />
@@ -67,7 +67,7 @@ const SearchModal = (props: Props) => {
         <input
           type="text"
           id="search"
-          className="block w-full rounded-md border-gray-300 pl-10 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
+          className="block w-full rounded-md border-gray-300 dark:bg-[#1f2937] dark:text-light dark:border-dark pl-10 shadow-sm focus:border-primary-400 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500"
           placeholder={
             i18n.language === "uk"
               ? "Пошук товару..."

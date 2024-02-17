@@ -73,7 +73,7 @@ const columns = [
 const Page = () => {
   const { orders, setOrders, addOrder, setNotViewOrders, notViewedOrders } =
     useOrdersStore();
-  const [checked, setChecked] = useState(1);
+  const [checked, setChecked] = useState(0);
   const queryClient = useQueryClient();
   const router = useRouter();
   const { data, isLoading, isFetching } = useQuery({
@@ -100,12 +100,6 @@ const Page = () => {
   useEffect(() => {
     socket.on("update", async (data) => {
       console.log("Real-time update received:", data);
-      // Handle the update as needed
-      const response = await axios.get(
-        `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${data._id}?ignoreViewed=true`
-      );
-
-      addOrder(response.data);
     });
   }, []);
 

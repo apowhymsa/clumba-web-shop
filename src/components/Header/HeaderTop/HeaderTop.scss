@@ -2,7 +2,7 @@
 
 .header-top {
   //font-family: 'Comfortaa', cursive;
-  @apply flex items-center justify-between h-10 px-10 bg-gray-900;
+  @apply flex items-center justify-between h-10 px-10 bg-dark dark:border dark:border-[#1f2937];
 }
 
 .text {
@@ -23,20 +23,19 @@
 
 // Mobile
 @media (max-width: 576px) {
-}
-
-// Tablet
-@media (max-width: 768px) {
-  .header-top-lang {
-    @apply hidden;
-  }
-
   .header-top {
     @apply px-5 gap-x-2;
 
     & > .text {
       @apply hidden;
     }
+  }
+}
+
+// Tablet
+@media (max-width: 768px) {
+  .header-top-lang {
+    @apply hidden;
   }
 }
 

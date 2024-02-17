@@ -66,8 +66,8 @@ const CategoriesCatalog: FC<Props> = (props) => {
           >
             <div className="product-category-image overflow-hidden">
               <img
-                // src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${category.image}`}
-                src="https://placedog.net/500"
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${category.image}`}
+                // src="https://placedog.net/500"
                 alt="Image"
                 style={{
                   width: "100%",
@@ -79,7 +79,7 @@ const CategoriesCatalog: FC<Props> = (props) => {
                 }}
               />
             </div>
-            <span className="flex text-center border py-2 rounded-b-[8px] bg-[#e5e7eb] bg-opacity-20 font-medium flex-1 items-center justify-center">
+            <span className="flex text-center border dark:border-[#1f2937] py-2 rounded-b-[8px] text-dark dark:text-light bg-[#e5e7eb] dark:bg-[#1f2937] bg-opacity-20 font-medium flex-1 items-center justify-center">
               {category.title}
             </span>
             <span className="product-category-additional text-center">

@@ -14,7 +14,10 @@ const ProfileHeader = (props: Props) => {
   const { t, i18n } = useTranslation();
 
   return (
-    <div role="tablist" className="tabs tabs-boxed">
+    <div
+      role="tablist"
+      className="tabs tabs-boxed dark:bg-[#1f2937] dark:text-light"
+    >
       <span
         onClick={() => setChecked([true, false])}
         role="tab"

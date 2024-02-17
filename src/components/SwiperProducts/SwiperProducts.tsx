@@ -42,7 +42,9 @@ const SwiperProducts = (props: Props) => {
   return (
     <div className="relative">
       <div className="flex justify-between items-center mb-5">
-        <h2 className="text-xl lg:text-2xl font-medium">{headerText}</h2>
+        <h2 className="text-xl lg:text-2xl font-medium text-dark dark:text-light">
+          {headerText}
+        </h2>
         <div className="flex items-center gap-x-10">
           {headerLinkHref && (
             <Link

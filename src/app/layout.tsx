@@ -25,6 +25,7 @@ import "@/utils/i18n";
 import ScrollTopButton from "@/components/ScrollTopButton/ScrollTopButton";
 import { useTranslation } from "next-i18next";
 import Loader from "@/components/Loader/Loader";
+import ThemeContextProvider from "@/contexts/ThemeContext/ThemeContextProvider";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,11 +50,6 @@ export default function RootLayout({
   const [isAdminRoute, setAdminRoute] = useState(pathname.startsWith("/admin"));
   const [isLoading, setLoading] = useState(true);
 
-  // useLayoutEffect(() => {
-  //   console.log(pathname);
-  //   pathname.startsWith('/admin') && setAdminRoute(true);
-  // }, [pathname]);
-
   useEffect(() => {
     setLoading(true);
 
@@ -70,8 +66,8 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en">
-      <body className={[comfarta.className].join(" ")} data-theme="light">
+    <html lang="en" className="dark">
+      <body className={[comfarta.className].join(" ")}>
         <Providers>
           {isAdminRoute ? (
             <>
@@ -87,20 +83,22 @@ export default function RootLayout({
             </div>
           ) : (
             <QueryClientProvider client={queryClient}>
-              <NavigationContextProvider>
-                <AuthContextProvider>
-                  <ModalContextProvider>
-                    <Header />
-                    <main id="main" className="flex-1">
-                      {children}
-                      <div className="portal-container"></div>
-                    </main>
-                    <Footer />
-                    <ModalAuth />
-                    <ToastContainer />
-                  </ModalContextProvider>
-                </AuthContextProvider>
-              </NavigationContextProvider>
+              <ThemeContextProvider>
+                <NavigationContextProvider>
+                  <AuthContextProvider>
+                    <ModalContextProvider>
+                      <Header />
+                      <main id="main" className="flex-1 bg-light dark:bg-dark">
+                        {children}
+                        <div className="portal-container"></div>
+                      </main>
+                      <Footer />
+                      <ModalAuth />
+                      <ToastContainer />
+                    </ModalContextProvider>
+                  </AuthContextProvider>
+                </NavigationContextProvider>
+              </ThemeContextProvider>
             </QueryClientProvider>
           )}
           <ScrollTopButton />

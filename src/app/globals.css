@@ -3,7 +3,11 @@
 @tailwind utilities;
 
 @import "react-loading-skeleton/dist/skeleton.css";
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa&display=swap');
+
+:root {
+  --dark: 17 24 39;
+  --light: 255 255 255;
+}
 /* width */
 ::-webkit-scrollbar {
   width: 5px;
@@ -34,6 +38,7 @@ body {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  /* @apply transition-colors; */
 }
 
 ul,
@@ -47,4 +52,20 @@ a {
 
 body {
   @apply flex flex-col;
+}
+
+.datetimepicker > label {
+  @apply text-dark dark:text-light;
+}
+
+.datetimepicker > .MuiInputBase-root {
+  @apply border-gray-300 dark:border-[#1f2937];
+}
+
+.datetimepicker > .MuiInputBase-root > input {
+  @apply dark:bg-[#1f2937] text-light;
+}
+
+.datetimepicker .MuiInputBase-root div button svg {
+  @apply dark:fill-gray-300;
 }

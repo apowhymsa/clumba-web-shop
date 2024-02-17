@@ -36,7 +36,7 @@ const Page = () => {
   }
 
   return (
-    <div className="px-5 md:px-10 flex flex-col gap-x-6 py-4">
+    <div className="px-5 md:px-10 flex flex-col gap-x-6 py-4 dark:text-light">
       <div className="w-full sm:w-fit">
         <ProfileHeader checked={checked} setChecked={setChecked} />
       </div>

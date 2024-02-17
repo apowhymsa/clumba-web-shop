@@ -182,7 +182,7 @@ const UserInfo = () => {
             <div>
               <label
                 htmlFor="email"
-                className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${
+                className={`w-fit mb-1 block text-sm font-bold text-dark dark:text-light ${
                   errors.email
                     ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                     : null
@@ -196,7 +196,7 @@ const UserInfo = () => {
               <div className="relative">
                 <input
                   type="email"
-                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 ${
+                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 dark:bg-[#1f2937] dark:text-light dark:border-dark ${
                     errors.email
                       ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                       : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -221,7 +221,7 @@ const UserInfo = () => {
             <div>
               <label
                 htmlFor="fullName"
-                className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${
+                className={`w-fit mb-1 block text-sm font-bold text-dark dark:text-light ${
                   errors.fullName
                     ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                     : null
@@ -235,7 +235,7 @@ const UserInfo = () => {
               <div className="relative">
                 <input
                   type="text"
-                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 ${
+                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 dark:bg-[#1f2937] dark:text-light dark:border-dark ${
                     errors.fullName
                       ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                       : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -260,7 +260,7 @@ const UserInfo = () => {
             <div>
               <label
                 htmlFor="title"
-                className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${
+                className={`w-fit mb-1 block text-sm font-bold text-dark dark:text-light ${
                   errors.fullName
                     ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                     : null
@@ -274,7 +274,7 @@ const UserInfo = () => {
               <div className="relative">
                 <input
                   type="tel"
-                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 ${
+                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 dark:bg-[#1f2937] dark:text-light dark:border-dark ${
                     errors.phoneNumber
                       ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                       : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -313,7 +313,7 @@ const UserInfo = () => {
             <div>
               <label
                 htmlFor="password.current"
-                className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${
+                className={`w-fit mb-1 block text-sm font-bold text-dark dark:text-light ${
                   errors.password?.current
                     ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                     : null
@@ -324,7 +324,7 @@ const UserInfo = () => {
               <div className="relative">
                 <input
                   type="password"
-                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 ${
+                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 dark:bg-[#1f2937] dark:text-light dark:border-dark ${
                     errors.password?.current
                       ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                       : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"
@@ -343,7 +343,7 @@ const UserInfo = () => {
             <div>
               <label
                 htmlFor="password.new"
-                className={`w-fit mb-1 block text-sm font-bold text-gray-700 ${
+                className={`w-fit mb-1 block text-sm font-bold text-dark dark:text-light ${
                   errors.password?.new
                     ? 'after:ml-0.5 after:text-red-500 after:content-["*"]'
                     : null
@@ -354,7 +354,7 @@ const UserInfo = () => {
               <div className="relative">
                 <input
                   type="password"
-                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 ${
+                  className={`block w-full rounded-md text-sm h-8 shadow-sm pl-4 dark:bg-[#1f2937] dark:text-light dark:border-dark ${
                     errors.password?.new
                       ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
                       : "border-gray-300 focus:border-blue-300 focus:ring focus:ring-blue-200"
