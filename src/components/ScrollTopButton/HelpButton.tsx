@@ -23,10 +23,10 @@ const HelpButton: FC<Props> = (props) => {
     <>
       <motion.div
         onClick={onClick}
-        className="transition-colors hover:bg-rose-500 right-[20px] cursor-pointer fixed flex items-center justify-center z-30 bottom-5 bg-rose-400 w-12 h-12 rounded-full"
+        className="transition-colors hover:bg-rose-500 right-[20px] cursor-pointer fixed flex items-center justify-center z-30 bottom-5 bg-rose-400 w-10 h-10 rounded-full"
       >
         <motion.span className="absolute">
-          <QuestionMarkCircleIcon className="h-8 w-8 text-white" />
+          <QuestionMarkCircleIcon className="h-6 w-6 text-white" />
         </motion.span>
       </motion.div>
       {isOpen && (

@@ -40,7 +40,7 @@ const CategoriesCatalog: FC<Props> = (props) => {
   const getMoreProductsCategories = async (page: number) => {
     try {
       const response = await axios.get(
-        `${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=3&page=${page}`,
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/productCategories?limit=4&page=${page}`,
         {
           headers: {
             "Content-Type": "application/json",

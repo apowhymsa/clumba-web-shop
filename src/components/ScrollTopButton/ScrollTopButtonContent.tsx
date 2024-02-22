@@ -21,14 +21,14 @@ const ScrollTopButtonContent: FC<Props> = (props) => {
       animate={{ right: 20 }}
       exit={{ right: -100 }}
       transition={{ type: "spring", stiffness: 100 }}
-      className="transition-colors hover:bg-rose-500 cursor-pointer fixed flex items-center justify-center z-20 bottom-20 bg-rose-400 w-12 h-12 rounded-full"
+      className="transition-colors hover:bg-rose-500 cursor-pointer fixed flex items-center justify-center z-20 bottom-20 bg-rose-400 w-10 h-10 rounded-full"
     >
       <motion.span
         className="absolute"
         transition={{ type: "spring", stiffness: 100 }}
         variants={animateIcon}
       >
-        <ArrowLongUpIcon className="h-6 w-6 text-white" />
+        <ArrowLongUpIcon className="h-4 w-4 text-white" />
       </motion.span>
     </motion.div>
   );

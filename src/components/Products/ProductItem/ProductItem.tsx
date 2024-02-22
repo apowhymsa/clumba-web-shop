@@ -174,8 +174,8 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
                   "text-[12px]",
                   variant === index
                     ? isNotAvailableProduct[index]?.value
-                      ? "dark:bg-rose-300/90 bg-rose-300 text-white"
-                      : "dark:bg-rose-500/90 bg-rose-400 text-white"
+                      ? " bg-rose-300 text-white"
+                      : " bg-rose-400 text-white"
                     : "text-dark bg-gray-200 dark:bg-gray-300",
                   "flex items-center justify-center px-2 py-2 leading-none rounded cursor-pointer text-[14px]",
                   isNotAvailableProduct[index]?.value && "line-through"
@@ -190,7 +190,7 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
         <hr className="my-2 w-full dark:border-[#1f2937]" />
         <span className="product-price w-full inline-block text-center">
           {product.variants[variant].discount.state ? (
-            <span className="flex gap-x-4">
+            <span className="flex gap-x-4 items-center justify-center">
               <span className="line-through text-[14px] text-gray-500">
                 &#8372; {product.variants[variant].price}
               </span>

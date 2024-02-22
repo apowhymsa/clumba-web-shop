@@ -8,7 +8,10 @@ const Page = () => {
   const { t, i18n } = useTranslation();
   return (
     <div className="px-5 md:px-10 py-5 text-dark dark:text-light">
-      <h3 className="text-lg md:text-xl font-medium border-b dark:border-[#1f2937] mb-4 pb-2">
+      <h3
+        id="delivery_payment"
+        className="text-lg md:text-xl font-medium border-b dark:border-[#1f2937] mb-4 pb-2"
+      >
         {i18n.language === "uk" ? "Доставка та оплата" : "Delivery and payment"}
       </h3>
       <div className="flex flex-col gap-y-4">
@@ -125,7 +128,10 @@ const Page = () => {
           </div>
         </details>
       </div>
-      <h3 className="text-lg md:text-xl font-medium border-b dark:border-[#1f2937] m-4 pb-2">
+      <h3
+        id="bonuses"
+        className="text-lg md:text-xl font-medium border-b dark:border-[#1f2937] m-4 pb-2"
+      >
         {i18n.language === "uk" ? "Бонусна система" : "Bonus system"}
       </h3>
       <div className="flex flex-col gap-y-4">
@@ -223,7 +229,10 @@ const Page = () => {
           </div>
         </details>
       </div>
-      <h3 className="text-lg md:text-xl font-medium border-b dark:border-[#1f2937] m-4 pb-2">
+      <h3
+        id="privacy_policy"
+        className="text-lg md:text-xl font-medium border-b dark:border-[#1f2937] m-4 pb-2"
+      >
         {i18n.language === "uk"
           ? "Політика конфіденційності"
           : "Privacy policy"}

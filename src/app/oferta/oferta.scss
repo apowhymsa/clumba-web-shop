@@ -1,0 +1,8 @@
+.clause-l1 {
+  & > h3 {
+    @apply font-semibold my-3;
+  }
+  & > p {
+    @apply leading-loose my-4;
+  }
+}

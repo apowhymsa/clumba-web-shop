@@ -182,8 +182,8 @@ const Page = ({ params }: { params: { slug: string } }) => {
             />
           ) : (
             <MagnifyingGlass
-              // imageUrl={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product?.image}`}
-              imageUrl="https://placedog.net/500"
+              imageUrl={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product?.image}`}
+              // imageUrl="https://placedog.net/500"
             />
           )}
         </div>
@@ -380,39 +380,37 @@ const Page = ({ params }: { params: { slug: string } }) => {
           />
         )}
       </div>
-      <div className="products-recommendation mb-7 px-5 md:px-10">
-        <div className="">
-          <SwiperProducts
-            headerText={
-              i18n.language == "uk"
-                ? "Також вас можуть зацікавити"
-                : "You may also be interested in"
-            }
-            headerLinkText={
-              i18n.language === "uk" ? "Переглянути більше" : "View more"
-            }
-            headerLinkHref={`/products?limit=15&page=1&sort=1&price=0-10000&category=${product?.categoryID._id}`}
-            isLoading={loading}
-            breakpoints={{
-              320: {
-                slidesPerView: 1.3,
-              },
-              485: {
-                slidesPerView: 1.5,
-              },
-              600: {
-                slidesPerView: 2.3,
-              },
-              850: {
-                slidesPerView: 3.3,
-              },
-              1100: {
-                slidesPerView: 4.3,
-              },
-            }}
-            products={recommendations ? recommendations : []}
-          />
-        </div>
+      <div className="products-recommendation mb-7 px-5 md:px-10 text-dark dark:text-light">
+        <SwiperProducts
+          headerText={
+            i18n.language == "uk"
+              ? "Також вас можуть зацікавити"
+              : "You may also be interested in"
+          }
+          headerLinkText={
+            i18n.language === "uk" ? "Переглянути більше" : "View more"
+          }
+          headerLinkHref={`/products?limit=15&page=1&sort=1&price=0-10000&category=${product?.categoryID._id}`}
+          isLoading={loading}
+          breakpoints={{
+            320: {
+              slidesPerView: 1.3,
+            },
+            485: {
+              slidesPerView: 1.5,
+            },
+            600: {
+              slidesPerView: 2.3,
+            },
+            850: {
+              slidesPerView: 3.3,
+            },
+            1100: {
+              slidesPerView: 4.3,
+            },
+          }}
+          products={recommendations ? recommendations : []}
+        />
       </div>
     </>
   );

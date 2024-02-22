@@ -47,7 +47,7 @@ const HeaderNav = () => {
             "font-medium text-dark dark:text-light"
           )}
         >
-          <Link href="/about-us">{t("AboutUs")}</Link>
+          <Link href="/customer_info">{t("AboutUs")}</Link>
         </li>
       </ul>
     </nav>
