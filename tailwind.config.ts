@@ -30,7 +30,7 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        flower: "url('/bg-flower-image.jpg')",
+        flower: "url('/bg-flower-image.webp')",
       },
       animation: {
         widthGrow: "widthGrow 0.5s ease-in-out forwards",

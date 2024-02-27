@@ -157,6 +157,7 @@ const Footer = () => {
       </div>
       <div className="flex justify-center mb-8 mt-2 px-5 md:px-10">
         <iframe
+          title="GoogleMapsFrame"
           width="600"
           className="rounded-md"
           height="150"

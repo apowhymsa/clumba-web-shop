@@ -196,78 +196,84 @@ const Checkout = () => {
     data: IPaymentData,
     event: BaseSyntheticEvent<object, any, any> | undefined
   ) => {
-    setCompleteRequest(false);
-    const cartJoin = cart
-      .map(
-        (cartItem) =>
-          `${cartItem.product.title} - ${cartItem.variant.title} (${cartItem.quantity} ед.)`
-      )
-      .join(" ");
-
-    const userID = localStorage.getItem("authUserId");
-
-    if (userID) {
-      const params = {
-        amount:
-          deliveryType === 1
-            ? cartPrice - bonuses
-            : cartPrice - bonuses + deliveryAmount,
-        description: `Оплата товарів: ${cartJoin}`,
-        additionalData: {
-          userID: userID,
-          amountWoDeliveryPrice: cartPrice - bonuses,
-          bonuses: bonuses,
-          deliveryPrice: deliveryAmount,
-          phone: data.phone,
-          comment: data.comment || "",
-          products: cart.map((cartItem) => {
-            return {
-              product_id: cartItem.product._id,
-              productVariant: {
-                title: cartItem.variant.title,
-                id: cartItem.variant._id,
-              },
-              count: Number(cartItem.quantity),
-            };
-          }),
-          shippingAddress:
-            deliveryType === 1 ? "Самовывоз" : data.shippingAddress,
-          deliveryTime:
-            deliveryTime === 1
-              ? "Довільна дата та час"
-              : selectedDateTime?.toDate().toLocaleString(),
-          name: data.name,
-        },
-      };
-
-      console.log(params);
-
-      axios
-        .post(
-          `${process.env.ADMIN_ENDPOINT_BACKEND}/payment`,
-          {
-            ...params,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "true",
-              "Access-Control-Allow-Origin": "*",
-            },
-            withCredentials: true,
-          }
+    if (deliveryTime === 2 && !selectedDateTime) {
+      error(
+        'Ви обрали опцію "Доставка на конкретний час", заповніть необхідне поле та повторіть спробу'
+      );
+    } else {
+      setCompleteRequest(false);
+      const cartJoin = cart
+        .map(
+          (cartItem) =>
+            `${cartItem.product.title} - ${cartItem.variant.title} (${cartItem.quantity} ед.)`
         )
-        .then((data) => {
-          console.log(data.data, data.status);
+        .join(" ");
 
-          if (data.status === 200) {
-            setOpenPayment(data.data.paymentURL);
-          } else {
-            console.error("ERROR", data.data);
-          }
-        })
-        .catch((error) => console.error(error))
-        .finally(() => setCompleteRequest(true));
+      const userID = localStorage.getItem("authUserId");
+
+      if (userID) {
+        const params = {
+          amount:
+            deliveryType === 1
+              ? cartPrice - bonuses
+              : cartPrice - bonuses + deliveryAmount,
+          description: `Оплата товарів: ${cartJoin}`,
+          additionalData: {
+            userID: userID,
+            amountWoDeliveryPrice: cartPrice - bonuses,
+            bonuses: bonuses,
+            deliveryPrice: deliveryAmount,
+            phone: data.phone,
+            comment: data.comment || "",
+            products: cart.map((cartItem) => {
+              return {
+                product_id: cartItem.product._id,
+                productVariant: {
+                  title: cartItem.variant.title,
+                  id: cartItem.variant._id,
+                },
+                count: Number(cartItem.quantity),
+              };
+            }),
+            shippingAddress:
+              deliveryType === 1 ? "Самовывоз" : data.shippingAddress,
+            deliveryTime:
+              deliveryTime === 1
+                ? "Довільна дата та час"
+                : selectedDateTime?.toDate().toLocaleString(),
+            name: data.name,
+          },
+        };
+
+        console.log(params);
+
+        axios
+          .post(
+            `${process.env.ADMIN_ENDPOINT_BACKEND}/payment`,
+            {
+              ...params,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                "ngrok-skip-browser-warning": "true",
+                "Access-Control-Allow-Origin": "*",
+              },
+              withCredentials: true,
+            }
+          )
+          .then((data) => {
+            console.log(data.data, data.status);
+
+            if (data.status === 200) {
+              setOpenPayment(data.data.paymentURL);
+            } else {
+              console.error("ERROR", data.data);
+            }
+          })
+          .catch((error) => console.error(error))
+          .finally(() => setCompleteRequest(true));
+      }
     }
   };
 
@@ -444,11 +450,15 @@ const Checkout = () => {
                             setValue("bonuses", Number(e.target.max));
                           }
 
+                          if (Number(e.target.value) < 0) {
+                            setValue("bonuses", 0);
+                          }
+
                           setBonuses(Number(e.target.value));
                         }}
                         max={
-                          user && user.promo.bonuses >= Number(cartPrice) / 2
-                            ? Number(cartPrice) / 2
+                          user && user.promo.bonuses >= Number(cartPrice) / 4
+                            ? Number(cartPrice) / 4
                             : user.promo.bonuses
                         }
                         type="number"
@@ -459,7 +469,7 @@ const Checkout = () => {
                           ? "Максимальна кількість:"
                           : "The maximum number:"}{" "}
                         <span className="font-bold">
-                          {Number(cartPrice) / 2}
+                          {Number(cartPrice) / 4}
                         </span>
                         .{" "}
                         {i18n.language === "uk"

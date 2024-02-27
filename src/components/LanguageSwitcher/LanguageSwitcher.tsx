@@ -48,41 +48,47 @@ const LanguageSwitcher: FC<LanguageSwitcherProps> = () => {
   return (
     <div className="lng-container flex gap-x-4 flex-1">
       <ul className="lng-select">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          transition={{
-            type: "spring",
-            stiffness: 400,
-            damping: 17,
-          }}
-          whileTap={{ scale: 0.9 }}
-          className={clsx(i18n.language === "uk" && "lng-selected")}
-          role="button"
-          data-lang="uk"
-          onClick={changeLng}
-        >
-          <Image src="/ukraine-flag-icon.svg" width={24} height={24} alt="" />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          transition={{
-            type: "spring",
-            stiffness: 400,
-            damping: 17,
-          }}
-          whileTap={{ scale: 0.9 }}
-          className={clsx(i18n.language === "en" && "lng-selected")}
-          role="button"
-          data-lang="en"
-          onClick={changeLng}
-        >
-          <Image
-            src="/united-states-flag-icon.svg"
-            width={24}
-            height={24}
-            alt=""
-          />
-        </motion.button>
+        <li>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 17,
+            }}
+            whileTap={{ scale: 0.9 }}
+            className={clsx(i18n.language === "uk" && "lng-selected")}
+            role="button"
+            data-lang="uk"
+            aria-label="Change language to Ukrainian"
+            onClick={changeLng}
+          >
+            <Image src="/ukraine-flag-icon.svg" width={24} height={24} alt="" />
+          </motion.button>
+        </li>
+        <li>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            transition={{
+              type: "spring",
+              stiffness: 400,
+              damping: 17,
+            }}
+            whileTap={{ scale: 0.9 }}
+            className={clsx(i18n.language === "en" && "lng-selected")}
+            role="button"
+            data-lang="en"
+            aria-label="Change language to English"
+            onClick={changeLng}
+          >
+            <Image
+              src="/united-states-flag-icon.svg"
+              width={24}
+              height={24}
+              alt=""
+            />
+          </motion.button>
+        </li>
       </ul>
       <label className="swap swap-rotate">
         {/* this hidden checkbox controls the state */}

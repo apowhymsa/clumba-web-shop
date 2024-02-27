@@ -125,7 +125,7 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
         {/*    priority*/}
         {/*/>*/}
         <img
-          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
+          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${product.image}`}
           // src="https://placedog.net/500"
           alt="Image"
           style={{

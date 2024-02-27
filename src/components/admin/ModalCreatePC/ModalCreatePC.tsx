@@ -47,7 +47,10 @@ const ModalCreatePC = (props: Props) => {
     const requestBody = {
       title: data.categoryName,
       image: data.image[0],
+      isNewImage: true,
     };
+
+    console.log("requestBody", requestBody);
 
     const requestConfig: AxiosRequestConfig = {
       headers: {

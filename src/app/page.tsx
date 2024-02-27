@@ -74,7 +74,6 @@ export default async function Home() {
         newProducts: newProducts,
         popularProducts: popularProducts,
       }}
-      isLoadingData={true}
     />
   );
 }

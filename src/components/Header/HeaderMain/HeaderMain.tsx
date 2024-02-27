@@ -91,7 +91,6 @@ const HeaderMain = () => {
             alt="Logo"
             width={90}
             height={40}
-            priority
             placeholder="blur"
             blurDataURL="/clumba-logo.svg"
           />

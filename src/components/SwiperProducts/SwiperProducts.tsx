@@ -23,7 +23,7 @@ import { URL } from "url";
 type Props = {
   products: Product[];
   breakpoints: { [p: number]: SwiperOptions; [p: string]: SwiperOptions };
-  isLoading: boolean;
+  isLoading?: boolean;
   headerText?: string;
   headerLinkText?: string;
   headerLinkHref?: string;

@@ -66,7 +66,7 @@ const CategoriesCatalog: FC<Props> = (props) => {
           >
             <div className="product-category-image overflow-hidden">
               <img
-                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${category.image}`}
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${category.image}`}
                 // src="https://placedog.net/500"
                 alt="Image"
                 style={{

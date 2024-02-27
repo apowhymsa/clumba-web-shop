@@ -125,7 +125,7 @@ const Page = () => {
     const requestBody = {
       title: data.title,
       categoryID: category,
-      variants: data.variants,
+      variants: JSON.stringify(data.variants),
       image: img,
       isNewImage: data.image.length !== 0,
     };

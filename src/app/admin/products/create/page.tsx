@@ -151,7 +151,8 @@ const Page = () => {
       title: data.title,
       isNotVisible: isNotVisibleProduct,
       categoryID: (data.categoryID as any).value,
-      variants: normalizeIngredients,
+      variants: JSON.stringify(normalizeIngredients),
+      isNewImage: true,
     };
 
     console.log(requestBody);

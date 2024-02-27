@@ -19,7 +19,7 @@ const FindProductItem = (props: Props) => {
     >
       <div className="h-20 w-20">
         <img
-          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}
+          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${product.image}`}
           alt="Image"
           style={{
             width: "100%",

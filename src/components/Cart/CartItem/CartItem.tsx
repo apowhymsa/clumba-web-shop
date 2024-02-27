@@ -108,7 +108,7 @@ const CartItem = ({ quantityItem, cartItem, inCheckout = false }: Props) => {
       {/*/>*/}
       <div className="w-[100px] h-[100px]">
         <img
-          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${cartItem.product.image}`}
+          src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${cartItem.product.image}`}
           alt="Image"
           style={{
             width: "100%",
@@ -125,7 +125,7 @@ const CartItem = ({ quantityItem, cartItem, inCheckout = false }: Props) => {
         <div className="item-description flex justify-between items-center">
           <span
             className="text-[15px] overflow-ellipsis max-w-[175px] overflow-hidden whitespace-nowrap"
-            title={cartItem.product.title}
+            title={`${cartItem.product.title} - ${cartItem.variant.title}`}
           >
             {cartItem.product.title} - {cartItem.variant.title}
           </span>

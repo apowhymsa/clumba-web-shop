@@ -36,6 +36,7 @@ const CustomDateTimePicker = (props: Props) => {
           textField: {
             size: "small",
             disabled: true,
+            style: { color: "white" },
           },
         }}
         label="Вибір дати та часу"

@@ -17,10 +17,10 @@ import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
 import CategoriesCatalog from "@/components/CategoriesCatalog/CategoriesCatalog";
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
+import PopularProducts from "./Home/PopularProducts";
 
 type Props = {
   productsData: any;
-  isLoadingData: boolean;
   productsCategories: any;
 };
 
@@ -31,16 +31,7 @@ const animateIcon = {
 
 const HomeComponent = (props: Props) => {
   const { t, i18n } = useTranslation();
-  const { isLoadingData, productsData, productsCategories } = props;
-  const [isLoading, setLoading] = useState(isLoadingData);
-  const dispatch = useAppDispatch();
-  const products = useAppSelector((state) => state.productsReducer.products);
-
-  useEffect(() => {
-    // dispatch(setProducts(productsData))
-    // console.log('products', products);
-    setLoading(false);
-  }, []);
+  const { productsData, productsCategories } = props;
 
   useEffect(() => {
     console.log("lang changed");
@@ -54,43 +45,7 @@ const HomeComponent = (props: Props) => {
           {t("HomeBanner")}
         </h3>
       </div>
-      <motion.div
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="products-popular px-5 my-7 items-center md:px-10 text-dark dark:text-light"
-      >
-        <SwiperProducts
-          headerText={
-            (t("PopularProducts", { returnObjects: true }) as any).header
-          }
-          headerLinkText={
-            (t("PopularProducts", { returnObjects: true }) as any).next
-          }
-          headerLinkHref={
-            "/products?limit=15&page=1&sort=1&price=0-10000&category=all"
-          }
-          isLoading={isLoading}
-          breakpoints={{
-            320: {
-              slidesPerView: 1.3,
-            },
-            485: {
-              slidesPerView: 1.5,
-            },
-            600: {
-              slidesPerView: 2.3,
-            },
-            850: {
-              slidesPerView: 3.3,
-            },
-            1100: {
-              slidesPerView: 4.3,
-            },
-          }}
-          products={productsData.popularProducts.products}
-        />
-      </motion.div>
+      <PopularProducts products={productsData.popularProducts.products} />
       <div className="text-[14px] md:text-[16px] flex flex-col sm:flex-row items-center gap-y-2 gap-x-16 px-5 md:px-10 justify-center bg-[#e5e7eb] dark:bg-[#1f2937] py-4 sm:py-8 bg-opacity-50">
         <motion.div
           initial="initial"
@@ -189,7 +144,6 @@ const HomeComponent = (props: Props) => {
           headerLinkHref={
             "/products?limit=15&page=1&sort=2&price=0-10000&category=all"
           }
-          isLoading={isLoading}
           breakpoints={{
             320: {
               slidesPerView: 1.3,

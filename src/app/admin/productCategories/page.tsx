@@ -41,7 +41,7 @@ const columns = [
           <img
             src={`${
               process.env.ADMIN_ENDPOINT_BACKEND
-            }/images/${data.getValue()}`}
+            }/images/m_${data.getValue()}`}
             alt="Image"
             className="object-cover"
           />

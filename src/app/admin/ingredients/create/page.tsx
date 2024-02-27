@@ -93,8 +93,9 @@ const Page = () => {
     const requestBody = {
       title: data.title,
       categoryID: (data.categoryID as any).value,
-      variants: data.variants,
+      variants: JSON.stringify(data.variants),
       image: image[0],
+      isNewImage: true,
     };
 
     const requestConfig: AxiosRequestConfig = {

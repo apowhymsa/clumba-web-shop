@@ -54,10 +54,10 @@ const columns = [
       return (
         <div className="h-[50px] w-full flex justify-center">
           <img
-            // src={`${
-            //   process.env.ADMIN_ENDPOINT_BACKEND
-            // }/images/${data.getValue()}`}
-            src={`http://185.69.155.96:3001/images/${data.getValue()}`}
+            src={`${
+              process.env.ADMIN_ENDPOINT_BACKEND
+            }/images/m_${data.getValue()}`}
+            // src={`http://185.69.155.96:3001/images/${data.getValue()}`}
             alt="Image"
             className="object-cover"
           />

@@ -216,11 +216,11 @@ const Page = () => {
       title: data.title,
       categoryID: category,
       isNotVisible: isNotVisibleProduct,
-      variants: normalizeIngredients,
+      variants: JSON.stringify(normalizeIngredients),
       isNewImage: data.image.length !== 0,
     };
 
-    console.log(requestBody);
+    console.log("requestBody", requestBody);
 
     const requestConfig: AxiosRequestConfig = {
       headers: {
@@ -241,8 +241,8 @@ const Page = () => {
         requestBody,
         requestConfig
       );
-      updateP(response.data._id, response.data);
-      router.push("/admin/products");
+      // updateP(response.data._id, response.data);
+      // router.push("/admin/products");
 
       info("Запис було успішно оновлено");
       // reset();
