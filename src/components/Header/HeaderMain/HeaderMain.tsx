@@ -85,7 +85,12 @@ const HeaderMain = () => {
             onClick={() => setOpenSearchModal(true)}
           />
         </div>
-        <Link href="/" role="link" className="header-main-logo">
+        <Link
+          prefetch={false}
+          href="/"
+          role="link"
+          className="header-main-logo"
+        >
           <Image
             src="/clumba-logo.svg"
             alt="Logo"

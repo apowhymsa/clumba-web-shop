@@ -56,15 +56,22 @@ const HeaderBurgerContent = forwardRef<HTMLDivElement, Props>((props, ref) => {
       <nav className="burger-content-nav">
         <ul>
           <li className={navClasses[0]} onClick={handleVisible}>
-            <Link href="/">{t("Home")}</Link>
+            <Link prefetch={false} href="/">
+              {t("Home")}
+            </Link>
           </li>
           <li className={navClasses[1]} onClick={handleVisible}>
-            <Link href="/products?limit=15&page=1&sort=1&price=0-10000&category=all">
+            <Link
+              prefetch={false}
+              href="/products?limit=15&page=1&sort=1&price=0-10000&category=all"
+            >
               {t("ProductCatalog")}
             </Link>
           </li>
           <li className={navClasses[2]} onClick={handleVisible}>
-            <Link href="/about-us">{t("AboutUs")}</Link>
+            <Link prefetch={false} href="/about-us">
+              {t("AboutUs")}
+            </Link>
           </li>
         </ul>
       </nav>

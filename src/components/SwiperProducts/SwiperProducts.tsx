@@ -23,20 +23,13 @@ import { URL } from "url";
 type Props = {
   products: Product[];
   breakpoints: { [p: number]: SwiperOptions; [p: string]: SwiperOptions };
-  isLoading?: boolean;
   headerText?: string;
   headerLinkText?: string;
   headerLinkHref?: string;
 };
 const SwiperProducts = (props: Props) => {
-  const {
-    products,
-    breakpoints,
-    isLoading,
-    headerText,
-    headerLinkHref,
-    headerLinkText,
-  } = props;
+  const { products, breakpoints, headerText, headerLinkHref, headerLinkText } =
+    props;
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
 
   return (
@@ -48,11 +41,11 @@ const SwiperProducts = (props: Props) => {
         <div className="flex items-center gap-x-10">
           {headerLinkHref && (
             <Link
+              prefetch={false}
               href={headerLinkHref}
               className="text-rose-400 flex gap-x-2 text-[14px] lg:text-[16px] hover:underline"
             >
               <span>{headerLinkText}</span>
-              {/* <ArrowRightIcon className="h-4 w-4 text-rose-400 hidden sm:block" /> */}
             </Link>
           )}
           {products.length > 4 && (
@@ -85,31 +78,20 @@ const SwiperProducts = (props: Props) => {
           prevEl: products.length > 4 ? ".swiper-button-prev" : null,
         }}
       >
-        {isLoading
-          ? [1, 2, 3, 4, 5, 6].map((value) => (
-              <SwiperSlide
-                key={value}
-                style={{
-                  height: "auto",
-                }}
-              >
-                <ProductItemSkeleton />
-              </SwiperSlide>
-            ))
-          : products.map((product) => (
-              <SwiperSlide
-                key={product._id}
-                style={{
-                  height: "auto",
-                }}
-              >
-                <ProductItem
-                  key={product._id}
-                  product={product}
-                  isButtonVisible={false}
-                />
-              </SwiperSlide>
-            ))}
+        {products.map((product) => (
+          <SwiperSlide
+            key={product._id}
+            style={{
+              height: "auto",
+            }}
+          >
+            <ProductItem
+              key={product._id}
+              product={product}
+              isButtonVisible={false}
+            />
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );

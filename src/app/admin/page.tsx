@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import {useEffect, useLayoutEffect} from "react";
-import {useRouter} from "next/navigation";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
-    const router = useRouter();
-    useLayoutEffect(() => {
-        router.push('/admin/ingCategories');
-    }, []);
+  const router = useRouter();
+  // useLayoutEffect(() => {
+  //   router.push("/admin/ingCategories");
+  // }, []);
 
-    return null;
-}
+  return null;
+};
 
 export default Page;

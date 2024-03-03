@@ -1,20 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import {
-  ArrowRightIcon,
   BuildingStorefrontIcon,
   CreditCardIcon,
   FaceSmileIcon,
-  PresentationChartLineIcon,
   RocketLaunchIcon,
 } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
 import SwiperProducts from "@/components/SwiperProducts/SwiperProducts";
-import React, { useEffect, useState } from "react";
-import { Product } from "@/types";
-import { setProducts } from "@/utils/store/productSlice";
-import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
-import CategoriesCatalog from "@/components/CategoriesCatalog/CategoriesCatalog";
+import React, { useEffect } from "react";
+// import CategoriesCatalog from "@/components/CategoriesCatalog/CategoriesCatalog";
+const CategoriesCatalog = dynamic(
+  () => import("@/components/CategoriesCatalog/CategoriesCatalog")
+);
 import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next";
 import PopularProducts from "./Home/PopularProducts";
@@ -33,14 +31,9 @@ const HomeComponent = (props: Props) => {
   const { t, i18n } = useTranslation();
   const { productsData, productsCategories } = props;
 
-  useEffect(() => {
-    console.log("lang changed");
-  }, [i18n.language]);
-
   return (
     <motion.div>
       <div className="page-top">
-        {/*<h1 className="font-bold text-4xl text-white relative z-10">Цветы</h1>*/}
         <h3 className="my-[24px] font-semibold text-gray-50 text-xl relative z-10 sm:text-2xl">
           {t("HomeBanner")}
         </h3>

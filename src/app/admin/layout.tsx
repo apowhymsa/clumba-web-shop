@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, Profiler, ReactNode, useEffect } from "react";
+import { FC, Profiler, ReactNode, useEffect, useState } from "react";
 import {
   QueryClient,
   QueryClientProvider,
@@ -17,11 +17,12 @@ import {
   Inter,
 } from "next/font/google";
 import { clsx } from "clsx";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import OrderContextProvider from "@/contexts/OrdersContext/OrdersContextProvider";
 import socket from "@/utils/socket";
 import { useOrdersStore } from "@/utils/zustand-store/orders";
 import useToast from "@/hooks/useToast";
+import AdminAuth from "@/components/admin/AdminAuth/AdminAuth";
 
 type Props = {
   children?: ReactNode;
@@ -40,6 +41,8 @@ const inter = Inter({ subsets: ["cyrillic"] });
 
 const Layout: FC<Props> = ({ children }) => {
   const pathname = usePathname();
+  const router = useRouter();
+  const [isAuth, setAuth] = useState(false);
   const { error, info } = useToast();
   const {
     orders,
@@ -51,55 +54,59 @@ const Layout: FC<Props> = ({ children }) => {
   } = useOrdersStore();
 
   useEffect(() => {
-    const getNotViewedOrders = async () => {
-      const response = await fetch(
-        `${process.env.ADMIN_ENDPOINT_BACKEND}/orders?filter=0`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "Access-Control-Allow-Origin": "*",
-            credentials: "include",
-          },
-          cache: "no-store",
-        }
-      );
+    if (isAuth) {
+      const getNotViewedOrders = async () => {
+        const response = await fetch(
+          `${process.env.ADMIN_ENDPOINT_BACKEND}/orders?filter=0`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+              "Access-Control-Allow-Origin": "*",
+              credentials: "include",
+            },
+            cache: "no-store",
+          }
+        );
 
-      const data = await response.json();
+        const data = await response.json();
 
-      setOrders(data.orders);
-      setNotViewOrders(data.nowViewedOrders);
-    };
+        setOrders(data.orders);
+        setNotViewOrders(data.nowViewedOrders);
+      };
 
-    getNotViewedOrders();
+      getNotViewedOrders();
 
-    socket.on("connect", async () => {
-      console.log("Real-time connected");
-    });
+      socket.on("connect", async () => {
+        console.log("Real-time connected");
+      });
 
-    socket.on("update", async (d: any) => {
-      console.log("Real-time update received:", d);
-      // Handle the update as needed
-      const response = await fetch(
-        `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${d._id}?ignoreViewed=true`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "Access-Control-Allow-Origin": "*",
-            credentials: "include",
-          },
-          cache: "no-store",
-        }
-      );
+      socket.on("update", async (d: any) => {
+        console.log("Real-time update received:", d);
+        // Handle the update as needed
+        const response = await fetch(
+          `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${d._id}?ignoreViewed=true`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "ngrok-skip-browser-warning": "true",
+              "Access-Control-Allow-Origin": "*",
+              credentials: "include",
+            },
+            cache: "no-store",
+          }
+        );
 
-      const data: any = await response.json();
+        const data: any = await response.json();
 
-      addOrder(data);
-      updateNotViewOrders();
+        addOrder(data);
+        updateNotViewOrders();
 
-      info("Надійшло нове замовлення 😀");
-    });
+        info("Надійшло нове замовлення 😀");
+      });
+    } else {
+      router.replace("/admin");
+    }
 
     return () => {
       console.log("socket disconnected");
@@ -110,38 +117,42 @@ const Layout: FC<Props> = ({ children }) => {
   return (
     <div className={clsx("bg-[#f1f1f1] min-h-screen", inter.className)}>
       <QueryClientProvider client={queryClient}>
-        <OrderContextProvider>
-          <div className={clsx("flex")}>
-            <NavMenu />
-            <div className="w-full pl-[260px]">
-              <div className="flex gap-x-2 text-[16px] shadow p-4 bg-[#f5f5f5] w-full">
-                <span>Робоча область: </span>
-                {pathname.startsWith("/admin/ingCategories") && (
-                  <h2 className="font-semibold">Категорії інгредієнтів</h2>
-                )}
-                {pathname.startsWith("/admin/ingredients") && (
-                  <h2 className="font-semibold">Інгредієнти</h2>
-                )}
-                {pathname.startsWith("/admin/productCategories") && (
-                  <h2 className="font-semibold">Категорії товарів</h2>
-                )}
-                {pathname.startsWith("/admin/products") && (
-                  <h2 className="font-semibold">Товари</h2>
-                )}
-                {pathname.startsWith("/admin/orders") && (
-                  <h2 className="font-semibold">Замовлення</h2>
-                )}
-                {pathname.startsWith("/admin/mailing") && (
-                  <h2 className="font-semibold">Розсилка</h2>
-                )}
-                {pathname.startsWith("/admin/users") && (
-                  <h2 className="font-semibold">Користувачі</h2>
-                )}
+        {isAuth ? (
+          <OrderContextProvider>
+            <div className={clsx("flex")}>
+              <NavMenu />
+              <div className="w-full pl-[260px]">
+                <div className="flex gap-x-2 text-[16px] shadow p-4 bg-[#f5f5f5] w-full">
+                  <span>Робоча область: </span>
+                  {pathname.startsWith("/admin/ingCategories") && (
+                    <h2 className="font-semibold">Категорії інгредієнтів</h2>
+                  )}
+                  {pathname.startsWith("/admin/ingredients") && (
+                    <h2 className="font-semibold">Інгредієнти</h2>
+                  )}
+                  {pathname.startsWith("/admin/productCategories") && (
+                    <h2 className="font-semibold">Категорії товарів</h2>
+                  )}
+                  {pathname.startsWith("/admin/products") && (
+                    <h2 className="font-semibold">Товари</h2>
+                  )}
+                  {pathname.startsWith("/admin/orders") && (
+                    <h2 className="font-semibold">Замовлення</h2>
+                  )}
+                  {pathname.startsWith("/admin/mailing") && (
+                    <h2 className="font-semibold">Розсилка</h2>
+                  )}
+                  {pathname.startsWith("/admin/users") && (
+                    <h2 className="font-semibold">Користувачі</h2>
+                  )}
+                </div>
+                <div>{children}</div>
               </div>
-              <div>{children}</div>
             </div>
-          </div>
-        </OrderContextProvider>
+          </OrderContextProvider>
+        ) : (
+          <AdminAuth setAuth={setAuth} />
+        )}
       </QueryClientProvider>
     </div>
   );

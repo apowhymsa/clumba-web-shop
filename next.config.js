@@ -3,6 +3,10 @@
 const ADMIN_ENDPOINT_BACKEND = "http://localhost:3001";
 const DOMAIN = "localhost:3001";
 
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const nextConfig = {
   images: {
     domains: [
@@ -49,6 +53,7 @@ const nextConfig = {
     // ADMIN_ENDPOINT_BACKEND: 'http://localhost:3001'
     // ADMIN_ENDPOINT_BACKEND: 'http://16.171.242.251:3001'
     ADMIN_ENDPOINT_BACKEND: ADMIN_ENDPOINT_BACKEND,
+    NEXT_PUBLIC_ENV: "PRODUCTION", //your next configs goes here
   },
   async headers() {
     return [

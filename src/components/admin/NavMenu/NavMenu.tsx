@@ -52,6 +52,7 @@ const NavMenu = () => {
           <ul className="submenu flex-col flex px-4">
             <li className="flex items-center rounded gap-x-4 bg-white w-full transition-colors cursor-pointer hover:bg-rose-200">
               <Link
+                prefetch={false}
                 href="/admin/ingCategories"
                 className="px-4 flex-1 h-10 grid items-center"
               >
@@ -60,6 +61,7 @@ const NavMenu = () => {
             </li>
             <li className="flex items-center rounded gap-x-4 bg-white w-full transition-colors cursor-pointer hover:bg-rose-200">
               <Link
+                prefetch={false}
                 href="/admin/ingredients"
                 className="px-4 flex-1 h-10 grid items-center"
               >
@@ -68,6 +70,7 @@ const NavMenu = () => {
             </li>
             <li className="flex items-center rounded gap-x-4 bg-white w-full transition-colors cursor-pointer hover:bg-rose-200">
               <Link
+                prefetch={false}
                 href="/admin/productCategories"
                 className="px-4 flex-1 h-10 grid items-center"
               >
@@ -76,6 +79,7 @@ const NavMenu = () => {
             </li>
             <li className="flex items-center rounded gap-x-4 bg-white w-full transition-colors cursor-pointer hover:bg-rose-200">
               <Link
+                prefetch={false}
                 href="/admin/products"
                 className="px-4 flex-1 h-10 grid items-center"
               >
@@ -86,6 +90,7 @@ const NavMenu = () => {
         </li>
         <li className="relative flex items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
           <Link
+            prefetch={false}
             href="/admin/orders"
             className="flex gap-x-4 px-4 flex-1 h-10 items-center"
           >
@@ -100,6 +105,7 @@ const NavMenu = () => {
         </li>
         <li className="flex items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
           <Link
+            prefetch={false}
             href="/admin/mailing"
             className="flex gap-x-4 px-4 flex-1 h-10 items-center"
           >
@@ -111,6 +117,7 @@ const NavMenu = () => {
         </li>
         <li className="flex items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
           <Link
+            prefetch={false}
             href="/admin/users"
             className="flex gap-x-4 px-4 flex-1 h-10 items-center"
           >
@@ -133,6 +140,7 @@ const NavMenu = () => {
         </li>
         <li className="flex mt-auto items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
           <Link
+            prefetch={false}
             href="/admin/mailing"
             className="flex gap-x-4 px-4 flex-1 h-10 items-center"
           >

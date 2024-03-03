@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  FC,
-  MouseEventHandler,
-  SyntheticEvent,
-  useContext,
-  useState,
-} from "react";
+import { FC, SyntheticEvent, useContext } from "react";
 import Image from "next/image";
 
 import "./LanguageSwitcher.scss";

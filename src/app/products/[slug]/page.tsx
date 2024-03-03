@@ -391,7 +391,6 @@ const Page = ({ params }: { params: { slug: string } }) => {
             i18n.language === "uk" ? "Переглянути більше" : "View more"
           }
           headerLinkHref={`/products?limit=15&page=1&sort=1&price=0-10000&category=${product?.categoryID._id}`}
-          isLoading={loading}
           breakpoints={{
             320: {
               slidesPerView: 1.3,

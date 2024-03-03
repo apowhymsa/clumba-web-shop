@@ -29,7 +29,9 @@ const HeaderNav = () => {
             "font-medium text-dark dark:text-light"
           )}
         >
-          <Link href="/">{t("Home")}</Link>
+          <Link prefetch={false} href="/">
+            {t("Home")}
+          </Link>
         </li>
         <li
           className={clsx(
@@ -37,7 +39,10 @@ const HeaderNav = () => {
             "font-medium text-dark dark:text-light"
           )}
         >
-          <Link href="/products?limit=15&page=1&sort=1&price=0-10000&category=all">
+          <Link
+            href="/products?limit=15&page=1&sort=1&price=0-10000&category=all"
+            prefetch={false}
+          >
             {t("ProductCatalog")}
           </Link>
         </li>
@@ -47,7 +52,9 @@ const HeaderNav = () => {
             "font-medium text-dark dark:text-light"
           )}
         >
-          <Link href="/customer_info">{t("AboutUs")}</Link>
+          <Link href="/customer_info" prefetch={false}>
+            {t("AboutUs")}
+          </Link>
         </li>
       </ul>
     </nav>

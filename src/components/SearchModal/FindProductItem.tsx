@@ -13,6 +13,7 @@ const FindProductItem = (props: Props) => {
 
   return (
     <Link
+      prefetch={false}
       onClick={onClose}
       className="flex gap-x-4 px-4 h-auto w-full py-4 border-b dark:border-dark items-center dark:active:bg-gray-600 dark:hover:bg-gray-600 active:bg-gray-200 transition-colors hover:bg-gray-100"
       href={`/products/${product._id}`}

@@ -100,34 +100,17 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
           </span>
         </div>
       )}
-      <Link className="product-image" href={`/products/${product._id}`}>
-        {/*<Image*/}
-        {/*    // src={*/}
-        {/*    //   product.photo_origin*/}
-        {/*    //     ? `https://poster-shop.joinposter.com${product.photo_origin}`*/}
-        {/*    //     : "/flower_image.jpg"*/}
-        {/*    // }*/}
-        {/*    src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/${product.image}`}*/}
-        {/*    alt="Product Image"*/}
-        {/*    width={0}*/}
-        {/*    height={0}*/}
-        {/*    sizes="100vw"*/}
-        {/*    style={{*/}
-        {/*        width: "100%",*/}
-        {/*        height: "auto",*/}
-        {/*        objectFit: "cover",*/}
-        {/*        borderRadius: "8px",*/}
-        {/*        objectPosition: "center center",*/}
-        {/*        aspectRatio: "1 / 1",*/}
-        {/*    }}*/}
-        {/*    placeholder="blur"*/}
-        {/*    blurDataURL="/flower_image.jpg"*/}
-        {/*    priority*/}
-        {/*/>*/}
-        <img
+      <Link
+        prefetch={false}
+        className="product-image"
+        href={`/products/${product._id}`}
+      >
+        <Image
           src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${product.image}`}
-          // src="https://placedog.net/500"
-          alt="Image"
+          alt={product.title}
+          width={0}
+          height={0}
+          sizes="100vw"
           style={{
             width: "100%",
             height: "auto",
@@ -140,6 +123,7 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
       </Link>
       <div className="product-description">
         <Link
+          prefetch={false}
           href={`/products/${product._id}`}
           className="product-name text-[14px] md:text-[16px]"
           title={product.title}

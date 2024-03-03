@@ -1,21 +1,19 @@
 "use client";
 
 import "./globals.css";
-import type { Metadata } from "next";
-import {
-  Comfortaa,
-  Montserrat,
-  Rubik,
-  Roboto_Condensed,
-  Raleway,
-} from "next/font/google";
+import { Raleway } from "next/font/google";
 import Header from "@/components/Header/Header";
 import NavigationContextProvider from "@/contexts/NavigationContext/NavigationContextProvider";
 import Providers from "@/utils/store/provider";
-import Footer from "@/components/Footer/Footer";
+// import Footer from "@/components/Footer/Footer";
+const Footer = dynamic(() => import("@/components/Footer/Footer"));
 import AuthContextProvider from "@/contexts/AuthContext/AuthContextProvider";
-import ModalAuth from "@/components/ModalSignUp/ModalAuth";
-import ModalContextProvider from "@/contexts/ModalContext/ModalContextProvider";
+// import ModalAuth from "@/components/ModalSignUp/ModalAuth";
+const ModalAuth = dynamic(() => import("@/components/ModalSignUp/ModalAuth"));
+// import ModalContextProvider from "@/contexts/ModalContext/ModalContextProvider";
+const ModalContextProvider = dynamic(
+  () => import("@/contexts/ModalContext/ModalContextProvider")
+);
 import { ToastContainer } from "react-toastify";
 import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -26,6 +24,7 @@ import ScrollTopButton from "@/components/ScrollTopButton/ScrollTopButton";
 import { useTranslation } from "next-i18next";
 import Loader from "@/components/Loader/Loader";
 import ThemeContextProvider from "@/contexts/ThemeContext/ThemeContextProvider";
+import dynamic from "next/dynamic";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,12 +65,12 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light">
       <body className={[comfarta.className].join(" ")}>
         <Providers>
           {isAdminRoute ? (
             <>
-              <main id="main" className="flex-1">
+              <main id="main" className="flex-1 light">
                 {children}
                 <div className="portal-container"></div>
               </main>

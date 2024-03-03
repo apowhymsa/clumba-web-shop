@@ -65,6 +65,7 @@ const Page = () => {
                 className="underline text-rose-400"
                 href="https://www.instagram.com/clumba.krrog/"
                 target="_blank"
+                prefetch={false}
               >
                 Instagram
               </Link>
@@ -177,6 +178,7 @@ const Page = () => {
                 className="underline text-rose-400"
                 href="/profile"
                 target="_blank"
+                prefetch={false}
               >
                 посилання
               </Link>

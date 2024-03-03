@@ -11,7 +11,7 @@ interface InputFieldProps extends React.AllHTMLAttributes<HTMLInputElement> {
   leftIcon?: React.ReactNode;
   register: UseFormRegister<any>;
   name: Path<any>;
-  options: RegisterOptions;
+  options?: RegisterOptions;
   error: FieldError | undefined;
 }
 

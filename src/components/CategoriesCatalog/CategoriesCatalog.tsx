@@ -60,6 +60,7 @@ const CategoriesCatalog: FC<Props> = (props) => {
       <div className="product-category-wrapper grid grid-cols-4 gap-x-8 gap-y-10 items-stretch">
         {catProducts.categories.map((category) => (
           <Link
+            prefetch={false}
             href={`/products?limit=15&page=1&sort=1&price=0-10000&category=${category._id}`}
             key={category._id}
             className="product-category-item-container flex flex-col"

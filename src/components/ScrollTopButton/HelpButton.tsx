@@ -112,6 +112,7 @@ const HelpButton: FC<Props> = (props) => {
                   <div className="px-6 pb-6 text-secondary-500 text-sm flex flex-col gap-y-2">
                     <div className="py-2 bg-rose-300 px-2 rounded hover:bg-rose-400 transition-colors">
                       <Link
+                        prefetch={false}
                         href="https://www.instagram.com/clumba.krrog/"
                         className="flex gap-x-2 items-center"
                         target="_blank"
@@ -127,6 +128,7 @@ const HelpButton: FC<Props> = (props) => {
                     </div>
                     <div className="py-2 bg-blue-300 px-2 rounded hover:bg-blue-400 transition-colors">
                       <Link
+                        prefetch={false}
                         href="https://t.me/whymsa"
                         className="flex gap-x-2 items-center"
                         target="_blank"

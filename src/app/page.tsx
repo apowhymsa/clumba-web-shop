@@ -60,9 +60,15 @@ const getProductsCategories = async () => {
 };
 
 export default async function Home() {
-  const newProducts = await getNewProducts();
-  const popularProducts = await getPopularProducts();
-  const productsCategories = await getProductsCategories();
+  const newProductsData = getNewProducts();
+  const popularProductsData = getPopularProducts();
+  const productsCategoriesData = getProductsCategories();
+
+  const [newProducts, popularProducts, productsCategories] = await Promise.all([
+    newProductsData,
+    popularProductsData,
+    productsCategoriesData,
+  ]);
 
   return (
     <HomeComponent

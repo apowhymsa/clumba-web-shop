@@ -6,18 +6,15 @@ import CategoriesFilter from "@/components/Products/CategoriesFilter/CategoriesF
 import Products from "@/components/Products/Products";
 import React, { useCallback, useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
+import { useAppDispatch } from "@/utils/store/hooks";
 import { setProducts } from "@/utils/store/productSlice";
 import axios from "axios";
 import { Category, Product } from "@/types";
 import { setCategories } from "@/utils/store/categoriesSlice";
 import { SingleValue } from "react-select";
-import { ArrowPathIcon } from "@heroicons/react/24/outline";
-import Loader from "@/components/Loader/Loader";
 import { useTranslation } from "next-i18next";
 
 type Props = {
-  isLoadingData: boolean;
   productsData: {
     products: Product[];
     productsCount: number;
@@ -29,12 +26,10 @@ type Props = {
 };
 
 const ProductsComponent = (props: Props) => {
-  const { productsData, categoriesData, isLoadingData } = props;
-  const [isLoading, setLoading] = useState(isLoadingData);
+  const { productsData, categoriesData } = props;
+  const [isLoading, setLoading] = useState(false);
   const { t, i18n } = useTranslation();
-  const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState(productsData.productsCount);
-  const [isClear, setClear] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams()!;
@@ -52,7 +47,6 @@ const ProductsComponent = (props: Props) => {
   const [priceFilter, setPriceFilter] = useState<string[] | [number, number]>(
     getQueryValue("price")?.split("-") || [0, 10000]
   );
-  const products = useAppSelector((state) => state.productsReducer).products;
 
   useEffect(() => {
     dispatch(setProducts(productsData.products));
@@ -60,18 +54,16 @@ const ProductsComponent = (props: Props) => {
     setTotalCount(productsData.productsCount);
   }, []);
 
-  useEffect(() => {
-    if (isClear) {
-      setSortFilter("1");
-      setCategoriesFilter([]);
-      setPriceFilter([0, 10000]);
-      setFilterVisible(false);
-      setClear(false);
-    }
-  }, [isClear]);
+  const clearAllFilters = () => {
+    setSortFilter("1");
+    setCategoriesFilter([]);
+    setPriceFilter([0, 10000]);
+    setFilterVisible(false);
+  };
 
   useEffect(() => {
     const getProductsByFilters = async () => {
+      setLoading(true);
       const sort =
         sortFilter === "1"
           ? "asc"
@@ -93,8 +85,6 @@ const ProductsComponent = (props: Props) => {
           withCredentials: true,
         }
       );
-
-      console.log("FILTER SENT");
       dispatch(setProducts(response.data.products));
       setTotalCount(response.data.productsCount);
     };
@@ -103,10 +93,6 @@ const ProductsComponent = (props: Props) => {
       setLoading(false);
     });
   }, [categoriesFilter, sortFilter, priceFilter]);
-
-  useEffect(() => {
-    console.log("pathname changed");
-  }, [pathname]);
 
   useEffect(() => {
     router.replace(
@@ -168,8 +154,6 @@ const ProductsComponent = (props: Props) => {
       );
       setCategoriesFilter(updatedFilter);
     }
-
-    console.log("CHECKED:", target.checked, target.value);
   };
 
   const onChangeFilterPriceHandler = (
@@ -207,9 +191,7 @@ const ProductsComponent = (props: Props) => {
           <span
             className="text-dark dark:text-light hover:text-rose-400 dark:hover:text-rose-400 transition-colors"
             role="button"
-            onClick={() => {
-              setClear(true);
-            }}
+            onClick={clearAllFilters}
           >
             {i18n.language === "uk" ? "Очистити все" : "Clear all"}
           </span>
