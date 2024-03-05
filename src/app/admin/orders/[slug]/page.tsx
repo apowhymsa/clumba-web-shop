@@ -257,12 +257,12 @@ const Page = ({ params }: { params: { slug: string } }) => {
                         >
                           Сплачено
                         </span>
-                        <span
+                        {/*<span
                           onClick={() => handleSuccessPayed(false)}
                           className="cursor-pointer bg-red-500 p-2 rounded text-sm text-white hover:bg-red-600 transition-colors"
                         >
                           Не сплачено
-                        </span>
+                    </span>*/}
                       </div>
                     )}
                   </p>

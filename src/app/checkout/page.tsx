@@ -47,7 +47,7 @@ const Checkout = () => {
   const [searchResult, setSearchResult] = useState<any>(null);
   const { isLogged, isLoading: isLoadingAuth } = useContext(AuthContext);
   const { error, info } = useToast();
-  const [isResult, setResult] = useState(true);
+  const [isResult, setResult] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [deliveryType, setDeliveryType] = useState(1);
