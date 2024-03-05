@@ -37,6 +37,7 @@ type Order = {
   };
   status: string;
   createdAt: string;
+  isViewed: boolean;
 };
 
 const columnHelper = createColumnHelper<Order>();
@@ -45,6 +46,24 @@ const columns = [
   columnHelper.accessor("_id", {
     header: "№ товару",
     cell: (data) => data.getValue(),
+    enableGlobalFilter: false,
+  }),
+  columnHelper.accessor("isViewed", {
+    header: "",
+    cell: (data) => {
+      return (
+        <div>
+          {data.getValue() !== true ? (
+            <span className="text-green-400 font-semibold">
+              Не переглянутий
+            </span>
+          ) : (
+            "Переглянутий"
+          )}
+        </div>
+      );
+    },
+    enableSorting: false,
     enableGlobalFilter: false,
   }),
   columnHelper.accessor("payment", {

@@ -85,11 +85,7 @@ const SwiperProducts = (props: Props) => {
               height: "auto",
             }}
           >
-            <ProductItem
-              key={product._id}
-              product={product}
-              isButtonVisible={false}
-            />
+            <ProductItem product={product} isButtonVisible={false} />
           </SwiperSlide>
         ))}
       </Swiper>

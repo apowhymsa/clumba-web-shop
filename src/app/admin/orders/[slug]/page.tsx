@@ -11,6 +11,7 @@ import Image from "next/image";
 import clsx from "clsx";
 import { AxiosRequestConfig } from "axios";
 import Loader from "@/components/Loader/Loader";
+import { STATIC_STATUS_PAGES } from "next/dist/shared/lib/constants";
 
 const Page = ({ params }: { params: { slug: string } }) => {
   const [order, setOrder] = useState<Order | null>(null);
@@ -150,6 +151,44 @@ const Page = ({ params }: { params: { slug: string } }) => {
     }
   }
 
+  async function handleSuccessPayed(status: boolean) {
+    try {
+      const requestBody = {
+        status: status,
+        orderID: params.slug,
+      };
+      const requestConfig: AxiosRequestConfig = {
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true",
+          "Access-Control-Allow-Origin": "*",
+        },
+        withCredentials: true,
+      };
+
+      console.log(requestBody);
+
+      const response = await axios.post(
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/payment/tempPayed`,
+        requestBody,
+        requestConfig
+      );
+
+      console.log(response.data);
+
+      info(
+        `Статус оплати замовлення ${
+          response.data.payment.liqpayPaymentID
+        } оновлено на ${requestBody.status ? "Сплачено" : "Не сплачено"}`
+      );
+      setOrder(response.data);
+    } catch (err: unknown) {
+      const errObject = err as any;
+      console.log(error);
+      error("Помилка отримання даних, спробуйте ще раз: ", errObject.message);
+    }
+  }
+
   if (isLoading) {
     return <Loader />;
   }
@@ -160,7 +199,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
           <h2 className="text-[18px] font-bold border-b py-2">
             Замовлення №{order.payment.liqpayPaymentID}
           </h2>
-          <div className="flex gap-x-14 justify-center pt-6">
+          <div className="flex gap-x-14 justify-center pt-6 flex-col xl:flex-row">
             <form
               className="flex-1 flex flex-col gap-y-5"
               onSubmit={(e) => {
@@ -199,13 +238,32 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 </h3>
                 <div className="flex flex-col gap-y-2">
                   <p className="text-[15px] border-b border-rose-400 pb-1.5">
-                    <span className="font-semibold uppercase">
-                      Статус оплати:
-                    </span>{" "}
-                    {order.payment.status === true ? (
-                      <span className="text-green-600">Оплачено</span>
-                    ) : (
-                      "Не оплачено"
+                    <div>
+                      <span className="font-semibold uppercase">
+                        Статус оплати:
+                      </span>{" "}
+                      {order.payment.status === true ? (
+                        <span className="text-green-600">Сплачено</span>
+                      ) : (
+                        "Не сплачено"
+                      )}
+                    </div>
+
+                    {order.payment.status !== true && (
+                      <div className="flex gap-x-4 mt-2">
+                        <span
+                          onClick={() => handleSuccessPayed(true)}
+                          className="cursor-pointer bg-green-500 p-2 rounded text-sm text-white hover:bg-green-600 transition-colors"
+                        >
+                          Сплачено
+                        </span>
+                        <span
+                          onClick={() => handleSuccessPayed(false)}
+                          className="cursor-pointer bg-red-500 p-2 rounded text-sm text-white hover:bg-red-600 transition-colors"
+                        >
+                          Не сплачено
+                        </span>
+                      </div>
                     )}
                   </p>
                   <p className="text-[15px] border-b border-rose-400 pb-1.5">
@@ -224,12 +282,27 @@ const Page = ({ params }: { params: { slug: string } }) => {
                       : null}
                   </p>
                   {order.payment.bonuses > 0 && (
-                    <p className="text-[15px] border-b border-rose-400 pb-1.5">
-                      <span className="font-semibold uppercase">
-                        Використано бонусів:
-                      </span>{" "}
-                      {order.payment.bonuses}
-                    </p>
+                    <>
+                      <p className="text-[15px] border-b border-rose-400 pb-1.5">
+                        <span className="font-semibold uppercase">
+                          Використано бонусів:
+                        </span>{" "}
+                        {order.payment.bonuses}
+                      </p>
+                      <p className="text-[15px] border-b border-rose-400 pb-1.5">
+                        <span className="font-semibold uppercase">
+                          Ціна замовлення без використання бонусів:
+                        </span>{" "}
+                        {Number(
+                          Number(order.payment.amount) +
+                            Number(order.payment.bonuses)
+                        )}
+                        &#8372;{" "}
+                        {Number(order.payment.deliveryPrice) > 0
+                          ? ` + ${order.payment.deliveryPrice}₴ (доставка)`
+                          : null}
+                      </p>
+                    </>
                   )}
                   <p className="text-[15px] border-b border-rose-400 pb-1.5">
                     <span className="font-semibold uppercase">

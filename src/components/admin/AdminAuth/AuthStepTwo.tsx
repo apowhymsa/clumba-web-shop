@@ -42,12 +42,15 @@ const AuthStepTwo: FC<AuthStepTwoProps> = (props) => {
           code: data.code.toString(),
           adminID: authData?.adminID,
           codeID: authData?.codeID,
+        },
+        {
+          withCredentials: true,
         }
       );
-      console.log(rData);
+
       setAuth(true);
+      router.replace("/admin/orders");
       info(rData.msg);
-      router.push("/admin/ingCategories");
     } catch (err) {
       const errObject = err as AxiosError;
       error((errObject.response?.data as any).msg);

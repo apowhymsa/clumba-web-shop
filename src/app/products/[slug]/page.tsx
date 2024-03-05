@@ -1,31 +1,20 @@
 "use client";
 
 import { Product } from "@/types";
-import Image from "next/image";
 import React, { useContext, useEffect, useState } from "react";
-import Products from "@/components/Products/Products";
 import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
-import { setProducts } from "@/utils/store/productSlice";
-import products from "@/components/Products/Products";
 import QuantityItemButton from "@/components/UI/QuantityItemButton/QuantityItemButton";
 import { StarIcon } from "@heroicons/react/24/solid";
 import "./Product.scss";
 import ProductOverview from "@/components/ProductOverview/ProductOverview";
-import ProductOverviewMobile from "@/components/ProductOverview/ProductOverviewMobile";
 import SwiperProducts from "@/components/SwiperProducts/SwiperProducts";
 import { setCartItem, updateUserCart } from "@/utils/store/cartSlice";
-import { Simulate } from "react-dom/test-utils";
 import clsx from "clsx";
-import { v4 as uuidv4 } from "uuid";
 import Skeleton from "react-loading-skeleton";
 import { AuthContext } from "@/contexts/AuthContext/AuthContext";
-import { createPortal } from "react-dom";
 import useToast from "@/hooks/useToast";
 import axios, { AxiosRequestConfig } from "axios";
 import MagnifyingGlass from "@/components/MagnifyingGlass/MagnifyingGlass";
-import { QueryClient } from "@tanstack/react-query";
-import Link from "next/link";
-import { ArrowRightIcon } from "@heroicons/react/24/outline";
 import { setComments } from "@/utils/store/commentsSlice";
 import { useTranslation } from "next-i18next";
 

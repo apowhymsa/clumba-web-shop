@@ -1,6 +1,7 @@
 "use client";
 
 import "./globals.css";
+import "react-toastify/dist/ReactToastify.css";
 import { Raleway } from "next/font/google";
 import Header from "@/components/Header/Header";
 import NavigationContextProvider from "@/contexts/NavigationContext/NavigationContextProvider";
@@ -61,11 +62,13 @@ export default function RootLayout({
       i18n.changeLanguage("uk");
     }
 
+    console.log(isAdminRoute);
+
     setLoading(false);
   }, []);
 
   return (
-    <html lang="en" className="light">
+    <html lang={i18n.language} className="light">
       <body className={[comfarta.className].join(" ")}>
         <Providers>
           {isAdminRoute ? (

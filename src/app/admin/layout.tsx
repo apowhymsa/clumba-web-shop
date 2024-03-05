@@ -7,15 +7,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import NavMenu from "@/components/admin/NavMenu/NavMenu";
-import {
-  Comfortaa,
-  Open_Sans,
-  Poppins,
-  Raleway,
-  Roboto,
-  Rubik,
-  Inter,
-} from "next/font/google";
+import { Inter } from "next/font/google";
 import { clsx } from "clsx";
 import { usePathname, useRouter } from "next/navigation";
 import OrderContextProvider from "@/contexts/OrdersContext/OrdersContextProvider";
@@ -23,6 +15,8 @@ import socket from "@/utils/socket";
 import { useOrdersStore } from "@/utils/zustand-store/orders";
 import useToast from "@/hooks/useToast";
 import AdminAuth from "@/components/admin/AdminAuth/AdminAuth";
+import Loader from "@/components/Loader/Loader";
+import axios from "axios";
 
 type Props = {
   children?: ReactNode;
@@ -43,6 +37,7 @@ const Layout: FC<Props> = ({ children }) => {
   const pathname = usePathname();
   const router = useRouter();
   const [isAuth, setAuth] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const { error, info } = useToast();
   const {
     orders,
@@ -54,7 +49,72 @@ const Layout: FC<Props> = ({ children }) => {
   } = useOrdersStore();
 
   useEffect(() => {
+    // if (pathname.startsWith("/admin") && !isAuth) router.replace("/admin");
+
+    if (pathname === "/admin" && isAuth) router.replace("/admin/orders");
+  }, [pathname, isAuth]);
+
+  useEffect(() => {
+    socket.on("connect", async () => {
+      console.log("Real-time connected");
+    });
+
+    const getAuthenticationStatus = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${process.env.ADMIN_ENDPOINT_BACKEND}/admin/isLogged`,
+          {
+            withCredentials: true,
+          }
+        );
+
+        if (response.status === 202) {
+          setAuth(true);
+        }
+        console.log(response.status);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    getAuthenticationStatus().finally(() => setLoading(false));
+
+    return () => {
+      console.log("socket disconnected");
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    async function getOrdersChanges(d: any) {
+      console.log("Real-time update received:", d);
+      // Handle the update as needed
+      const response = await fetch(
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${d._id}?ignoreViewed=true`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "ngrok-skip-browser-warning": "true",
+            "Access-Control-Allow-Origin": "*",
+            credentials: "include",
+          },
+          cache: "no-store",
+        }
+      );
+
+      const data: any = await response.json();
+
+      console.log(data);
+
+      addOrder(data);
+      updateNotViewOrders();
+
+      info("Надійшло нове замовлення 😀");
+    }
     if (isAuth) {
+      socket.on("update", getOrdersChanges);
+
       const getNotViewedOrders = async () => {
         const response = await fetch(
           `${process.env.ADMIN_ENDPOINT_BACKEND}/orders?filter=0`,
@@ -76,43 +136,18 @@ const Layout: FC<Props> = ({ children }) => {
       };
 
       getNotViewedOrders();
-
-      socket.on("connect", async () => {
-        console.log("Real-time connected");
-      });
-
-      socket.on("update", async (d: any) => {
-        console.log("Real-time update received:", d);
-        // Handle the update as needed
-        const response = await fetch(
-          `${process.env.ADMIN_ENDPOINT_BACKEND}/order/${d._id}?ignoreViewed=true`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "ngrok-skip-browser-warning": "true",
-              "Access-Control-Allow-Origin": "*",
-              credentials: "include",
-            },
-            cache: "no-store",
-          }
-        );
-
-        const data: any = await response.json();
-
-        addOrder(data);
-        updateNotViewOrders();
-
-        info("Надійшло нове замовлення 😀");
-      });
     } else {
-      router.replace("/admin");
+      socket.off("update");
     }
+  }, [isAuth]);
 
-    return () => {
-      console.log("socket disconnected");
-      socket.disconnect();
-    };
-  }, []);
+  if (isLoading) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+        <Loader />
+      </div>
+    );
+  }
 
   return (
     <div className={clsx("bg-[#f1f1f1] min-h-screen", inter.className)}>
@@ -120,7 +155,7 @@ const Layout: FC<Props> = ({ children }) => {
         {isAuth ? (
           <OrderContextProvider>
             <div className={clsx("flex")}>
-              <NavMenu />
+              <NavMenu setAuth={setAuth} />
               <div className="w-full pl-[260px]">
                 <div className="flex gap-x-2 text-[16px] shadow p-4 bg-[#f5f5f5] w-full">
                   <span>Робоча область: </span>

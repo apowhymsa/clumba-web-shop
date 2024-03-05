@@ -2,33 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { Product } from "@/types";
 import "../Products.scss";
-import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
-import { setCartItem } from "@/utils/store/cartSlice";
-import products from "@/components/Products/Products";
-import React, { useContext, useEffect, useState } from "react";
-import { onAuthStateChanged } from "@firebase/auth";
-import { auth, db } from "@/utils/firebase/firebase";
-import { AuthContext } from "@/contexts/AuthContext/AuthContext";
-import { toast } from "react-toastify";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  setDoc,
-  where,
-  updateDoc,
-  FieldValue,
-  arrayUnion,
-  increment,
-} from "@firebase/firestore";
-import { update } from "immutable";
-import useToast from "@/hooks/useToast";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
-import Select from "react-select";
-import { Controller } from "react-hook-form";
 import { useTranslation } from "next-i18next";
 
 type Props = {
@@ -41,10 +16,7 @@ const ProductItem = ({ product, isButtonVisible = true }: Props) => {
   const { t, i18n } = useTranslation();
   const [isNotAvailableProduct, setNotAvailableProduct] = useState<any[]>([]);
   const [variantsOptions, setVariantsOptions] = useState<any[]>([]);
-  const { info, error } = useToast();
   const [isLoading, setLoading] = useState(true);
-  const dispatch = useAppDispatch();
-  const cart = useAppSelector((state) => state.cartReducer).cart;
 
   useEffect(() => {
     console.log("product", product);

@@ -199,7 +199,9 @@ const BasicTable = (props: Props) => {
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="flex-1 p-2 text-[#6c757d] font-medium whitespace-normal overflow-hidden max-w-[400px]"
+                      className={clsx(
+                        "flex-1 p-2 text-[#6c757d] font-medium whitespace-normal overflow-hidden max-w-[400px]"
+                      )}
                     >
                       {!Array.isArray(cell.getValue()) &&
                         flexRender(

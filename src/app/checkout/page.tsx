@@ -5,16 +5,11 @@ import {
   SyntheticEvent,
   useContext,
   useEffect,
-  useRef,
   useState,
 } from "react";
 import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import CartItem from "@/components/Cart/CartItem/CartItem";
-import { doc, getDoc } from "@firebase/firestore";
-import { auth, db } from "@/utils/firebase/firebase";
-import { setCart } from "@/utils/store/cartSlice";
-import { onAuthStateChanged } from "@firebase/auth";
 import axios from "axios";
 import { Autocomplete, useLoadScript } from "@react-google-maps/api";
 import { getGeocode, getLatLng } from "use-places-autocomplete";
@@ -25,7 +20,8 @@ import { useRouter } from "next/navigation";
 import CustomDateTimePicker from "@/components/CustomDateTimePicker/CustomDateTimePicker";
 import { Dayjs } from "dayjs";
 import { useTranslation } from "next-i18next";
-import { ThemeContext } from "@/contexts/ThemeContext/ThemeContext";
+import Link from "next/link";
+import { clearCart, setCart } from "@/utils/store/cartSlice";
 
 interface IPaymentData {
   name: string;
@@ -48,19 +44,18 @@ const Checkout = () => {
   const cart = useAppSelector((state) => state.cartReducer).cart;
   const cartPrice = useAppSelector((state) => state.cartReducer).cartPrice;
   const [user, setUser] = useState<any>();
-  const dispatch = useAppDispatch();
   const [searchResult, setSearchResult] = useState<any>(null);
-  const autocompleteRef = useRef();
   const { isLogged, isLoading: isLoadingAuth } = useContext(AuthContext);
   const { error, info } = useToast();
+  const [isResult, setResult] = useState(true);
   const router = useRouter();
+  const dispatch = useAppDispatch();
   const [deliveryType, setDeliveryType] = useState(1);
   const [deliveryTime, setDeliveryTime] = useState(1);
   const [openPayment, setOpenPayment] = useState<string>("");
   const [isCartDiscount, setCartDiscount] = useState(false);
   const [bonuses, setBonuses] = useState(0);
   const { t, i18n } = useTranslation();
-  const { theme } = useContext(ThemeContext);
   const {
     register,
     handleSubmit,
@@ -249,7 +244,7 @@ const Checkout = () => {
 
         axios
           .post(
-            `${process.env.ADMIN_ENDPOINT_BACKEND}/payment`,
+            `${process.env.ADMIN_ENDPOINT_BACKEND}/payment/temp`,
             {
               ...params,
             },
@@ -263,16 +258,47 @@ const Checkout = () => {
             }
           )
           .then((data) => {
-            console.log(data.data, data.status);
+            console.log(data.status);
 
             if (data.status === 200) {
-              setOpenPayment(data.data.paymentURL);
+              console.log("ORDER SUCCESS");
             } else {
               console.error("ERROR", data.data);
             }
           })
           .catch((error) => console.error(error))
-          .finally(() => setCompleteRequest(true));
+          .finally(() => {
+            setCompleteRequest(true);
+            setResult(true);
+            dispatch(clearCart());
+          });
+
+        // axios
+        //   .post(
+        //     `${process.env.ADMIN_ENDPOINT_BACKEND}/payment`,
+        //     {
+        //       ...params,
+        //     },
+        //     {
+        //       headers: {
+        //         "Content-Type": "application/json",
+        //         "ngrok-skip-browser-warning": "true",
+        //         "Access-Control-Allow-Origin": "*",
+        //       },
+        //       withCredentials: true,
+        //     }
+        //   )
+        //   .then((data) => {
+        //     console.log(data.data, data.status);
+
+        //     if (data.status === 200) {
+        //       setOpenPayment(data.data.paymentURL);
+        //     } else {
+        //       console.error("ERROR", data.data);
+        //     }
+        //   })
+        //   .catch((error) => console.error(error))
+        //   .finally(() => setCompleteRequest(true));
       }
     }
   };
@@ -309,9 +335,34 @@ const Checkout = () => {
 
   return (
     <div id="liqpay_checkout" className="shadow mx-5 lg:mx-20 my-14 p-5">
-      {cart.length > 0 ? (
+      {isResult ? (
+        <div className="text-center text-lg">
+          <p>Вітаю шановний клієнте.</p>
+          <p className="font-semibold">
+            Адміністратор Вам зателефонує для підтвердження замовлення та
+            виконання оплати.
+          </p>
+          <p>
+            Переглянути поточний статус замовлення можна на сторінці{" "}
+            <Link
+              prefetch={false}
+              className="text-blue-700 underline hover:no-underline"
+              href="/profile"
+            >
+              профілю
+            </Link>{" "}
+            у вкладці &#34;Історія замовлень&#34;. Після зміни статусу
+            замовлення, Ви отримаєте відповідне повідомлення на електрону пошту,
+            яка була вказана при реєстрації облікового запису.
+          </p>
+          <p className="text-sm">
+            На даний момент у сегменті онлайн оплати виконуються технічні
+            роботи.
+          </p>
+        </div>
+      ) : cart.length > 0 ? (
         <>
-          <div className="flex justify-between items-center border-b dark:border-[#1f2937]">
+          <div className="flex justify-between items-center border-b dark:border-[#1f2937] flex-col md:flex-row">
             <h2 className="text-xl font-bold py-2 text-dark dark:text-light">
               {i18n.language === "uk" ? "Оформлення замовлення" : "Checkout"}
             </h2>
@@ -457,8 +508,10 @@ const Checkout = () => {
                           setBonuses(Number(e.target.value));
                         }}
                         max={
-                          user && user.promo.bonuses >= Number(cartPrice) / 4
-                            ? Number(cartPrice) / 4
+                          user &&
+                          user.promo.bonuses >=
+                            Math.floor(Number(cartPrice) / 4)
+                            ? Math.floor(Number(cartPrice) / 4)
                             : user.promo.bonuses
                         }
                         type="number"
@@ -469,7 +522,7 @@ const Checkout = () => {
                           ? "Максимальна кількість:"
                           : "The maximum number:"}{" "}
                         <span className="font-bold">
-                          {Number(cartPrice) / 4}
+                          {Math.floor(Number(cartPrice) / 4)}
                         </span>
                         .{" "}
                         {i18n.language === "uk"
@@ -539,11 +592,29 @@ const Checkout = () => {
                       setSelectedDateTime={setSelectedDateTime}
                     />
                     <span className="dark:text-light text-sm">
-                      {theme === "dark" &&
-                        selectedDateTime &&
-                        `Обраний час: ${selectedDateTime
-                          ?.toDate()
-                          .toLocaleString()}`}
+                      {selectedDateTime && (
+                        <>
+                          <div>{`Обрані дата та час: ${selectedDateTime
+                            ?.toDate()
+                            .toLocaleString()}`}</div>
+                          <div>
+                            Діапазон часу доставки у робочий час:{" "}
+                            <span className="font-semibold">
+                              {selectedDateTime
+                                .clone()
+                                .subtract(30, "minute")
+                                .toDate()
+                                .toLocaleString()}{" "}
+                              -{" "}
+                              {selectedDateTime
+                                .clone()
+                                .add(30, "minute")
+                                .toDate()
+                                .toLocaleString()}
+                            </span>
+                          </div>
+                        </>
+                      )}
                     </span>
                   </div>
                 )}
@@ -709,7 +780,20 @@ const Checkout = () => {
             </div>
           </div>
         </>
-      ) : null}
+      ) : (
+        <p className="text-lg text-center">
+          Ваш кошик порожній 😞. Наш{" "}
+          <Link
+            prefetch={false}
+            className="text-blue-600 underline hover:text-blue-700 hover:no-underline transition-all"
+            href="/products?limit=15&page=1&sort=1&price=0-10000&category=all"
+          >
+            каталог товарів
+          </Link>
+          , який має багато різноманітних квітів. Додавай квіти у кошик та
+          повертайся 😉.
+        </p>
+      )}
     </div>
   );
 };

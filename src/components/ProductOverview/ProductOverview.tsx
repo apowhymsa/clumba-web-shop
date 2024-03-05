@@ -1,23 +1,11 @@
-import Image from "next/image";
 import { StarIcon } from "@heroicons/react/24/solid";
-import { Dispatch, memo, SetStateAction, useEffect, useState } from "react";
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  onSnapshot,
-} from "@firebase/firestore";
-import { db } from "@/utils/firebase/firebase";
+import { Dispatch, memo, SetStateAction, useState } from "react";
 import ReactStars from "react-rating-stars-component";
-import { toast } from "react-toastify";
 import useToast from "@/hooks/useToast";
-import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
-import { addComment, Comment, setComments } from "@/utils/store/commentsSlice";
-import { IVariantProduct, Product } from "@/types";
+import { useAppDispatch } from "@/utils/store/hooks";
+import { addComment, Comment } from "@/utils/store/commentsSlice";
+import { IVariantProduct } from "@/types";
 import axios, { AxiosRequestConfig } from "axios";
-import { v4 as uuidv4 } from "uuid";
-import { QueryClient, useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useTranslation } from "next-i18next";
 
@@ -33,20 +21,12 @@ type Props = {
 
 const ProductOverview = (props: Props) => {
   const { info, error } = useToast();
-  const [loading, setLoading] = useState(true);
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>("");
   const { t, i18n } = useTranslation();
   const dispatch = useAppDispatch();
-  const {
-    comments,
-    tab,
-    setTab,
-    classNameContainer,
-    productId,
-    product,
-    commentsAvg,
-  } = props;
+  const { comments, setTab, classNameContainer, productId, commentsAvg } =
+    props;
 
   const addCommentHandler = async () => {
     const userId = localStorage.getItem("authUserId");
@@ -107,46 +87,6 @@ const ProductOverview = (props: Props) => {
   return (
     <div className={clsx(classNameContainer, "mb-5")}>
       <div className="flex flex-col gap-y-3 w-full text-dark dark:text-light">
-        {/* <div className="flex gap-x-3 border-b border-b-gray-10 w-full">
-          <div role="tablist" className="tabs tabs-boxed flex-1">
-            <span
-              onClick={() => setTab(1)}
-              role="tab"
-              className={clsx("tab", tab === 1 && "bg-rose-400 text-white")}
-            >
-              {i18n.language === "uk"
-                ? "Інформація для клієнта"
-                : "Information for the client"}
-            </span>
-            <span
-              onClick={() => setTab(2)}
-              role="tab"
-              className={clsx("tab", tab === 2 && "bg-rose-400 text-white")}
-            >
-              {i18n.language === "uk" ? "Відгуки" : "Reviews"}
-            </span>
-          </div>
-        </div> */}
-        {/* {tab === 1 && (
-          <div>
-            <p>
-              {i18n.language === "uk"
-                ? "Склад товару:"
-                : "Product composition:"}
-            </p>
-            <ul>
-              {product?.ingredients.map((currentIng: any, index) => (
-                <li key={index}>
-                  {i18n.language === "uk" ? "Назва:" : "Title:"}{" "}
-                  {currentIng.ingredient.id.title} -{" "}
-                  {i18n.language === "uk" ? "Тип:" : "Type:"}{" "}
-                  {currentIng.ingredient.variantID.vType} - {currentIng.count}{" "}
-                  {i18n.language === "uk" ? "шт." : "units"}.
-                </li>
-              ))}
-            </ul>
-          </div>
-        )} */}
         <div className="flex flex-col gap-y-8 py-2">
           <div className="max-w-full">
             <div className="flex flex-col gap-y-2 py-4 border-b dark:border-[#1f2937]">

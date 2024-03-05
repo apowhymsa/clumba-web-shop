@@ -66,6 +66,22 @@ const CategoriesCatalog: FC<Props> = (props) => {
             className="product-category-item-container flex flex-col"
           >
             <div className="product-category-image overflow-hidden">
+              {/* <Image
+                src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${category.image}`}
+                height={0}
+                width={0}
+                alt={category.title}
+                style={{
+                  width: "100%",
+                  height: "auto",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  objectPosition: "center center",
+                  aspectRatio: "1 / 1",
+                }}
+                quality={100}
+              /> */}
+
               <img
                 src={`${process.env.ADMIN_ENDPOINT_BACKEND}/images/m_${category.image}`}
                 // src="https://placedog.net/500"

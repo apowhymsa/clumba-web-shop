@@ -1,5 +1,5 @@
 import "./NavMenu.scss";
-import React, { useRef, useState } from "react";
+import React, { Dispatch, FC, SetStateAction, useRef, useState } from "react";
 import { FaListUl } from "react-icons/fa6";
 import {
   MdKeyboardArrowDown,
@@ -23,11 +23,32 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import { useOrdersStore } from "@/utils/zustand-store/orders";
+import axios from "axios";
 
-const NavMenu = () => {
+type Props = {
+  setAuth: Dispatch<SetStateAction<boolean>>;
+};
+const NavMenu: FC<Props> = (props) => {
+  const { setAuth } = props;
   const [isOpenDeliveryModal, setOpenDeliveryModal] = useState(false);
   const { notViewedOrders } = useOrdersStore();
   const ref = useRef<HTMLLIElement>(null);
+
+  async function logout() {
+    try {
+      const response = await axios.post(
+        `${process.env.ADMIN_ENDPOINT_BACKEND}/admin/logout`,
+        null,
+        {
+          withCredentials: true,
+        }
+      );
+      setAuth(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <ul className="fixed h-screen flex flex-col gap-y-2 p-6 bg-[#383f51] gap-x-4 w-[260px] text-[13px]">
@@ -138,17 +159,16 @@ const NavMenu = () => {
             <span>Ціна доставки</span>
           </div>
         </li>
-        <li className="flex mt-auto items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200">
-          <Link
-            prefetch={false}
-            href="/admin/mailing"
-            className="flex gap-x-4 px-4 flex-1 h-10 items-center"
-          >
+        <li
+          onClick={logout}
+          className="flex mt-auto items-center justify-between rounded gap-x-4 bg-white transition-colors cursor-pointer h-10 hover:bg-rose-200"
+        >
+          <div className="flex gap-x-4 px-4 flex-1 h-10 items-center">
             <span>
               <ArrowRightOnRectangleIcon className="h-4 w-4 text-black" />
             </span>
             <span>Вийти з аккаунту</span>
-          </Link>
+          </div>
         </li>
       </ul>
       <AnimatePresence

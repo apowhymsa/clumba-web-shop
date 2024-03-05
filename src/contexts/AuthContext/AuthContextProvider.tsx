@@ -3,33 +3,33 @@
 import { AuthContext } from "@/contexts/AuthContext/AuthContext";
 import { useEffect, useState } from "react";
 import { onAuthStateChanged } from "@firebase/auth";
-import {auth, db} from "@/utils/firebase/firebase";
+import { auth, db } from "@/utils/firebase/firebase";
 import useCookies from "@/hooks/useCookies";
-import axios, {AxiosError, AxiosRequestConfig} from "axios";
+import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import useToast from "@/hooks/useToast";
-import {useAppDispatch} from "@/utils/store/hooks";
-import {clearCart, getUserCart, setCart} from "@/utils/store/cartSlice";
+import { useAppDispatch } from "@/utils/store/hooks";
+import { clearCart, getUserCart, setCart } from "@/utils/store/cartSlice";
 
 const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const {cookies} = useCookies();
+  const { cookies } = useCookies();
   const [isLoading, setLoading] = useState(true);
   const [isLogged, setLogged] = useState(false);
-  const {error} = useToast();
+  const { error } = useToast();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (!!cookies.find(item => 'USER-AUTH' in item)) setLogged(true);
+    if (!!localStorage.getItem("authUserId")) setLogged(true);
   }, []);
 
   useEffect(() => {
     setLoading(true);
     // !!cookies[0]['USER-AUTH']
     if (isLogged) {
-      console.log('logged')
-      const userID = localStorage.getItem('authUserId');
+      console.log("logged");
+      const userID = localStorage.getItem("authUserId");
       if (userID) dispatch(getUserCart(userID));
     } else {
-      console.log('logout')
+      console.log("logout");
       dispatch(clearCart());
     }
 
@@ -37,7 +37,9 @@ const AuthContextProvider = ({ children }: { children: React.ReactNode }) => {
   }, [isLogged]);
 
   return (
-    <AuthContext.Provider value={{ isLogged, isLoading, setLogged, setLoading }}>
+    <AuthContext.Provider
+      value={{ isLogged, isLoading, setLogged, setLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

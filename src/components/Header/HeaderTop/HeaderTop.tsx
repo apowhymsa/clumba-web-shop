@@ -44,6 +44,8 @@ const HeaderTop = () => {
         requestConfig
       );
 
+      console.log(document.cookie);
+
       document.cookie =
         "USER-AUTH=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
       localStorage.removeItem("authUserId");
