@@ -2,8 +2,20 @@ import Link from "next/link";
 import { FC } from "react";
 
 import "./oferta.scss";
+import { Metadata } from "next/types";
 
 interface PageProps {}
+
+export const metadata: Metadata = {
+  title: "Публичный договор оферты. Интернет-магазин Clumba - clumba.kr.ua",
+  alternates: {
+    canonical: "https://clumba.kr.ua/oferta",
+  },
+  verification: {
+    google:
+      "google-site-verification=KhQAvdB6UU_sbaYyyfKr7h91CqrY-QmrbgDnQH7cNzk",
+  },
+};
 
 const Page: FC<PageProps> = () => {
   return (

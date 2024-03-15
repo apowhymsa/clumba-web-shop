@@ -26,6 +26,7 @@ import { useTranslation } from "next-i18next";
 import Loader from "@/components/Loader/Loader";
 import ThemeContextProvider from "@/contexts/ThemeContext/ThemeContextProvider";
 import dynamic from "next/dynamic";
+import { Metadata } from "next/types";
 
 const queryClient = new QueryClient({
   defaultOptions: {
