@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   BaseSyntheticEvent,
@@ -6,22 +6,22 @@ import {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { useAppDispatch, useAppSelector } from "@/utils/store/hooks";
-import { useForm } from "react-hook-form";
-import CartItem from "@/components/Cart/CartItem/CartItem";
-import axios from "axios";
-import { Autocomplete, useLoadScript } from "@react-google-maps/api";
-import { getGeocode, getLatLng } from "use-places-autocomplete";
-import Loader from "@/components/Loader/Loader";
-import { AuthContext } from "@/contexts/AuthContext/AuthContext";
-import useToast from "@/hooks/useToast";
-import { useRouter } from "next/navigation";
-import CustomDateTimePicker from "@/components/CustomDateTimePicker/CustomDateTimePicker";
-import { Dayjs } from "dayjs";
-import { useTranslation } from "next-i18next";
-import Link from "next/link";
-import { clearCart, setCart } from "@/utils/store/cartSlice";
+} from 'react';
+import { useAppDispatch, useAppSelector } from '@/utils/store/hooks';
+import { useForm } from 'react-hook-form';
+import CartItem from '@/components/Cart/CartItem/CartItem';
+import axios from 'axios';
+import { Autocomplete, useLoadScript } from '@react-google-maps/api';
+import { getGeocode, getLatLng } from 'use-places-autocomplete';
+import Loader from '@/components/Loader/Loader';
+import { AuthContext } from '@/contexts/AuthContext/AuthContext';
+import useToast from '@/hooks/useToast';
+import { useRouter } from 'next/navigation';
+import CustomDateTimePicker from '@/components/CustomDateTimePicker/CustomDateTimePicker';
+import { Dayjs } from 'dayjs';
+import { useTranslation } from 'next-i18next';
+import Link from 'next/link';
+import { clearCart, setCart } from '@/utils/store/cartSlice';
 
 interface IPaymentData {
   name: string;
@@ -34,7 +34,7 @@ interface IPaymentData {
 const Checkout = () => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.GOOGLE_API_KEY!,
-    libraries: ["places", "geocoding"],
+    libraries: ['places', 'geocoding'],
   });
   const [selectedDateTime, setSelectedDateTime] = useState<Dayjs | null>(null);
   const [deliveryAmount, setDeliveryAmount] = useState(0);
@@ -52,7 +52,7 @@ const Checkout = () => {
   const dispatch = useAppDispatch();
   const [deliveryType, setDeliveryType] = useState(1);
   const [deliveryTime, setDeliveryTime] = useState(1);
-  const [openPayment, setOpenPayment] = useState<string>("");
+  const [openPayment, setOpenPayment] = useState<string>('');
   const [isCartDiscount, setCartDiscount] = useState(false);
   const [bonuses, setBonuses] = useState(0);
   const { t, i18n } = useTranslation();
@@ -66,7 +66,7 @@ const Checkout = () => {
 
   useEffect(() => {
     const bool = cart.find(
-      (cartItem) => cartItem.variant.discount.state === true
+      (cartItem) => cartItem.variant.discount.state === true,
     );
     if (bool) {
       setCartDiscount(true);
@@ -79,7 +79,7 @@ const Checkout = () => {
     if (openPayment.trim().length > 0) {
       // window.open(openPayment, "_self");
       location.href = openPayment;
-      setOpenPayment("");
+      setOpenPayment('');
     }
   }, [openPayment]);
 
@@ -89,13 +89,13 @@ const Checkout = () => {
         `${process.env.ADMIN_ENDPOINT_BACKEND}/deliveryPrice`,
         {
           headers: {
-            "Content-Type": "application/json",
-            "ngrok-skip-browser-warning": "true",
-            "Access-Control-Allow-Origin": "*",
-            credentials: "include",
+            'Content-Type': 'application/json',
+            'ngrok-skip-browser-warning': 'true',
+            'Access-Control-Allow-Origin': '*',
+            credentials: 'include',
           },
-          cache: "no-store",
-        }
+          cache: 'no-store',
+        },
       );
 
       const data = await response.json();
@@ -111,17 +111,17 @@ const Checkout = () => {
     if (!isLoadingAuth) {
       if (!isLogged) {
         info(
-          i18n.language === "uk"
-            ? "Для оформлення замовлення потрібно увійти в обліковий запис"
-            : "To place an order, you need to log in to your account"
+          i18n.language === 'uk'
+            ? 'Для оформлення замовлення потрібно увійти в обліковий запис'
+            : 'To place an order, you need to log in to your account',
         );
-        return router.push("/");
+        return router.push('/');
       } else {
-        const userAuthId = localStorage.getItem("authUserId");
+        const userAuthId = localStorage.getItem('authUserId');
 
         if (userAuthId) {
           Promise.all([getDeliveryPrice(), getUserInfo(userAuthId)]).then(() =>
-            setloading(false)
+            setloading(false),
           );
         }
       }
@@ -138,7 +138,7 @@ const Checkout = () => {
     lat1: number,
     lng1: number,
     lat2: number,
-    lng2: number
+    lng2: number,
   ) => {
     return new Promise((resolve) => {
       const service = new window.google.maps.DistanceMatrixService();
@@ -150,7 +150,7 @@ const Checkout = () => {
         },
         (response) => {
           resolve(response);
-        }
+        },
       );
     });
   };
@@ -175,7 +175,7 @@ const Checkout = () => {
       // 47.939615 33.426008
 
       getDistance(shopLat, shopLng, lat, lng).then((response: any) => {
-        console.log("res", response);
+        console.log('res', response);
         const dAmount =
           Math.ceil(response.rows[0].elements[0].distance.value / 1000) *
           Number(deliveryPrice);
@@ -189,22 +189,22 @@ const Checkout = () => {
 
   const submitHandler = (
     data: IPaymentData,
-    event: BaseSyntheticEvent<object, any, any> | undefined
+    event: BaseSyntheticEvent<object, any, any> | undefined,
   ) => {
     if (deliveryTime === 2 && !selectedDateTime) {
       error(
-        'Ви обрали опцію "Доставка на конкретний час", заповніть необхідне поле та повторіть спробу'
+        'Ви обрали опцію "Доставка на конкретний час", заповніть необхідне поле та повторіть спробу',
       );
     } else {
       setCompleteRequest(false);
       const cartJoin = cart
         .map(
           (cartItem) =>
-            `${cartItem.product.title} - ${cartItem.variant.title} (${cartItem.quantity} ед.)`
+            `${cartItem.product.title} - ${cartItem.variant.title} (${cartItem.quantity} ед.)`,
         )
-        .join(" ");
+        .join(' ');
 
-      const userID = localStorage.getItem("authUserId");
+      const userID = localStorage.getItem('authUserId');
 
       if (userID) {
         const params = {
@@ -219,7 +219,7 @@ const Checkout = () => {
             bonuses: bonuses,
             deliveryPrice: deliveryAmount,
             phone: data.phone,
-            comment: data.comment || "",
+            comment: data.comment || '',
             products: cart.map((cartItem) => {
               return {
                 product_id: cartItem.product._id,
@@ -231,10 +231,10 @@ const Checkout = () => {
               };
             }),
             shippingAddress:
-              deliveryType === 1 ? "Самовывоз" : data.shippingAddress,
+              deliveryType === 1 ? 'Самовывоз' : data.shippingAddress,
             deliveryTime:
               deliveryTime === 1
-                ? "Довільна дата та час"
+                ? 'Довільна дата та час'
                 : selectedDateTime?.toDate().toLocaleString(),
             name: data.name,
           },
@@ -244,61 +244,30 @@ const Checkout = () => {
 
         axios
           .post(
-            `${process.env.ADMIN_ENDPOINT_BACKEND}/payment/temp`,
+            `${process.env.ADMIN_ENDPOINT_BACKEND}/pumb/payment`,
             {
               ...params,
             },
             {
               headers: {
-                "Content-Type": "application/json",
-                "ngrok-skip-browser-warning": "true",
-                "Access-Control-Allow-Origin": "*",
+                'Content-Type': 'application/json',
+                'ngrok-skip-browser-warning': 'true',
+                'Access-Control-Allow-Origin': '*',
               },
               withCredentials: true,
-            }
+            },
           )
           .then((data) => {
-            console.log(data.status);
+            console.log(data.data, data.status);
 
             if (data.status === 200) {
-              console.log("ORDER SUCCESS");
+              setOpenPayment(data.data.url);
             } else {
-              console.error("ERROR", data.data);
+              console.error('ERROR', data.data);
             }
           })
           .catch((error) => console.error(error))
-          .finally(() => {
-            setCompleteRequest(true);
-            setResult(true);
-            dispatch(clearCart());
-          });
-
-        // axios
-        //   .post(
-        //     `${process.env.ADMIN_ENDPOINT_BACKEND}/payment`,
-        //     {
-        //       ...params,
-        //     },
-        //     {
-        //       headers: {
-        //         "Content-Type": "application/json",
-        //         "ngrok-skip-browser-warning": "true",
-        //         "Access-Control-Allow-Origin": "*",
-        //       },
-        //       withCredentials: true,
-        //     }
-        //   )
-        //   .then((data) => {
-        //     console.log(data.data, data.status);
-
-        //     if (data.status === 200) {
-        //       setOpenPayment(data.data.paymentURL);
-        //     } else {
-        //       console.error("ERROR", data.data);
-        //     }
-        //   })
-        //   .catch((error) => console.error(error))
-        //   .finally(() => setCompleteRequest(true));
+          .finally(() => setCompleteRequest(true));
       }
     }
   };
@@ -308,12 +277,12 @@ const Checkout = () => {
       `${process.env.ADMIN_ENDPOINT_BACKEND}/user/${userAuthId}`,
       {
         headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-          "Access-Control-Allow-Origin": "*",
+          'Content-Type': 'application/json',
+          'ngrok-skip-browser-warning': 'true',
+          'Access-Control-Allow-Origin': '*',
         },
         withCredentials: true,
-      }
+      },
     );
 
     setUser(response.data);
@@ -335,47 +304,22 @@ const Checkout = () => {
 
   return (
     <div id="liqpay_checkout" className="shadow mx-5 lg:mx-20 my-14 p-5">
-      {isResult ? (
-        <div className="text-center text-lg">
-          <p>Вітаю шановний клієнте.</p>
-          <p className="font-semibold">
-            Адміністратор Вам зателефонує для підтвердження замовлення та
-            виконання оплати.
-          </p>
-          <p>
-            Переглянути поточний статус замовлення можна на сторінці{" "}
-            <Link
-              prefetch={false}
-              className="text-blue-700 underline hover:no-underline"
-              href="/profile"
-            >
-              профілю
-            </Link>{" "}
-            у вкладці &#34;Історія замовлень&#34;. Після зміни статусу
-            замовлення, Ви отримаєте відповідне повідомлення на електрону пошту,
-            яка була вказана при реєстрації облікового запису.
-          </p>
-          <p className="text-sm">
-            На даний момент у сегменті онлайн оплати виконуються технічні
-            роботи.
-          </p>
-        </div>
-      ) : cart.length > 0 ? (
+      {cart.length > 0 ? (
         <>
           <div className="flex justify-between items-center border-b dark:border-[#1f2937] flex-col md:flex-row">
             <h2 className="text-xl font-bold py-2 text-dark dark:text-light">
-              {i18n.language === "uk" ? "Оформлення замовлення" : "Checkout"}
+              {i18n.language === 'uk' ? 'Оформлення замовлення' : 'Checkout'}
             </h2>
             <h3 className="text-right pb-2">
               <span className="text-dark dark:text-light">
-                {i18n.language === "uk"
-                  ? "Всього до сплати:"
-                  : "Total to be paid:"}{" "}
+                {i18n.language === 'uk'
+                  ? 'Всього до сплати:'
+                  : 'Total to be paid:'}{' '}
                 <span className="font-bold">
-                  {Number(cartPrice) - Number(bonuses)} ₴{" "}
+                  {Number(cartPrice) - Number(bonuses)} ₴{' '}
                   {deliveryAmount > 0 &&
                     `+ ${deliveryAmount} ₴ ${
-                      i18n.language === "uk" ? "доставка" : "delivery"
+                      i18n.language === 'uk' ? 'доставка' : 'delivery'
                     }`}
                 </span>
               </span>
@@ -395,23 +339,23 @@ const Checkout = () => {
                       : null
                   }`}
                 >
-                  {i18n.language === "uk" ? "Ім`я та прізвище" : "Full name"}
+                  {i18n.language === 'uk' ? 'Ім`я та прізвище' : 'Full name'}
                 </label>
                 <div className="relative">
                   <input
                     defaultValue={user.personals.fullName}
                     className={`block w-full rounded-md shadow-sm text-dark dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                       errors.name
-                        ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
-                        : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
+                        ? 'border-red-300 focus:border-red-300 focus:ring focus:ring-red-200'
+                        : 'border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200'
                     }  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                    {...register("name", {
+                    {...register('name', {
                       required: {
                         value: true,
                         message:
-                          i18n.language === "uk"
-                            ? "Поле обов`язкове для заповнення"
-                            : "Field is required",
+                          i18n.language === 'uk'
+                            ? 'Поле обов`язкове для заповнення'
+                            : 'Field is required',
                       },
                     })}
                     type="text"
@@ -433,23 +377,23 @@ const Checkout = () => {
                       : null
                   }`}
                 >
-                  {i18n.language === "uk" ? "Номер телефону" : "Phone number"}
+                  {i18n.language === 'uk' ? 'Номер телефону' : 'Phone number'}
                 </label>
                 <div className="relative">
                   <input
                     defaultValue={user.personals.phoneNumber}
                     className={`block w-full rounded-md shadow-sm text-dark dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                       errors.phone
-                        ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
-                        : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
+                        ? 'border-red-300 focus:border-red-300 focus:ring focus:ring-red-200'
+                        : 'border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200'
                     }  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                    {...register("phone", {
+                    {...register('phone', {
                       required: {
                         value: true,
                         message:
-                          i18n.language === "uk"
-                            ? "Поле обов`язкове для заповнення"
-                            : "Field is required",
+                          i18n.language === 'uk'
+                            ? 'Поле обов`язкове для заповнення'
+                            : 'Field is required',
                       },
                     })}
                     type="tel"
@@ -474,35 +418,35 @@ const Checkout = () => {
                           : null
                       }`}
                     >
-                      {i18n.language === "uk"
-                        ? "Використати бонуси"
-                        : "Use bonuses"}
+                      {i18n.language === 'uk'
+                        ? 'Використати бонуси'
+                        : 'Use bonuses'}
                     </label>
                     <div className="relative">
                       <input
                         defaultValue={0}
                         className={`block w-full rounded-md text-dark shadow-sm dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                           errors.bonuses
-                            ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
-                            : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
+                            ? 'border-red-300 focus:border-red-300 focus:ring focus:ring-red-200'
+                            : 'border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200'
                         }  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                        {...register("bonuses", {
+                        {...register('bonuses', {
                           required: {
                             value: true,
                             message:
-                              i18n.language === "uk"
-                                ? "Поле обов`зкове для заповнення. Вкажіть 0 якщо не хочете їх використовувати"
-                                : "The field is required. Specify 0 if you do not want to use them",
+                              i18n.language === 'uk'
+                                ? 'Поле обов`зкове для заповнення. Вкажіть 0 якщо не хочете їх використовувати'
+                                : 'The field is required. Specify 0 if you do not want to use them',
                           },
                         })}
                         min={0}
                         onChange={(e) => {
                           if (Number(e.target.value) > Number(e.target.max)) {
-                            setValue("bonuses", Number(e.target.max));
+                            setValue('bonuses', Number(e.target.max));
                           }
 
                           if (Number(e.target.value) < 0) {
-                            setValue("bonuses", 0);
+                            setValue('bonuses', 0);
                           }
 
                           setBonuses(Number(e.target.value));
@@ -518,16 +462,16 @@ const Checkout = () => {
                         name="name"
                       />
                       <p className="text-gray-500">
-                        {i18n.language === "uk"
-                          ? "Максимальна кількість:"
-                          : "The maximum number:"}{" "}
+                        {i18n.language === 'uk'
+                          ? 'Максимальна кількість:'
+                          : 'The maximum number:'}{' '}
                         <span className="font-bold">
                           {Math.floor(Number(cartPrice) / 4)}
                         </span>
-                        .{" "}
-                        {i18n.language === "uk"
-                          ? "Ваш баланс:"
-                          : "Your balance:"}{" "}
+                        .{' '}
+                        {i18n.language === 'uk'
+                          ? 'Ваш баланс:'
+                          : 'Your balance:'}{' '}
                         <span className="font-bold">
                           {user && user.promo.bonuses}
                         </span>
@@ -558,9 +502,9 @@ const Checkout = () => {
                       htmlFor="deliverytime1"
                       className="text-sm font-medium text-dark dark:text-light"
                     >
-                      {i18n.language === "uk"
-                        ? "Залишити довільну дату та час доставки"
-                        : "Leave an arbitrary delivery date and time"}
+                      {i18n.language === 'uk'
+                        ? 'Залишити довільну дату та час доставки'
+                        : 'Leave an arbitrary delivery date and time'}
                     </label>
                   </div>
                   <div className="flex space-x-2">
@@ -579,9 +523,9 @@ const Checkout = () => {
                       htmlFor="deliverytime2"
                       className="text-sm font-medium text-dark dark:text-light"
                     >
-                      {i18n.language === "uk"
-                        ? "Вказати конкретну дату та час доставки"
-                        : "Specify a specific delivery date and time"}
+                      {i18n.language === 'uk'
+                        ? 'Вказати конкретну дату та час доставки'
+                        : 'Specify a specific delivery date and time'}
                     </label>
                   </div>
                 </div>
@@ -598,17 +542,17 @@ const Checkout = () => {
                             ?.toDate()
                             .toLocaleString()}`}</div>
                           <div>
-                            Діапазон часу доставки у робочий час:{" "}
+                            Діапазон часу доставки у робочий час:{' '}
                             <span className="font-semibold">
                               {selectedDateTime
                                 .clone()
-                                .subtract(30, "minute")
+                                .subtract(30, 'minute')
                                 .toDate()
-                                .toLocaleString()}{" "}
-                              -{" "}
+                                .toLocaleString()}{' '}
+                              -{' '}
                               {selectedDateTime
                                 .clone()
-                                .add(30, "minute")
+                                .add(30, 'minute')
                                 .toDate()
                                 .toLocaleString()}
                             </span>
@@ -636,9 +580,9 @@ const Checkout = () => {
                       htmlFor="delivery1"
                       className="text-sm font-medium text-dark dark:text-light"
                     >
-                      {i18n.language === "uk"
-                        ? "Самовивіз з нашого магазину"
-                        : "Pickup from our store"}
+                      {i18n.language === 'uk'
+                        ? 'Самовивіз з нашого магазину'
+                        : 'Pickup from our store'}
                     </label>
                   </div>
                   <div className="flex space-x-2">
@@ -655,14 +599,14 @@ const Checkout = () => {
                     </div>
                     <label htmlFor="delivery2" className="text-sm">
                       <div className="font-medium text-dark dark:text-light">
-                        {i18n.language === "uk"
-                          ? "Доставка за адресою"
-                          : "Delivery to the address"}
+                        {i18n.language === 'uk'
+                          ? 'Доставка за адресою'
+                          : 'Delivery to the address'}
                       </div>
                       <p className="text-gray-500">
-                        {i18n.language === "uk"
-                          ? "Вкажіть коректну адресу, вартість доставки буде розраховуватись на її основі!"
-                          : "Specify the correct address, the cost of delivery will be calculated based on it!"}
+                        {i18n.language === 'uk'
+                          ? 'Вкажіть коректну адресу, вартість доставки буде розраховуватись на її основі!'
+                          : 'Specify the correct address, the cost of delivery will be calculated based on it!'}
                       </p>
                     </label>
                   </div>
@@ -677,31 +621,31 @@ const Checkout = () => {
                           : null
                       }`}
                     >
-                      {i18n.language === "uk"
-                        ? "Адреса доставки"
-                        : "Shipping address"}
+                      {i18n.language === 'uk'
+                        ? 'Адреса доставки'
+                        : 'Shipping address'}
                     </label>
                     <div className="relative">
                       <Autocomplete
                         onPlaceChanged={onPlaceChanged}
                         onLoad={onLoad}
                         options={{
-                          componentRestrictions: { country: "ua" },
+                          componentRestrictions: { country: 'ua' },
                         }}
                       >
                         <input
                           className={`block w-full rounded-md text-dark shadow-sm dark:text-light dark:bg-[#1f2937] dark:border-dark ${
                             errors.shippingAddress
-                              ? "border-red-300 focus:border-red-300 focus:ring focus:ring-red-200"
-                              : "border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200"
+                              ? 'border-red-300 focus:border-red-300 focus:ring focus:ring-red-200'
+                              : 'border-gray-300 focus:border-primary-400 focus:ring focus:ring-primary-200'
                           }  focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50 disabled:text-gray-500`}
-                          {...register("shippingAddress", {
+                          {...register('shippingAddress', {
                             required: {
                               value: true,
                               message:
-                                i18n.language === "uk"
-                                  ? "Поле обов`язкове для заповнення"
-                                  : "Field is required",
+                                i18n.language === 'uk'
+                                  ? 'Поле обов`язкове для заповнення'
+                                  : 'Field is required',
                             },
                           })}
                           type="text"
@@ -716,12 +660,12 @@ const Checkout = () => {
                     ) : null}
                     {deliveryAmount > 0 && (
                       <span className="block text-[15px] w-full text-right pt-4 underline text-dark dark:text-light">
-                        {i18n.language === "uk"
-                          ? "Розрахункова вартість доставки:"
-                          : "Estimated cost of delivery:"}{" "}
+                        {i18n.language === 'uk'
+                          ? 'Розрахункова вартість доставки:'
+                          : 'Estimated cost of delivery:'}{' '}
                         <span className="font-semibold text-[16px]">
-                          {deliveryAmount} ₴ ({deliveryPrice}{" "}
-                          {i18n.language === "uk" ? "грн за км" : "UAH per km"}
+                          {deliveryAmount} ₴ ({deliveryPrice}{' '}
+                          {i18n.language === 'uk' ? 'грн за км' : 'UAH per km'}
                           .)
                         </span>
                       </span>
@@ -736,19 +680,19 @@ const Checkout = () => {
                     htmlFor="orderComment"
                     className="mb-1 block text-sm text-dark dark:text-light font-bold"
                   >
-                    {i18n.language === "uk"
-                      ? "Додаткова інформація до замовлення"
-                      : "Additional information to the order"}
+                    {i18n.language === 'uk'
+                      ? 'Додаткова інформація до замовлення'
+                      : 'Additional information to the order'}
                   </label>
                   <textarea
-                    {...register("comment")}
+                    {...register('comment')}
                     id="orderComment"
                     className="block w-full rounded-md border-gray-300 text-dark dark:text-light dark:bg-[#1f2937] dark:border-dark shadow-sm focus:border-primary-300 focus:ring focus:ring-primary-200 focus:ring-opacity-50 disabled:cursor-not-allowed disabled:bg-gray-50"
                     rows={3}
                     placeholder={
-                      i18n.language === "uk"
-                        ? "Введіть коментарій до замовлення, який буде розглянутий нашим флористом"
-                        : "Enter a comment to the order, which will be considered by our florist"
+                      i18n.language === 'uk'
+                        ? 'Введіть коментарій до замовлення, який буде розглянутий нашим флористом'
+                        : 'Enter a comment to the order, which will be considered by our florist'
                     }
                   ></textarea>
                 </div>
@@ -758,12 +702,12 @@ const Checkout = () => {
                 className="border border-rose-400 text-white bg-rose-400 px-4 py-2 rounded transition-colors hover:bg-rose-500"
               >
                 {isCompleteRequest
-                  ? i18n.language === "uk"
-                    ? "Перейти до сплати"
-                    : "Go to payment"
-                  : i18n.language === "uk"
-                  ? "Processing"
-                  : "Обробка..."}
+                  ? i18n.language === 'uk'
+                    ? 'Перейти до сплати'
+                    : 'Go to payment'
+                  : i18n.language === 'uk'
+                  ? 'Processing'
+                  : 'Обробка...'}
               </button>
             </form>
             <div className="flex-1">
@@ -782,7 +726,7 @@ const Checkout = () => {
         </>
       ) : (
         <p className="text-lg text-center">
-          Ваш кошик порожній 😞. Наш{" "}
+          Ваш кошик порожній 😞. Наш{' '}
           <Link
             prefetch={false}
             className="text-blue-600 underline hover:text-blue-700 hover:no-underline transition-all"

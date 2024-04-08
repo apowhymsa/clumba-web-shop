@@ -34,7 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const formattedProducts =
     products.map((product) => {
       return {
-        url: `${process.env.ADMIN_ENDPOINT_BACKEND}/products/${product._id}`,
+        url: `${process.env.ADMIN_ENDPOINT_BACKEND}/product/${product._id}`,
         lastModified: new Date(),
         changeFrequency: EnumChangefreq.weekly,
         priority: 1,
