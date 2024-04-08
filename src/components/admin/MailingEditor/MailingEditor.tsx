@@ -1,3 +1,5 @@
+'use client';
+
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import Editor from './current_build/ckeditor';
 
@@ -6,7 +8,7 @@ import { Alignment } from '@ckeditor/ckeditor5-alignment';
 import '@ckeditor/ckeditor5-build-classic/build/translations/uk';
 import './MailingEditor.css';
 import { EditorConfig } from '@editorjs/editorjs';
-import { Dispatch, FormEvent, SetStateAction, useState } from 'react';
+import { Dispatch, FC, FormEvent, SetStateAction, useState } from 'react';
 import MailingEditorPreviewer from './MailingEditorPreviewer';
 
 const editorConfiguration = {
@@ -15,7 +17,7 @@ const editorConfiguration = {
   language: 'uk',
 };
 
-interface IMailingEditorProps {
+export interface IMailingEditorProps {
   setHtmlContent: Dispatch<SetStateAction<string>>;
   htmlContent: string;
   setTitle: Dispatch<SetStateAction<string>>;
@@ -24,7 +26,7 @@ interface IMailingEditorProps {
   shortDesc: string;
   onSubmit: (e: FormEvent) => void;
 }
-export const MailingEditor = (props: IMailingEditorProps) => {
+export default function MailingEditor(props: IMailingEditorProps) {
   const {
     htmlContent,
     setHtmlContent,
@@ -111,4 +113,4 @@ export const MailingEditor = (props: IMailingEditorProps) => {
       </form>
     </div>
   );
-};
+}

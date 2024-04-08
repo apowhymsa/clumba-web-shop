@@ -7,8 +7,14 @@ import dynamic from 'next/dynamic';
 import Button from '@/components/UI/Button/Button';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
-import { MailingEditor } from '@/components/admin/MailingEditor/MailingEditor';
+// import { MailingEditor } from '../../../../components/admin/MailingEditor/MailingEditor';
 import { useRouter } from 'next/navigation';
+import { IMailingEditorProps } from '../../../../components/admin/MailingEditor/MailingEditor';
+import { lazy } from '@/utils/lazy';
+const LazyMailingEditor = lazy(
+  () =>
+    import('../../../../components/admin/MailingEditor/MailingEditor') as any,
+);
 
 const Page = () => {
   const [shortDesc, setShortDesc] = useState('');
@@ -50,7 +56,7 @@ const Page = () => {
   };
 
   return (
-    <MailingEditor
+    <LazyMailingEditor
       setHtmlContent={setHtmlContent}
       htmlContent={htmlContent}
       title={title}
