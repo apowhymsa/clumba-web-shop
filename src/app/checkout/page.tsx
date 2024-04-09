@@ -18,10 +18,11 @@ import { AuthContext } from '@/contexts/AuthContext/AuthContext';
 import useToast from '@/hooks/useToast';
 import { useRouter } from 'next/navigation';
 import CustomDateTimePicker from '@/components/CustomDateTimePicker/CustomDateTimePicker';
-import { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import { clearCart, setCart } from '@/utils/store/cartSlice';
+import DateTimePicker from '@/components/CustomDateTimePicker/DateTimePicker';
 
 interface IPaymentData {
   name: string;
@@ -36,6 +37,7 @@ const Checkout = () => {
     googleMapsApiKey: process.env.GOOGLE_API_KEY!,
     libraries: ['places', 'geocoding'],
   });
+  const [dateTimeDelivery, setDateTimeDelivery] = useState<Date | null>();
   const [selectedDateTime, setSelectedDateTime] = useState<Dayjs | null>(null);
   const [deliveryAmount, setDeliveryAmount] = useState(0);
   const [deliveryPrice, setDeliveryPrice] = useState(0);
@@ -47,7 +49,6 @@ const Checkout = () => {
   const [searchResult, setSearchResult] = useState<any>(null);
   const { isLogged, isLoading: isLoadingAuth } = useContext(AuthContext);
   const { error, info } = useToast();
-  const [isResult, setResult] = useState(false);
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [deliveryType, setDeliveryType] = useState(1);
@@ -156,6 +157,7 @@ const Checkout = () => {
   };
   const onPlaceChanged = async () => {
     if (searchResult != null) {
+      setCompleteRequest(false);
       //variable to store the result
       const place = searchResult.getPlace();
       //variable to store the name from place details result
@@ -182,7 +184,7 @@ const Checkout = () => {
         console.log(dAmount);
         setDeliveryAmount(dAmount);
       });
-
+      setCompleteRequest(true);
       console.log(lat, lng);
     }
   };
@@ -191,9 +193,9 @@ const Checkout = () => {
     data: IPaymentData,
     event: BaseSyntheticEvent<object, any, any> | undefined,
   ) => {
-    if (deliveryTime === 2 && !selectedDateTime) {
+    if (deliveryTime === 2 && !dateTimeDelivery) {
       error(
-        'Ви обрали опцію "Доставка на конкретний час", заповніть необхідне поле та повторіть спробу',
+        'Ви обрали опцію "Доставка на конкретний час", оберіть дату та час',
       );
     } else {
       setCompleteRequest(false);
@@ -235,7 +237,7 @@ const Checkout = () => {
             deliveryTime:
               deliveryTime === 1
                 ? 'Довільна дата та час'
-                : selectedDateTime?.toDate().toLocaleString(),
+                : dateTimeDelivery?.toLocaleString(),
             name: data.name,
           },
         };
@@ -531,26 +533,27 @@ const Checkout = () => {
                 </div>
                 {deliveryTime === 2 && (
                   <div className="mt-4">
-                    <CustomDateTimePicker
+                    {/* <CustomDateTimePicker
                       selectedDateTime={selectedDateTime}
                       setSelectedDateTime={setSelectedDateTime}
+                    /> */}
+                    <DateTimePicker
+                      dateTimeDelivery={dateTimeDelivery}
+                      setDateTimeDelivery={setDateTimeDelivery}
                     />
                     <span className="dark:text-light text-sm">
-                      {selectedDateTime && (
+                      {dateTimeDelivery && (
                         <>
-                          <div>{`Обрані дата та час: ${selectedDateTime
-                            ?.toDate()
-                            .toLocaleString()}`}</div>
                           <div>
                             Діапазон часу доставки у робочий час:{' '}
                             <span className="font-semibold">
-                              {selectedDateTime
+                              {dayjs(dateTimeDelivery)
                                 .clone()
                                 .subtract(30, 'minute')
                                 .toDate()
                                 .toLocaleString()}{' '}
                               -{' '}
-                              {selectedDateTime
+                              {dayjs(dateTimeDelivery)
                                 .clone()
                                 .add(30, 'minute')
                                 .toDate()

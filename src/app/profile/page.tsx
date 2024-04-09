@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { useContext, useEffect, useLayoutEffect, useState } from "react";
-import clsx from "clsx";
-import ProfileHeader from "@/components/Profile/ProfileHeader/ProfileHeader";
-import OrderHistory from "@/app/profile/OrderHistory";
-import UserInfo from "@/app/profile/UserInfo";
-import { AuthContext } from "@/contexts/AuthContext/AuthContext";
-import { useRouter } from "next/navigation";
-import Loader from "@/components/Loader/Loader";
-import useToast from "@/hooks/useToast";
-import { useTranslation } from "next-i18next";
+import { useContext, useEffect, useLayoutEffect, useState } from 'react';
+import clsx from 'clsx';
+import ProfileHeader from '@/components/Profile/ProfileHeader/ProfileHeader';
+import OrderHistory from '@/app/profile/OrderHistory';
+import UserInfo from '@/app/profile/UserInfo';
+import { AuthContext } from '@/contexts/AuthContext/AuthContext';
+import { useRouter } from 'next/navigation';
+import Loader from '@/components/Loader/Loader';
+import useToast from '@/hooks/useToast';
+import { useTranslation } from 'next-i18next';
 
 const Page = () => {
   const [checked, setChecked] = useState([true, false]);
@@ -22,11 +22,11 @@ const Page = () => {
     if (!isLoading) {
       if (!isLogged) {
         info(
-          i18n.language === "uk"
-            ? "Для доступу до профілю потрібно увійти в обліковий запис"
-            : "To access your profile, you need to log in to your account"
+          i18n.language === 'uk'
+            ? 'Для доступу до профілю потрібно увійти в обліковий запис'
+            : 'To access your profile, you need to log in to your account',
         );
-        return router.push("/");
+        return router.push('/');
       }
     }
   }, [isLogged, isLoading]);
